@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Handy Craft - Our Story, FAQ & Contact</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script defer src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinksContainer = document.getElementById('auth-links');
+            const username = localStorage.getItem('username');
+
+            if (isLoggedIn) {
+                authLinksContainer.innerHTML = `
+                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                   <li><button id="logout-button" class="button primary">Logout</button></li>
+               `;
+            } else {
+                authLinksContainer.innerHTML = `
+                   <li><a href="signin.html">Sign In</a></li>
+                   <li><a href="signup.html">Sign Up</a></li>
+               `;
+            }
+        });
+
+        function openTab(tabName, element) {
+            let i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            element.classList.add("active");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultTab = document.querySelector('.tab-button');
+            if (defaultTab) {
+                defaultTab.click();
+            }
+        });
+    </script>
+
+    <style>
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            border-bottom: 2px solid var(--color-border);
+        }
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            transition: all 0.3s;
+            position: relative;
+        }
+        .tab-button:hover {
+            color: var(--color-primary);
+        }
+        .tab-button.active {
+            color: var(--color-primary);
+            border-bottom: 3px solid var(--color-primary);
+            margin-bottom: -2px; /* Pulls border up to overlap the main line */
+        }
+        .tab-content {
+            padding: 20px 0;
+            display: none; /* Hidden by default, shown by JS */
+        }
+        .content-box {
+            background-color: var(--color-white);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--color-shadow);
+        }
+        .content-box h2 {
+            color: var(--color-primary);
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <nav class="container">
+        <div class="logo">
+            <a href="index.html">
+                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="products.html">Products</a></li>
+            <li><a href="categories.html">Categories</a></li>
+            <li class="active"><a href="aboutus.html">About Us</a></li>
+
+
+            <ul id="auth-links" class="nav-links">
+            </ul>
+        </ul>
+    </nav>
+</header>
+
+<main class="container page-content about-page">
+    <h1>About Handy Craft</h1>
+
+    <div class="tab-buttons">
+        <button class="tab-button" onclick="openTab('our-story', this)">Our Story</button>
+        <button class="tab-button" onclick="openTab('faqs', this)">FAQs</button>
+        <button class="tab-button" onclick="openTab('contact-us', this)">Contact Us</button>
+    </div>
+
+    <div id="our-story" class="tab-content">
+        <div class="content-box">
+            <h2>Our Story: The Handy Craft Collective</h2>
+            <p>Handy Craft was born from a passion for sustainable, slow craft and the desire to support local Malaysian artisans. We aim to be the premier online destination for unique, high-quality crochet and handmade goods.</p>
+        </div>
+
+        <div class="content-box">
+            <h2>Our Mission, Vision, and Values</h2>
+            <h3>Mission</h3>
+            <p>We aim to be the premier online destination for unique, high-quality crochet and handmade goods, offering an alternative to mass-produced items.</p>
+
+            <h3>Vision</h3>
+            <p>To foster a thriving community where creativity meets conscious consumption, ensuring every purchase tells a story and contributes positively to the artisan economy.</p>
+
+            <h3>Values</h3>
+            <ul>
+                <li><strong>Quality:</strong> Every item is thoroughly inspected for superior craftsmanship.</li>
+                <li><strong>Sustainability:</strong> We prioritize eco-friendly materials and ethical production methods.</li>
+                <li><strong>Community:</strong> We are committed to empowering local makers.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="faqs" class="tab-content">
+        <div class="content-box">
+            <h2>Frequently Asked Questions</h2>
+
+            <h3>Q: How long does shipping take?</h3>
+            <p>A: Since all items are handmade, processing time can take 3-5 business days. Shipping within Malaysia usually takes an additional 2-3 days.</p>
+
+            <h3>Q: What is your return policy?</h3>
+            <p>A: We accept returns on damaged items within 7 days of delivery. Due to the unique nature of handmade goods, we do not offer returns for change of mind.</p>
+
+            <h3>Q: Are the products machine washable?</h3>
+            <p>A: Most items require delicate hand washing or spot cleaning. Please refer to the specific care instructions provided with your product.</p>
+        </div>
+    </div>
+
+    <div id="contact-us" class="tab-content">
+        <div class="content-box">
+            <h2>Get In Touch</h2>
+            <p>We'd love to hear from you. Please fill out the form below or use our contact information.</p>
+
+            <form action="#" method="POST" id="contact-form">
+                <div class="form-group">
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Your Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="button primary">Send Message</button>
+            </form>
+        </div>
+
+        <div class="content-box">
+            <h2>Direct Contact Info</h2>
+            <p>Email: <a href="mailto:support@handycraft.my">support@handycraft.my</a></p>
+            <p>Address: USM Innovation Centre, Penang, Malaysia</p>
+        </div>
+    </div>
+</main>
+
+<footer class="main-footer">
+    <div class="footer-links container">
+        <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+        <div>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

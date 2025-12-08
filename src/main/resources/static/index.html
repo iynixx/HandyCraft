@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handy Craft - Local Crochet E-Commerce</title>
+
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script defer src="js/auth.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinksContainer = document.getElementById('auth-links');
+            const username = localStorage.getItem('username');
+
+
+            if (isLoggedIn) {
+                // User is logged in: show username and logout button
+                authLinksContainer.innerHTML = `
+                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                   <li><button id="logout-button" class="button primary">Logout</button></li>
+               `;
+            } else {
+                // User is logged out: show Sign In and Sign Up links
+                authLinksContainer.innerHTML = `
+                   <li><a href="signin.html">Sign In</a></li>
+                   <li><a href="signup.html">Sign Up</a></li>
+               `;
+            }
+
+
+            // Search function listener
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body class="home-page">
+<div class="page-wrapper">
+
+
+    <header class="main-header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link-with-text">
+                    <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                    <span class="site-title">Handy Craft</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="products.html">Products</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+
+
+                <li class="search-container">
+                    <form id="search-form" class="search-form">
+                        <input type="text" id="search-input" placeholder="Search products..." required>
+                        <button type="submit" class="search-button">🔍</button>
+                    </form>
+                </li>
+
+
+                <li class="auth-links-container">
+                    <ul id="auth-links" class="nav-links">
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <main class="hero-main">
+        <section class="hero-content">
+            <h1>Welcome to Handy Craft!</h1>
+            <p>Your local source for the finest, pastel-coloured crochet and handmade goods.</p>
+            <a href="products.html" class="button primary large-button">Shop Our Collections</a>
+        </section>
+
+
+        <section class="featured-products container">
+        </section>
+    </main>
+
+
+</div>
+
+
+<footer class="main-footer policy-bar">
+    <div class="footer-links container">
+        <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+        <div class="policy-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

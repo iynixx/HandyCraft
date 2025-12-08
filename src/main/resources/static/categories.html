@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop By Category - Handy Craft</title>
+
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script defer src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinksContainer = document.getElementById('auth-links');
+            const username = localStorage.getItem('username');
+
+
+            if (isLoggedIn) {
+                authLinksContainer.innerHTML = `
+                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                   <li><button id="logout-button" class="button primary">Logout</button></li>
+               `;
+            } else {
+                authLinksContainer.innerHTML = `
+                   <li><a href="signin.html">Sign In</a></li>
+                   <li><a href="signup.html">Sign Up</a></li>
+               `;
+            }
+        });
+    </script>
+</head>
+<body>
+<header class="main-header">
+    <nav class="container">
+        <div class="logo">
+            <a href="index.html">
+                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="products.html">Products</a></li>
+            <li class="active"><a href="categories.html">Categories</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+
+
+            <li><a href="#" onclick="event.preventDefault(); viewCart();">
+                <span role="img" aria-label="shopping cart">🛒</span> View Cart
+            </a></li>
+
+
+            <ul id="auth-links" class="nav-links">
+            </ul>
+        </ul>
+    </nav>
+</header>
+
+
+<main class="container page-content">
+    <h1>Explore Our Handmade Collections</h1>
+    <p>Browse our unique items by category. Each link will take you to a filtered list of products (functionality to be implemented in `products.js`).</p>
+
+
+    <section class="category-grid">
+        <div class="category-card">
+            <h3>Amigurumi & Plushies</h3>
+            <p>Tiny crocheted animals, characters, and keychains.</p>
+            <a href="products.html?category=amigurumi" class="button secondary">Shop Amigurumi</a>
+        </div>
+
+
+        <div class="category-card">
+            <h3>Home Decor</h3>
+            <p>Mug mats, coasters, throw pillows, and decorative baskets.</p>
+            <a href="products.html?category=homedecor" class="button secondary">Shop Home Decor</a>
+        </div>
+
+
+        <div class="category-card">
+            <h3>Wearable Accessories</h3>
+            <p>Hats, scarves, lightweight bags, and hair clips.</p>
+            <a href="products.html?category=wearable" class="button secondary">Shop Accessories</a>
+        </div>
+
+
+        <div class="category-card">
+            <h3>Seasonal & Gifts</h3>
+            <p>Limited edition holiday items and customizable gifts.</p>
+            <a href="products.html?category=gifts" class="button secondary">Shop Gifts</a>
+        </div>
+    </section>
+</main>
+
+
+<footer class="main-footer">
+    <div class="footer-links container">
+        <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+        <div>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+
+
+<style>
+    /* NOTE: It is best practice to move this styling into css/style.css */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+    .category-card {
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px var(--color-shadow);
+        text-align: center;
+    }
+    .category-card h3 {
+        color: var(--color-primary);
+        margin-bottom: 10px;
+    }
+</style>
+</body>
+</html>
+

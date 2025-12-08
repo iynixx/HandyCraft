@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Handy Craft</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/auth.js"></script>
+</head>
+<body class="auth-page">
+
+
+<div class="page-wrapper">
+
+
+    <header class="main-header" style="box-shadow: none; background: none;">
+        <nav class="container" style="justify-content: flex-start; padding: 10px 0;">
+            <div class="logo">
+                <a href="index.html" class="logo-link-with-text">
+                    <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                    <span class="site-title">Handy Craft</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="products.html">Back to Products</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <main class="container" style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+        <div class="auth-container">
+            <h2>Create an Account</h2>
+            <form id="signup-form" class="auth-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required minlength="3">
+
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="8">
+
+
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-agreement" name="terms-agreement" required>
+                    <label for="terms-agreement">
+                        I agree to the
+                        <a href="useragreement.html" target="_blank">User Agreement</a>,
+                        <a href="terms.html" target="_blank">Terms of Service</a>,
+                        and
+                        <a href="privacy.html" target="_blank">Privacy Policy</a>.
+                    </label>
+                </div>
+
+
+                <button type="submit" class="button primary full-width">Register</button>
+
+
+                <p class="auth-switch" style="text-align: center; margin-top: 15px;">
+                    Already have an account? <a href="signin.html">Sign In here</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+
+    <footer class="main-footer policy-bar">
+        <div class="footer-links container">
+            <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+            <div class="policy-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+
+</div>
+</body>
+</html>
+

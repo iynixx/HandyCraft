@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Handy Craft</title>
+
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script defer src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinksContainer = document.getElementById('auth-links');
+            const username = localStorage.getItem('username');
+
+
+            if (isLoggedIn) {
+                authLinksContainer.innerHTML = `
+                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                   <li><button id="logout-button" class="button primary">Logout</button></li>
+               `;
+            } else {
+                authLinksContainer.innerHTML = `
+                   <li><a href="signin.html">Sign In</a></li>
+                   <li><a href="signup.html">Sign Up</a></li>
+               `;
+            }
+        });
+    </script>
+</head>
+<body>
+<header class="main-header">
+    <nav class="container">
+        <div class="logo">
+            <a href="index.html">
+                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="products.html">Products</a></li>
+            <li><a href="categories.html">Categories</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="#" onclick="event.preventDefault(); viewCart();">
+                <span role="img" aria-label="shopping cart">🛒</span> View Cart
+            </a></li>
+            <ul id="auth-links" class="nav-links"></ul>
+        </ul>
+    </nav>
+</header>
+
+
+<main class="container page-content legal-content">
+    <h1>Handy Craft Privacy Policy</h1>
+    <p class="last-updated">Last Updated: December 6, 2025</p>
+
+
+    <section>
+        <h2>1. Company Information</h2>
+        <p><strong>Legal Name:</strong> Handy Craft Sdn. Bhd.</p>
+        <p><strong>Contact Details:</strong> support@handycraft.my</p>
+        <p>We do not currently employ a dedicated Data Protection Officer (DPO) but all inquiries regarding data protection can be directed to the contact email above.</p>
+    </section>
+
+
+    <section>
+        <h2>2. Data Collected</h2>
+        <p>We collect both Personal and Non-Personal Data:</p>
+        <ul>
+            <li><strong>Personal Data:</strong> Names, email addresses, shipping addresses, phone numbers (for order fulfillment).</li>
+            <li><strong>Non-Personal Data:</strong> IP addresses, browsing behavior, device information, and page views (collected via cookies and analytics).</li>
+        </ul>
+    </section>
+
+
+    <section>
+        <h2>3. Purpose and Legal Basis for Data Use</h2>
+        <p>Data is collected for the following purposes:</p>
+        <ul>
+            <li>To **provide services** (process orders, manage accounts, provide customer support).</li>
+            <li>To **improve user experience** (analyzing site usage, optimizing product listings).</li>
+            <li>For **legal compliance** (processing taxes, preventing fraud).</li>
+        </ul>
+    </section>
+
+
+    <section>
+        <h2>4. Data Sharing and Third Parties</h2>
+        <p>We only share your data as necessary to provide our services:</p>
+        <ul>
+            <li>**Service Providers:** Shared with shipping companies (for delivery) and payment processors (for secure transactions).</li>
+            <li>**Legal Authorities:** Shared when required by law or to protect the rights of Handy Craft.</li>
+        </ul>
+    </section>
+
+
+    <section>
+        <h2>5. Data Retention</h2>
+        <p>We retain personal data related to transactions for **seven (7) years** to comply with tax and legal obligations. Other data (browsing history, non-personal analytics) is stored for **12 months** and then anonymized or deleted.</p>
+    </section>
+
+
+    <section>
+        <h2>6. User Rights</h2>
+        <p>Users have the right to:</p>
+        <ul>
+            <li>**Access:** Request a copy of the personal data we hold about you.</li>
+            <li>**Deletion (Right to be Forgotten):** Request that we delete your data (subject to legal obligations).</li>
+            <li>**Rectification:** Correct any incomplete or inaccurate data we hold.</li>
+        </ul>
+        <p>To exercise these rights, please contact us at support@handycraft.my.</p>
+    </section>
+
+
+    <section>
+        <h2>7. Cookies and Tracking</h2>
+        <p>We use cookies to enhance functionality, analyze traffic, and personalize content. By using our site, you consent to our use of cookies. You can manage or opt-out of cookies through your browser settings.</p>
+    </section>
+
+
+    <section>
+        <h2>8. Children's Privacy</h2>
+        <p>Our service is not intended for use by individuals under the age of 18. We do not knowingly collect personal data from children. If we become aware that we have collected data from a child without parental consent, we will take steps to delete the information.</p>
+    </section>
+
+
+    <section>
+        <h2>9. Policy Updates</h2>
+        <p>We reserve the right to modify this policy at any time. Users will be notified of significant changes via an email or a prominent notice on our website homepage.</p>
+    </section>
+</main>
+
+
+<footer class="main-footer">
+    <div class="footer-links container">
+        <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+        <div>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

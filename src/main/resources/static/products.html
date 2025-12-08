@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - Handy Craft</title>
+
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script defer src="js/products.js"></script>
+    <script defer src="js/auth.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinksContainer = document.getElementById('auth-links');
+            const username = localStorage.getItem('username');
+
+
+            if (isLoggedIn) {
+                authLinksContainer.innerHTML = `
+                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                   <li><button id="logout-button" class="button primary">Logout</button></li>
+               `;
+            } else {
+                authLinksContainer.innerHTML = `
+                   <li><a href="signin.html">Sign In</a></li>
+                   <li><a href="signup.html">Sign Up</a></li>
+               `;
+            }
+
+
+            // --- Handle Filter Dropdown Change ---
+            const filterDropdown = document.getElementById('category-filter');
+            if (filterDropdown) {
+                filterDropdown.addEventListener('change', (event) => {
+                    const selectedCategory = event.target.value;
+                    if (selectedCategory) {
+                        if (selectedCategory === 'all') {
+                            window.location.href = 'products.html';
+                        } else {
+                            window.location.href = `products.html?category=${selectedCategory}`;
+                        }
+                    }
+                });
+            }
+
+
+            // --- Search function listener ---
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+        });
+
+
+        // Ensure viewCart is globally accessible if it is defined in another file
+        function viewCart() {
+            console.log("View Cart function triggered.");
+        }
+    </script>
+</head>
+<body>
+<header class="main-header">
+    <nav class="container">
+        <div class="logo">
+            <a href="index.html" class="logo-link-with-text">
+                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <span class="site-title">Handy Craft</span>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="products.html">Products</a></li>
+            <li><a href="categories.html">Categories</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+
+
+            <li class="search-container">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-input" placeholder="Search products..." required>
+                    <button type="submit" class="search-button">🔍</button>
+                </form>
+            </li>
+
+
+            <li><a href="#" onclick="event.preventDefault(); viewCart();">
+                <span role="img" aria-label="shopping cart">🛒</span> View Cart
+            </a></li>
+
+
+            <li class="auth-links-container">
+                <ul id="auth-links" class="nav-links">
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+<main class="container product-main">
+    <h1 class="page-title">Our Handmade Crochet Collections</h1>
+
+
+    <aside class="filter-dropdown-wrapper">
+        <label for="category-filter" class="filter-label">Filter By Category:</label>
+        <div class="custom-select-wrapper">
+            <select id="category-filter" class="category-select">
+                <option value="all">All Products</option>
+                <option value="amigurumi">Amigurumi</option>
+                <option value="homedecor">Home Decor</option>
+                <option value="wearable">Accessories</option>
+            </select>
+            <span class="select-arrow"></span>
+        </div>
+    </aside>
+
+
+    <section class="product-listing">
+        <div id="product-grid" class="product-grid">
+            <p>Loading products...</p>
+        </div>
+    </section>
+</main>
+
+
+<footer class="main-footer policy-bar">
+    <div class="footer-links container">
+        <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+        <div class="policy-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

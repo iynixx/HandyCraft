@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "name": "Pastel Bunny Amigurumi",
+    "price": 45.00,
+    "description": "A soft, handcrafted crochet bunny in calming pastel colours. Perfect for decor.",
+    "imageUrl": "images/products/bunny.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Rainbow Cloud Coaster Set",
+    "price": 28.50,
+    "description": "Set of four handmade cloud-shaped coasters with colorful rainbow accents.",
+    "imageUrl": "images/products/coaster.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Miniature Crochet Cactus",
+    "price": 18.00,
+    "description": "A tiny, maintenance-free cactus in a terracotta pot. Great desk companion.",
+    "imageUrl": "images/products/cactus.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Geometric Crochet Throw Pillow",
+    "price": 75.90,
+    "description": "Soft pillow with a modern geometric pattern, available in pink and mint.",
+    "imageUrl": "images/products/pillow.jpg"
+  }
+]
+
