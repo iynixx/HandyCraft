@@ -34,23 +34,7 @@
             }
 
 
-            // --- Handle Filter Dropdown Change ---
-            const filterDropdown = document.getElementById('category-filter');
-            if (filterDropdown) {
-                filterDropdown.addEventListener('change', (event) => {
-                    const selectedCategory = event.target.value;
-                    if (selectedCategory) {
-                        if (selectedCategory === 'all') {
-                            window.location.href = 'products.html';
-                        } else {
-                            window.location.href = `products.html?category=${selectedCategory}`;
-                        }
-                    }
-                });
-            }
-
-
-            // --- Search function listener ---
+            // --- Search function listener (KEPT) ---
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
                 searchForm.addEventListener('submit', (event) => {
@@ -61,6 +45,9 @@
                     }
                 });
             }
+
+            // NOTE: The CATEGORY DROPDOWN LISTENER HAS BEEN REMOVED FROM HERE
+            //       because it is now handled dynamically in products.js (in populateCategoryFilter).
         });
 
 
@@ -116,9 +103,6 @@
         <div class="custom-select-wrapper">
             <select id="category-filter" class="category-select">
                 <option value="all">All Products</option>
-                <option value="amigurumi">Amigurumi</option>
-                <option value="homedecor">Home Decor</option>
-                <option value="wearable">Accessories</option>
             </select>
             <span class="select-arrow"></span>
         </div>
@@ -144,4 +128,3 @@
 </footer>
 </body>
 </html>
-

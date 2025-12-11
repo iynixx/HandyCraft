@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProductHandler implements HttpHandler {
+
+    // Service dependency is now available
     private final ProductService productService = new ProductService();
     private final Gson gson = new Gson();
 
@@ -27,17 +29,27 @@ public class ProductHandler implements HttpHandler {
             return;
         }
 
+        // Ensure all responses include the CORS header
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
         // 2. Handle GET /api/products request
         if (method.equalsIgnoreCase("GET") && path.equals("/api/products")) {
 
-            // The compiler now recognizes 'Product' thanks to the import
-            List<Product> products = productService.loadAllProducts();
+            try {
+                List<Product> products = productService.loadAllProducts();
 
-            // Serialize the List<Product> into a JSON array
-            String jsonResponse = gson.toJson(products);
+                // If loading fails in the service, 'products' is an empty list,
+                // which Gson converts to an empty JSON array: [] (safe for frontend)
+                String jsonResponse = gson.toJson(products);
 
-            // Send HTTP 200 OK with the product data
-            ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
+                ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                ResponseUtil.sendResponse(exchange, 500,
+                        "{\"message\": \"Internal Server Error: Could not load products.\"}",
+                        "application/json");
+            }
 
         } else {
             // Handle requests for specific IDs (future enhancement) or wrong methods

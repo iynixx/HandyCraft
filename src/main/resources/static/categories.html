@@ -12,6 +12,15 @@
 
     <script defer src="js/auth.js"></script>
     <script>
+        // Define a function for viewCart to prevent errors when clicking the cart icon,
+        // as products.js (which defines the full logic) is not loaded on this page.
+        function viewCart() {
+            // Redirect to the products page where the full cart logic is loaded
+            alert("Redirecting to Products page to view cart details.");
+            window.location.href = "products.html";
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authLinksContainer = document.getElementById('auth-links');
@@ -36,8 +45,9 @@
 <header class="main-header">
     <nav class="container">
         <div class="logo">
-            <a href="index.html">
+            <a href="index.html" class="logo-link-with-text">
                 <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <span class="site-title">Handy Craft</span>
             </a>
         </div>
         <ul class="nav-links">
@@ -60,36 +70,64 @@
 
 <main class="container page-content">
     <h1>Explore Our Handmade Collections</h1>
-    <p>Browse our unique items by category. Each link will take you to a filtered list of products (functionality to be implemented in `products.js`).</p>
+    <p>Browse our unique items by category. Click any link below to view the filtered list of products.</p>
 
 
     <section class="category-grid">
         <div class="category-card">
-            <h3>Amigurumi & Plushies</h3>
-            <p>Tiny crocheted animals, characters, and keychains.</p>
-            <a href="products.html?category=amigurumi" class="button secondary">Shop Amigurumi</a>
+            <h3>Crochet Bags</h3>
+            <p>Spacious shoulder bags, mini purses, and casual sling bags for all occasions.</p>
+            <a href="products.html?category=bag" class="button secondary">Shop Bags</a>
         </div>
-
 
         <div class="category-card">
-            <h3>Home Decor</h3>
-            <p>Mug mats, coasters, throw pillows, and decorative baskets.</p>
-            <a href="products.html?category=homedecor" class="button secondary">Shop Home Decor</a>
+            <h3>Crochet Toys & Plushies</h3>
+            <p>Adorable Amigurumi, character-based crochet toys, and decorative keychains.</p>
+            <a href="products.html?category=crochettoy" class="button secondary">Shop Toys & Plushies</a>
         </div>
 
+        <div class="category-card">
+            <h3>Crochet Decoration</h3>
+            <p>Unique items like desk accents, novelty decorations, and whimsical pieces for any room.</p>
+            <a href="products.html?category=crochetdecoration" class="button secondary">Shop Decoration</a>
+        </div>
+
+        <div class="category-card">
+            <h3>Home Accessories</h3>
+            <p>Practical and charming handmade items for daily use, including cup coasters and mats.</p>
+            <a href="products.html?category=homeaccessory" class="button secondary">Shop Home</a>
+        </div>
 
         <div class="category-card">
             <h3>Wearable Accessories</h3>
-            <p>Hats, scarves, lightweight bags, and hair clips.</p>
-            <a href="products.html?category=wearable" class="button secondary">Shop Accessories</a>
+            <p>Hats, hair accessories, and fashionable items for a handmade touch to your style.</p>
+            <a href="products.html?category=accessory" class="button secondary">Shop Accessories</a>
         </div>
-
 
         <div class="category-card">
-            <h3>Seasonal & Gifts</h3>
-            <p>Limited edition holiday items and customizable gifts.</p>
-            <a href="products.html?category=gifts" class="button secondary">Shop Gifts</a>
+            <h3>Concert & Utility</h3>
+            <p>Custom light stick sleeves and other specialized handmade functional items.</p>
+            <a href="products.html?category=concertaccessory" class="button secondary">Shop Utility</a>
         </div>
+
+        <div class="category-card">
+            <h3>Crochet Sets</h3>
+            <p>Matching items, couples sets, or themed collections perfect for gifting.</p>
+            <a href="products.html?category=crochetset" class="button secondary">Shop Sets</a>
+        </div>
+
+        <div class="category-card">
+            <h3>Crochet Toy & Utility</h3>
+            <p>Items designed to be both decorative and functional, like themed dust collectors.</p>
+            <a href="products.html?category=crochettoyunutility" class="button secondary">Shop Toy & Utility</a>
+        </div>
+
+        <div class="category-card">
+            <h3>All Products</h3>
+            <p>View the complete collection of everything we offer in one place.</p>
+            <a href="products.html?category=all" class="button primary">View All</a>
+        </div>
+
     </section>
 </main>
 
@@ -124,7 +162,17 @@
         color: var(--color-primary);
         margin-bottom: 10px;
     }
+    .logo-link-with-text {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+    .site-title {
+        color: var(--color-text);
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-left: 10px;
+    }
 </style>
 </body>
 </html>
-
