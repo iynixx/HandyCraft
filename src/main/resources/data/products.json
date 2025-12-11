@@ -1,31 +1,786 @@
 [
   {
-    "id": 1,
-    "name": "Pastel Bunny Amigurumi",
-    "price": 45.00,
-    "description": "A soft, handcrafted crochet bunny in calming pastel colours. Perfect for decor.",
-    "imageUrl": "images/products/bunny.jpg"
+    "Product ID": 1,
+    "File Name": "sunflower_cherry.jpg",
+    "Product Name": "Sunflower Cherry",
+    "Price (RM)": 25,
+    "Description": "Bright and cheerful crochet sunflower with a cherry accent, perfect for home decor or as a gift.",
+    "Category": "Crochet Decoration",
+    "Inventory": 8
   },
   {
-    "id": 2,
-    "name": "Rainbow Cloud Coaster Set",
-    "price": 28.50,
-    "description": "Set of four handmade cloud-shaped coasters with colorful rainbow accents.",
-    "imageUrl": "images/products/coaster.jpg"
+    "Product ID": 2,
+    "File Name": "couples.jpg",
+    "Product Name": "Couples Set",
+    "Price (RM)": 35,
+    "Description": "A charming set of matching crochet items for couples, symbolizing togetherness and love.",
+    "Category": "Crochet Set",
+    "Inventory": 6
   },
   {
-    "id": 3,
-    "name": "Miniature Crochet Cactus",
-    "price": 18.00,
-    "description": "A tiny, maintenance-free cactus in a terracotta pot. Great desk companion.",
-    "imageUrl": "images/products/cactus.jpg"
+    "Product ID": 3,
+    "File Name": "mushrooms.jpg",
+    "Product Name": "Mushrooms",
+    "Price (RM)": 25,
+    "Description": "Whimsical crochet mushrooms in assorted sizes, ideal for nature-themed decor or playful accents.",
+    "Category": "Crochet Decoration",
+    "Inventory": 4
   },
   {
-    "id": 4,
-    "name": "Geometric Crochet Throw Pillow",
-    "price": 75.90,
-    "description": "Soft pillow with a modern geometric pattern, available in pink and mint.",
-    "imageUrl": "images/products/pillow.jpg"
+    "Product ID": 4,
+    "File Name": "totoro_dusty_ball.jpg",
+    "Product Name": "Totoro Dusty Ball",
+    "Price (RM)": 40,
+    "Description": "An adorable Totoro-inspired crochet dust ball, combining cuteness with practical dusting.",
+    "Category": "Crochet Toy & Utility",
+    "Inventory": 3
+  },
+  {
+    "Product ID": 5,
+    "File Name": "crochet_light_stick.jpg",
+    "Product Name": "Crochet Light Stick Sleeve",
+    "Price (RM)": 70,
+    "Description": "Customizable crochet sleeve for concert light sticks, adding a unique handmade touch to your fan experience.",
+    "Category": "Concert Accessory",
+    "Inventory": 9
+  },
+  {
+    "Product ID": 6,
+    "File Name": "bunny_bag.jpg",
+    "Product Name": "Bunny Bag",
+    "Price (RM)": 30,
+    "Description": "A cute and roomy bunny-shaped crochet bag, perfect for casual outings or as a gift for bunny lovers.",
+    "Category": "Bag",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 7,
+    "File Name": "mini_penguin.jpg",
+    "Product Name": "Mini Penguin",
+    "Price (RM)": 25,
+    "Description": "A tiny crochet penguin with charming details, great as a keychain, bag charm, or desk companion.",
+    "Category": "Crochet Toy",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 8,
+    "File Name": "bees_keychain.jpg",
+    "Product Name": "Bees Keychain",
+    "Price (RM)": 18,
+    "Description": "Sweet little crochet bee keychains, buzzing with charm and perfect for adding whimsy to your keys.",
+    "Category": "Keychain",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 9,
+    "File Name": "pochacco.jpg",
+    "Product Name": "Pochacco Drawstring Pouch",
+    "Price (RM)": 40,
+    "Description": "Adorable Sanrio-inspired Pochacco pouch with a drawstring closure, spacious enough for daily essentials.",
+    "Category": "Pouch",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 10,
+    "File Name": "bunny_keychain.jpg",
+    "Product Name": "Bunny Keychain",
+    "Price (RM)": 20,
+    "Description": "Floppy-eared crochet bunny keychain, soft and huggable, making every keyring extra special.",
+    "Category": "Keychain",
+    "Inventory": 10
+  },
+  {
+    "Product ID": 11,
+    "File Name": "giraffe_with_cat.jpg",
+    "Product Name": "Giraffe with Cat",
+    "Price (RM)": 35,
+    "Description": "A delightful crochet pair of a giraffe and a cat, perfect for animal lovers and as a decorative duo.",
+    "Category": "Crochet Toy",
+    "Inventory": 2
+  },
+  {
+    "Product ID": 12,
+    "File Name": "lotso.jpg",
+    "Product Name": "Lotso",
+    "Price (RM)": 25,
+    "Description": "Cuddly crochet Lotso from Toy Story, a nostalgic and huggable companion for fans of all ages.",
+    "Category": "Crochet Toy",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 13,
+    "File Name": "cutedolls.jpg",
+    "Product Name": "Cute Dolls",
+    "Price (RM)": 20,
+    "Description": "Handmade crochet dolls with unique expressions and outfits, each one lovingly crafted with detail.",
+    "Category": "Crochet Toy",
+    "Inventory": {
+      "Doll 1": 6,
+      "Doll 2": 7,
+      "Doll 3": 8
+    }
+  },
+  {
+    "Product ID": 14,
+    "File Name": "strawberry_purse.jpg",
+    "Product Name": "Strawberry Purse",
+    "Price (RM)": 20,
+    "Description": "A sweet and juicy-looking crochet strawberry purse, perfect for summer outings and adding a pop of fruity fun.",
+    "Category": "Purse",
+    "Inventory": 3
+  },
+  {
+    "Product ID": 15,
+    "File Name": "flowers.jpg",
+    "Product Name": "Flowers",
+    "Price (RM)": 8,
+    "Description": "Small crochet flowers in various designs, ideal for crafting, scrapbooking, or as cute embellishments.",
+    "Category": "Crochet Flower",
+    "Inventory": 9
+  },
+  {
+    "Product ID": 16,
+    "File Name": "chicken_frog.purse",
+    "Product Name": "Chicken Purse & Frog Purse",
+    "Price (RM)": 40,
+    "Description": "A quirky crochet purse duo featuring a cheerful chicken and a friendly frog, each designed to spark joy.",
+    "Category": "Purse",
+    "Inventory": {
+      "Chicken": 4,
+      "Frog": 3
+    }
+  },
+  {
+    "Product ID": 17,
+    "File Name": "orange_cat.jpg",
+    "Product Name": "Orange Cat",
+    "Price (RM)": 15,
+    "Description": "Playful crochet orange cat with a friendly expression, perfect for cat enthusiasts and as a cheerful decor.",
+    "Category": "Crochet Toy",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 18,
+    "File Name": "grey_cat.jpg",
+    "Product Name": "Grey Cat",
+    "Price (RM)": 15,
+    "Description": "A sleek crochet grey cat, elegantly designed to be a charming companion or decorative piece.",
+    "Category": "Crochet Toy",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 19,
+    "File Name": "dog.jpg",
+    "Product Name": "Dog",
+    "Price (RM)": 18,
+    "Description": "Lovable crochet dog with floppy ears, bringing a touch of canine charm wherever it goes.",
+    "Category": "Crochet Toy",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 20,
+    "File Name": "penguin.jpg",
+    "Product Name": "Penguin",
+    "Price (RM)": 18,
+    "Description": "A cute crochet penguin with classic black-and-white coloring, ideal for winter-themed decor.",
+    "Category": "Crochet Toy",
+    "Inventory": 8
+  },
+  {
+    "Product ID": 21,
+    "File Name": "fox.jpg",
+    "Product Name": "Fox",
+    "Price (RM)": 15,
+    "Description": "Clever crochet fox with a bushy tail, perfect for nature lovers and as a whimsical accessory.",
+    "Category": "Crochet Toy",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 22,
+    "File Name": "unicorn.jpg",
+    "Product Name": "Unicorn",
+    "Price (RM)": 20,
+    "Description": "Magical crochet unicorn with a sparkly horn, a dreamy addition to any collection or as a gift.",
+    "Category": "Crochet Toy",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 23,
+    "File Name": "bear_purse.jpg",
+    "Product Name": "Bear Purse",
+    "Price (RM)": 40,
+    "Description": "Handmade crochet bear-shaped purse with card slots, combining cuteness with functionality.",
+    "Colour Variants": ["Light Brown", "Dark Brown"],
+    "Category": "Purse",
+    "Inventory": {
+      "Light Brown": 3,
+      "Dark Brown": 4
+    }
+  },
+  {
+    "Product ID": 24,
+    "File Name": "chicken_purse.jpg",
+    "Product Name": "Chicken Purse",
+    "Price (RM)": 28,
+    "Description": "Cheerful yellow crochet chicken purse with compartments for coins and cards, a fun everyday accessory.",
+    "Colour Variants": ["Yellow"],
+    "Category": "Purse",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 25,
+    "File Name": "grey_bear_purse.jpg",
+    "Product Name": "Grey Bear Purse",
+    "Price (RM)": 28,
+    "Description": "Soft grey crochet bear purse, a cozy and practical way to carry your small essentials.",
+    "Colour Variants": ["Grey"],
+    "Category": "Purse",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 26,
+    "File Name": "bunny_hops_and_grapes_drops.jpg",
+    "Product Name": "Bunny Hops & Grapes Drops",
+    "Price (RM)": 20,
+    "Description": "A playful crochet scene featuring a bunny and grapes, full of charm and vibrant colors.",
+    "Category": "Crochet Toy",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 27,
+    "File Name": "teddy_cookie.jpg",
+    "Product Name": "Teddy Cookie",
+    "Price (RM)": 13,
+    "Description": "Sweet crochet teddy bear holding a cookie, a delightful little friend for kids and collectors.",
+    "Category": "Crochet Toy",
+    "Inventory": 8
+  },
+  {
+    "Product ID": 28,
+    "File Name": "blue_flower_bucket_hat.jpg",
+    "Product Name": "Blue Flower Bucket Hat",
+    "Price (RM)": 32,
+    "Description": "Stylish crochet bucket hat adorned with blue flowers, perfect for sunny days and casual outings.",
+    "Colour Variants": ["Blue"],
+    "Category": "Hat",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 29,
+    "File Name": "pink_flower_bucket_hat.jpg",
+    "Product Name": "Pink Flower Bucket Hat",
+    "Price (RM)": 32,
+    "Description": "Feminine crochet bucket hat with pink floral accents, adding a touch of charm to any outfit.",
+    "Colour Variants": ["Pink"],
+    "Category": "Hat",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 30,
+    "File Name": "women_casual_purse.jpg",
+    "Product Name": "Women Casual Purse",
+    "Price (RM)": 40,
+    "Description": "Elegant checkered crochet purse with multiple compartments, blending style with everyday practicality.",
+    "Colour Variants": ["Purple", "Pink", "Cappuccino", "Orange"],
+    "Category": "Purse",
+    "Inventory": {
+      "Purple": 2,
+      "Pink": 3,
+      "Cappuccino": 4,
+      "Orange": 3
+    }
+  },
+  {
+    "Product ID": 31,
+    "File Name": "drawstring_bag.jpg",
+    "Product Name": "Drawstring Bag",
+    "Price (RM)": 35,
+    "Description": "Practical and cute crochet drawstring bag with a sheep design, great for light shopping or as a gift bag.",
+    "Category": "Bag",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 32,
+    "File Name": "double_colour_bucket_hat.jpg",
+    "Product Name": "Double Colour Bucket Hat",
+    "Price (RM)": 32,
+    "Description": "Vibrant two-tone crochet bucket hat, featuring a creative design that stands out in any crowd.",
+    "Category": "Hat",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 33,
+    "File Name": "pencil_cases.jpg",
+    "Product Name": "Pencil Cases",
+    "Price (RM)": 20,
+    "Description": "Colorful crochet pencil cases to keep your stationery organized in a fun and handmade way.",
+    "Category": "Stationery",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 34,
+    "File Name": "macaron_purses.jpg",
+    "Product Name": "Macaron Purses",
+    "Price (RM)": 25,
+    "Description": "Sweet macaron-inspired crochet purses in a rainbow of colors, as delightful as the real treat.",
+    "Colour Variants": ["Pink", "Brown", "Yellow", "Orange", "Purple", "Blue", "Green"],
+    "Category": "Purse",
+    "Inventory": {
+      "Pink": 3,
+      "Brown": 3,
+      "Yellow": 3,
+      "Orange": 3,
+      "Purple": 3,
+      "Blue": 3,
+      "Green": 3
+    }
+  },
+  {
+    "Product ID": 35,
+    "File Name": "cosmetics_pouch.jpg",
+    "Product Name": "Cosmetics Pouch",
+    "Price (RM)": 20,
+    "Description": "Soft and spacious crochet pouch designed to safely hold your makeup and skincare essentials.",
+    "Colour Variants": ["Pink", "Brown", "Yellow", "Green", "Blue"],
+    "Category": "Pouch",
+    "Inventory": {
+      "Pink": 4,
+      "Brown": 4,
+      "Yellow": 4,
+      "Green": 4,
+      "Blue": 4
+    }
+  },
+  {
+    "Product ID": 36,
+    "File Name": "bee_bag_crochet.jpg",
+    "Product Name": "Bee Bag",
+    "Price (RM)": 20,
+    "Description": "Adorable bee-themed crochet bag with yellow and black stripes, perfect for spring and summer outings.",
+    "Category": "Bag",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 37,
+    "File Name": "diffuser_holder.jpg",
+    "Product Name": "Diffuser Holder",
+    "Price (RM)": 20,
+    "Description": "Decorative crochet holder for reed diffusers, adding a cozy handmade touch to your home fragrance setup.",
+    "Category": "Home Accessory",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 38,
+    "File Name": "crochet_bag.jpg",
+    "Product Name": "Crochet Bag",
+    "Price (RM)": 20,
+    "Description": "Simple yet stylish crochet tote bag, versatile enough for daily use or as a beach carryall.",
+    "Category": "Bag",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 39,
+    "File Name": "seventeen_crochet.jpg",
+    "Product Name": "Seventeen Crochet",
+    "Price (RM)": 30,
+    "Description": "Crochet collectible inspired by the K-pop group Seventeen, a must-have for fans and collectors.",
+    "Category": "Collectible",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 40,
+    "File Name": "cupholder.jpg",
+    "Product Name": "Blue Checkered Cup Holder",
+    "Price (RM)": 20,
+    "Description": "Elegant blue checkered crochet cup holder, keeping your drinks secure while adding a touch of handmade style.",
+    "Colour Variants": ["Blue"],
+    "Category": "Home Accessory",
+    "Inventory": 8
+  },
+  {
+    "Product ID": 41,
+    "File Name": "red_wine_bag.jpg",
+    "Product Name": "Red Wine Bag",
+    "Price (RM)": 30,
+    "Description": "Sturdy crochet bag designed to carry a bottle of wine, making it a perfect gift bag for special occasions.",
+    "Category": "Bag",
+    "Inventory": 3
+  },
+  {
+    "Product ID": 42,
+    "File Name": "floral_bottleholder.jpg",
+    "Product Name": "Floral Bottle Holder",
+    "Price (RM)": 25,
+    "Description": "Beautiful crochet bottle holder with floral patterns, ideal for keeping your beverages cool and stylish.",
+    "Colour Variants": ["Dark Blue", "Light Blue", "Black", "White", "Light Brown"],
+    "Category": "Home Accessory",
+    "Inventory": {
+      "Dark Blue": 2,
+      "Light Blue": 2,
+      "Black": 2,
+      "White": 2,
+      "Light Brown": 2
+    }
+  },
+  {
+    "Product ID": 43,
+    "File Name": "sausage_monster.jpg",
+    "Product Name": "Sausage Monster",
+    "Price (RM)": 23,
+    "Description": "Quirky and fun crochet sausage monster, a playful friend for kids or a humorous desk toy.",
+    "Category": "Crochet Toy",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 44,
+    "File Name": "baby_dino.jpg",
+    "Product Name": "Baby Dino",
+    "Price (RM)": 18,
+    "Description": "Cute crochet baby dinosaur with friendly features, perfect for dinosaur lovers and as a nursery decor.",
+    "Category": "Crochet Toy",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 45,
+    "File Name": "froggy_cake.jpg",
+    "Product Name": "Froggy Cake",
+    "Price (RM)": 35,
+    "Description": "Whimsical crochet frog sitting on a cake, a unique decorative piece for birthdays or frog enthusiasts.",
+    "Category": "Crochet Toy",
+    "Inventory": 3
+  },
+  {
+    "Product ID": 46,
+    "File Name": "sling_bag_handphone_bag.jpg",
+    "Product Name": "Sling Bag Handphone Bag",
+    "Price (RM)": 32,
+    "Description": "Compact crochet sling bag with a dedicated phone pocket, combining convenience with casual style.",
+    "Colour Variants": ["Coffee", "Grey"],
+    "Category": "Bag",
+    "Inventory": {
+      "Coffee": 5,
+      "Grey": 4
+    }
+  },
+  {
+    "Product ID": 47,
+    "File Name": "mini_handbag_coin_holder.jpg",
+    "Product Name": "Mini Handbag Coin Holder",
+    "Price (RM)": 23,
+    "Description": "Tiny crochet handbag with coin compartment, a charming accessory for keeping small items organized.",
+    "Colour Variants": ["Strawberry Pink", "Cream White"],
+    "Category": "Purse",
+    "Inventory": {
+      "Strawberry Pink": 6,
+      "Cream White": 5
+    }
+  },
+  {
+    "Product ID": 48,
+    "File Name": "green_casual_slingbag.jpg",
+    "Product Name": "Green Casual Slingbag",
+    "Price (RM)": 30,
+    "Description": "Casual green crochet slingbag with enough room for a phone and essentials, perfect for everyday wear.",
+    "Colour Variants": ["Green"],
+    "Category": "Bag",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 49,
+    "File Name": "flower_bag.jpg",
+    "Product Name": "Flower Bag",
+    "Price (RM)": 25,
+    "Description": "Crochet bag adorned with floral patterns, bringing a touch of nature and elegance to your outfit.",
+    "Category": "Bag",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 50,
+    "File Name": "Bucket_hat.jpg",
+    "Product Name": "Unisex Crochet Bucket Hat",
+    "Price (RM)": 30,
+    "Description": "Handmade crochet bucket hat in versatile colors, designed to suit any style and protect from the sun.",
+    "Colour Variants": ["Beige", "Light Brown", "Dark Brown", "Smoky Blue", "Smoky Grey"],
+    "Category": "Hat",
+    "Inventory": {
+      "Beige": 3,
+      "Light Brown": 3,
+      "Dark Brown": 3,
+      "Smoky Blue": 3,
+      "Smoky Grey": 3
+    }
+  },
+  {
+    "Product ID": 51,
+    "File Name": "Coinholder_purse.jpg",
+    "Product Name": "Macaron Coinholder Purse",
+    "Price (RM)": 13,
+    "Description": "Sweet macaron-shaped coin purse, combining cuteness with functionality for your loose change.",
+    "Colour Variants": ["Coffee", "Beige", "Yellow"],
+    "Category": "Purse",
+    "Inventory": {
+      "Coffee": 5,
+      "Beige": 5,
+      "Yellow": 5
+    }
+  },
+  {
+    "Product ID": 52,
+    "File Name": "sling_bag.jpg",
+    "Product Name": "Sling Bag",
+    "Price (RM)": 35,
+    "Description": "Comfortable crochet sling bag with adjustable strap, perfect for hands-free carrying on the go.",
+    "Colour Variants": ["Coffee", "Smoky Blue", "Beige"],
+    "Category": "Bag",
+    "Inventory": {
+      "Coffee": 4,
+      "Smoky Blue": 4,
+      "Beige": 4
+    }
+  },
+  {
+    "Product ID": 53,
+    "File Name": "coffee_casual_handbag.jpg",
+    "Product Name": "Coffee Casual Handbag",
+    "Price (RM)": 38,
+    "Description": "Stylish handbag made from straw rope and crochet, offering a natural and chic look for casual outings.",
+    "Colour Variants": ["Coffee"],
+    "Category": "Bag",
+    "Inventory": 6
+  },
+  {
+    "Product ID": 54,
+    "File Name": "brown_bear_purse.jpg",
+    "Product Name": "Brown Bear Purse",
+    "Price (RM)": 18,
+    "Description": "Cuddly brown bear crochet purse, a compact and adorable way to carry coins and cards.",
+    "Colour Variants": ["Brown"],
+    "Category": "Purse",
+    "Inventory": 7
+  },
+  {
+    "Product ID": 55,
+    "File Name": "Pink_sling_bag.jpg",
+    "Product Name": "Pink Sling Bag",
+    "Price (RM)": 35,
+    "Description": "Pretty pink crochet sling bag, feminine and practical for carrying your daily essentials.",
+    "Colour Variants": ["Pink"],
+    "Category": "Bag",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 56,
+    "File Name": "blue_pet_collar.jpg",
+    "Product Name": "Blue Pet Collar",
+    "Price (RM)": 25,
+    "Description": "Soft and stylish crochet collar for pets, ensuring comfort and a handmade look for your furry friend.",
+    "Colour Variants": ["Blue"],
+    "Category": "Pet Accessory",
+    "Inventory": 8
+  },
+  {
+    "Product ID": 57,
+    "File Name": "Lunar_pet_collar.jpg",
+    "Product Name": "Lunar New Year Pet Collar",
+    "Price (RM)": 25,
+    "Description": "Festive crochet pet collar with Lunar New Year motifs, celebrating the season with your pet in style.",
+    "Category": "Pet Accessory",
+    "Inventory": 4
+  },
+  {
+    "Product ID": 58,
+    "File Name": "cny_pet_collar.jpg",
+    "Product Name": "Chinese New Year Pet Collar",
+    "Price (RM)": 25,
+    "Description": "Traditional Chinese New Year-themed crochet pet collar, adding luck and charm to your pet’s outfit.",
+    "Category": "Pet Accessory",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 59,
+    "File Name": "sling_bag_purse.jpg",
+    "Product Name": "Checkered Sling Bag + Purse Set",
+    "Price (RM)": 25,
+    "Description": "Coordinated crochet set featuring a checkered sling bag and matching purse, perfect for a complete look.",
+    "Category": "Bag & Purse Set",
+    "Inventory": 3
+  },
+  {
+    "Product ID": 60,
+    "File Name": "yellow_beige_sling_bag.jpg",
+    "Product Name": "Yellow/Beige Sling Bag",
+    "Price (RM)": 35,
+    "Description": "Bright and neutral crochet sling bag in yellow and beige, versatile for various outfits and occasions.",
+    "Colour Variants": ["Yellow", "Beige"],
+    "Category": "Bag",
+    "Inventory": {
+      "Yellow": 6,
+      "Beige": 5
+    }
+  },
+  {
+    "Product ID": 61,
+    "File Name": "cup_coaster.jpg",
+    "Product Name": "Christmas Snowflakes Cup Coaster",
+    "Price (RM)": 5.5,
+    "Description": "Festive crochet cup coasters with snowflake designs, adding holiday cheer to your table setting.",
+    "Category": "Home Accessory",
+    "Inventory": 10
+  },
+  {
+    "Product ID": 62,
+    "File Name": "carrings.jpg",
+    "Product Name": "Crochet Earrings",
+    "Price (RM)": 15,
+    "Description": "Lightweight crochet earrings with anti-sensitive hooks, offering a unique and comfortable jewelry option.",
+    "Colour Variants": ["Pink (glitter)", "White (glitter)", "Grey (glitter)"],
+    "Category": "Jewelry",
+    "Inventory": {
+      "Pink (glitter)": 8,
+      "White (glitter)": 8,
+      "Grey (glitter)": 8
+    }
+  },
+  {
+    "Product ID": 63,
+    "File Name": "cup_coaster_2.jpg",
+    "Product Name": "Christmas Cup Coaster",
+    "Price (RM)": 6,
+    "Description": "Classic red and white crochet Christmas cup coasters, perfect for holiday gatherings and festive decor.",
+    "Colour Variants": ["Red", "White"],
+    "Category": "Home Accessory",
+    "Inventory": {
+      "Red": 9,
+      "White": 9
+    }
+  },
+  {
+    "Product ID": 64,
+    "File Name": "casual_purse.jpg",
+    "Product Name": "Casual Purse",
+    "Price (RM)": 15,
+    "Description": "Simple and stylish crochet purse in soft colors, ideal for everyday use and light carrying.",
+    "Colour Variants": ["Light Blue", "Light Brown", "Peach"],
+    "Category": "Purse",
+    "Inventory": {
+      "Light Blue": 7,
+      "Light Brown": 7,
+      "Peach": 7
+    }
+  },
+  {
+    "Product ID": 65,
+    "File Name": "handbag.jpg",
+    "Product Name": "Fashion Handbag",
+    "Price (RM)": 40,
+    "Description": "Elegant crochet handbag in neutral tones, combining fashion with handmade craftsmanship for a chic look.",
+    "Colour Variants": ["Light Grey", "Light Brown"],
+    "Category": "Bag",
+    "Inventory": {
+      "Light Grey": 4,
+      "Light Brown": 3
+    }
+  },
+  {
+    "Product ID": 66,
+    "File Name": "hairband.jpg",
+    "Product Name": "Crochet Hairband",
+    "Price (RM)": 8,
+    "Description": "Stretchable crochet hairband with glitter accents, adding a touch of sparkle and style to your hair.",
+    "Colour Variants": ["Grey (glitter)", "Pink (glitter)", "White (glitter)", "Sweet Pink (plain)"],
+    "Category": "Accessory",
+    "Inventory": {
+      "Grey (glitter)": 6,
+      "Pink (glitter)": 6,
+      "White (glitter)": 6,
+      "Sweet Pink (plain)": 6
+    }
+  },
+  {
+    "Product ID": 67,
+    "File Name": "Animal_paws_cup_coaster.jpg",
+    "Product Name": "Animal Paws Cup Coaster",
+    "Price (RM)": 8,
+    "Description": "Playful crochet cup coasters shaped like animal paws, a fun addition to any table or desk.",
+    "Colour Variants": ["Light Orange", "Red", "Green", "Dark Brown", "Orange", "Purple", "Pink"],
+    "Category": "Home Accessory",
+    "Inventory": {
+      "Light Orange": 5,
+      "Red": 5,
+      "Green": 5,
+      "Dark Brown": 5,
+      "Orange": 5,
+      "Purple": 5,
+      "Pink": 5
+    }
+  },
+  {
+    "Product ID": 68,
+    "File Name": "casual_shoulder_bag.jpg",
+    "Product Name": "Casual Shoulder Bag",
+    "Price (RM)": 42,
+    "Description": "Spacious crochet shoulder bag with a relaxed design, perfect for daily errands and casual outings.",
+    "Category": "Bag",
+    "Inventory": 5
+  },
+  {
+    "Product ID": 69,
+    "File Name": "flower_sling_bag_shoulder_bag.jpg",
+    "Product Name": "Flower Sling/Shoulder Bag",
+    "Price (RM)": 18,
+    "Description": "Versatile crochet bag that can be worn as a sling or shoulder bag, adorned with floral details.",
+    "Colour Variants": ["Coral", "Peach", "Light Purple", "Dark Purple"],
+    "Category": "Bag",
+    "Inventory": {
+      "Coral": 4,
+      "Peach": 4,
+      "Light Purple": 4,
+      "Dark Purple": 4
+    }
+  },
+  {
+    "Product ID": 70,
+    "File Name": "sling_bag_shoulder_bag.jpg",
+    "Product Name": "Sling/Shoulder Bag",
+    "Price (RM)": 25,
+    "Description": "Convertible crochet bag offering two wearing styles, in modern and wearable colors.",
+    "Colour Variants": ["Grey", "Coral"],
+    "Category": "Bag",
+    "Inventory": {
+      "Grey": 6,
+      "Coral": 5
+    }
+  },
+  {
+    "Product ID": 71,
+    "File Name": "Casual_sling_bag.jpg",
+    "Product Name": "Casual Sling Bag",
+    "Price (RM)": 28,
+    "Description": "Easy-going crochet sling bag in warm tones, perfect for a relaxed and stylish look.",
+    "Colour Variants": ["Beige", "Merigold"],
+    "Category": "Bag",
+    "Inventory": {
+      "Beige": 7,
+      "Merigold": 4
+    }
+  },
+  {
+    "Product ID": 72,
+    "File Name": "beige_casual_sling_bag.jpg",
+    "Product Name": "Beige Casual Sling Bag",
+    "Price (RM)": 25,
+    "Description": "Neutral beige crochet sling bag, a timeless and practical accessory for any wardrobe.",
+    "Colour Variants": ["Beige"],
+    "Category": "Bag",
+    "Inventory": 8
+  },
+  {
+    "Product ID": 73,
+    "File Name": "taco_french_fries.jpg",
+    "Product Name": "Taco & French Fries Keychain",
+    "Price (RM)": 18,
+    "Description": "Fun and food-themed crochet keychains featuring a taco and French fries, adding a playful touch to your keys.",
+    "Category": "Keychain",
+    "Inventory": 9
   }
 ]
-
