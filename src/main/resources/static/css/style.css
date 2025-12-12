@@ -387,6 +387,8 @@ nav {
     /* Ensure card content aligns properly */
     display: flex;
     flex-direction: column;
+    max-width: 280px; /* Stops the card from getting too big */
+    width: 100%; /* Ensures it fills space up to 280px */
 }
 
 .product-card:hover {
