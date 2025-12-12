@@ -1,89 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="auth-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Handy Craft</title>
+    <title>Handy Craft - Create an Account</title>
+
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
-    <script defer src="js/auth.js"></script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            padding-top: 50px;
+        }
+        .modal-content {
+            background-color: var(--color-white);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .modal-body {
+            overflow-y: auto;
+            padding-right: 15px;
+            line-height: 1.8;
+        }
+    </style>
+
 </head>
 <body class="auth-page">
-
-
 <div class="page-wrapper">
-
-
-    <header class="main-header" style="box-shadow: none; background: none;">
-        <nav class="container" style="justify-content: flex-start; padding: 10px 0;">
+    <header class="main-header">
+        <nav class="container">
             <div class="logo">
                 <a href="index.html" class="logo-link-with-text">
                     <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
                     <span class="site-title">Handy Craft</span>
                 </a>
             </div>
-            <ul class="nav-links">
-                <li><a href="products.html">Back to Products</a></li>
-            </ul>
+            <a href="index.html" class="back-button">
+                <span>&leftarrow;</span> Back to Home
+            </a>
         </nav>
     </header>
 
-
-    <main class="container" style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <main class="container">
         <div class="auth-container">
-            <h2>Create an Account</h2>
-            <form id="signup-form" class="auth-form">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required minlength="3">
+            <h2>Create Your Account</h2>
 
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required minlength="8">
-
-
-                <label for="confirm-password">Confirm Password:</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
-
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms-agreement" name="terms-agreement" required>
-                    <label for="terms-agreement">
-                        I agree to the
-                        <a href="useragreement.html" target="_blank">User Agreement</a>,
-                        <a href="terms.html" target="_blank">Terms of Service</a>,
-                        and
-                        <a href="privacy.html" target="_blank">Privacy Policy</a>.
-                    </label>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-                <button type="submit" class="button primary full-width">Register</button>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
 
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
 
-                <p class="auth-switch" style="text-align: center; margin-top: 15px;">
-                    Already have an account? <a href="signin.html">Sign In here</a>
-                </p>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agree-terms" name="agree-terms" required>
+                    <label for="agree-terms">I agree to the <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">User Agreement, Terms of Service</a>, and <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.</label>
+                </div>
+
+                <button type="submit" class="button primary full-width large-button">Register</button>
             </form>
+
+            <p style="margin-top: 20px;">
+                Already have an account? <a href="signin.html">Sign In here</a>
+            </p>
         </div>
     </main>
 
-
-    <footer class="main-footer policy-bar">
+    <footer class="main-footer">
         <div class="footer-links container">
             <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-            <div class="policy-links">
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
+            <div class="policy-buttons">
+                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
             </div>
         </div>
     </footer>
-
-
 </div>
+
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
+
+<script defer src="js/auth.js"></script>
+
 </body>
 </html>
-

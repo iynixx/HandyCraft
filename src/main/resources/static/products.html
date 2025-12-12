@@ -5,36 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Products - Handy Craft</title>
 
-
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
-
 
     <script defer src="js/products.js"></script>
     <script defer src="js/auth.js"></script>
 
-
     <script>
+        // --- TEMPORARY FIX: Authentication and Search Initialization ---
+        // This is a duplicate of the logic in index.html, used here to guarantee
+        // the Sign In/Sign Up links load immediately on the Products page,
+        // compensating for any timing issues with products.js and auth.js.
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authLinksContainer = document.getElementById('auth-links');
             const username = localStorage.getItem('username');
 
-
-            if (isLoggedIn) {
+            if (isLoggedIn && authLinksContainer) {
+                // User is logged in: show username and logout button
                 authLinksContainer.innerHTML = `
                    <li class="user-greeting">Welcome, <strong>${username}</strong></li>
                    <li><button id="logout-button" class="button primary">Logout</button></li>
                `;
-            } else {
+            } else if (authLinksContainer) {
+                // User is logged out: show Sign In and Sign Up links
                 authLinksContainer.innerHTML = `
                    <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html">Sign Up</a></li>
+                   <li><a href="signup.html" class="button primary">Sign Up</a></li>
                `;
             }
 
+            // Re-bind logout listener if present (the button might not exist if auth.js loads later)
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton && window.handleLogout) {
+                logoutButton.addEventListener('click', window.handleLogout);
+            }
 
-            // --- Search function listener (KEPT) ---
+            // Search function listener
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
                 searchForm.addEventListener('submit', (event) => {
@@ -45,15 +52,13 @@
                     }
                 });
             }
-
-            // NOTE: The CATEGORY DROPDOWN LISTENER HAS BEEN REMOVED FROM HERE
-            //       because it is now handled dynamically in products.js (in populateCategoryFilter).
         });
+        // --- END TEMPORARY FIX ---
 
-
-        // Ensure viewCart is globally accessible if it is defined in another file
+        // Ensure viewCart is globally accessible
         function viewCart() {
             console.log("View Cart function triggered.");
+            alert("View Cart button clicked. Cart modal/page logic needs to be implemented in products.js.");
         }
     </script>
 </head>
@@ -78,7 +83,6 @@
                     <button type="submit" class="search-button">🔍</button>
                 </form>
             </li>
-
 
             <li><a href="#" onclick="event.preventDefault(); viewCart();">
                 <span role="img" aria-label="shopping cart">🛒</span> View Cart
@@ -117,14 +121,27 @@
 </main>
 
 
-<footer class="main-footer policy-bar">
+<footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-        <div class="policy-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
+        <div class="policy-buttons">
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
+
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

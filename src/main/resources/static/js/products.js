@@ -4,8 +4,9 @@ const CART_STORAGE_KEY = 'handyCraftCart';
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Start the process: fetch data and set up filters/rendering
     fetchProducts();
-    console.log("Cart logic initialized.");
+    console.log("Product and Cart logic initialized.");
 });
 
 // --- Authentication and Security ---
@@ -13,9 +14,11 @@ function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     if (!isLoggedIn) {
         alert("You must be signed in to access your cart or add items. Please sign in first.");
+        // Redirect is handled here, returning true signifies redirection happened
         window.location.href = 'signin.html';
         return true;
     }
+    // Return false signifies the user is logged in
     return false;
 }
 
@@ -25,12 +28,13 @@ function truncateText(text, limit = 55) {
     return text.length > limit ? text.substring(0, limit) + "..." : text;
 }
 
-// --- API Fetching ---
+// --- API Fetching, Filtering, and Rendering ---
 function fetchProducts() {
     fetch(API_PRODUCTS_URL)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to fetch products: ' + response.statusText);
+                // Throw an error with specific status details
+                throw new Error(`Failed to fetch products. Server status: ${response.status} ${response.statusText}`);
             }
             return response.json();
         })
@@ -49,7 +53,9 @@ function fetchProducts() {
                 }));
 
                 const params = new URLSearchParams(window.location.search);
+                // categoryFilter is used for filtering when coming from categories.html or dropdown
                 const categoryFilter = params.get('category');
+                // searchQuery is used for filtering when coming from the search bar
                 const searchQuery = params.get('search');
 
                 let filteredProducts = normalizedProducts;
@@ -57,12 +63,15 @@ function fetchProducts() {
 
                 // Category filtering
                 if (categoryFilter && categoryFilter !== 'all') {
+                    // Normalize filter value (e.g., 'crochet toy' -> 'crochettoy')
+                    const normalizedFilter = categoryFilter.toLowerCase().replace(/\s/g, '');
+
                     filteredProducts = normalizedProducts.filter(product =>
                         product.category &&
-                        product.category.toLowerCase().replace(/\s/g, '')
-                            .includes(categoryFilter.toLowerCase())
+                        product.category.toLowerCase().replace(/\s/g, '').includes(normalizedFilter)
                     );
 
+                    // Determine the title based on the filter
                     const categoryName = filteredProducts.length > 0 ?
                         filteredProducts[0].category :
                         categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1);
@@ -97,8 +106,9 @@ function fetchProducts() {
         })
         .catch(error => {
             console.error("Error loading products:", error);
+            // Display a user-friendly error message on the page
             document.getElementById('product-grid').innerHTML =
-                `<p class="error-message">Could not connect to the server. Please check the Java backend is running.</p>`;
+                `<p class="error-message">Could not connect to the server or failed to retrieve products. Details: ${error.message}</p>`;
         });
 }
 
@@ -113,6 +123,7 @@ function populateCategoryFilter(products, currentFilter) {
     const filterDropdown = document.getElementById('category-filter');
     if (!filterDropdown) return;
 
+    // Get unique categories and sort them
     const categories = [...new Set(products.map(p => p.category))].sort();
 
     filterDropdown.innerHTML = '<option value="all">All Products</option>';
@@ -120,11 +131,13 @@ function populateCategoryFilter(products, currentFilter) {
     categories.forEach(category => {
         if (category) {
             const option = document.createElement('option');
+            // Create a slug for the URL parameter (e.g., "Crochet Toy" -> "crochettoy")
             const slug = category.toLowerCase().replace(/\s/g, '');
 
             option.value = slug;
             option.textContent = category;
 
+            // Select the option if it matches the current URL filter
             if (currentFilter && slug === currentFilter.toLowerCase()) {
                 option.selected = true;
             }
@@ -133,8 +146,10 @@ function populateCategoryFilter(products, currentFilter) {
         }
     });
 
+    // Add event listener to redirect when the filter changes
     filterDropdown.addEventListener('change', (event) => {
         const selectedValue = event.target.value;
+        // Redirect to products.html with the new category filter
         window.location.href = `products.html?category=${selectedValue}`;
     });
 }
@@ -148,7 +163,7 @@ function renderProducts(products) {
         const safePrice = product.price != null ? product.price : 0;
         const formattedPrice = parseFloat(safePrice).toFixed(2);
 
-        // Use normalized 'imageUrl' from the old logic
+        // Construct image path
         const finalImage = product.imageUrl
             ? `/images/products/${product.imageUrl}`
             : "/images/placeholder.jpg";
@@ -156,7 +171,7 @@ function renderProducts(products) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
 
-        // NEW HTML STRUCTURE
+        // HTML structure for a single product card
         productCard.innerHTML = `
             <div class="product-image-wrapper">
                 <img src="${finalImage}" alt="${product.name}" class="product-image"/>
@@ -192,7 +207,7 @@ function attachAddToCartListeners() {
     const buttons = document.querySelectorAll('.add-to-cart');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Keep the Login Check from the old code
+            // Check login status before proceeding
             if (checkLoginStatus()) return;
 
             const productId = btn.dataset.productId;
@@ -205,13 +220,16 @@ function attachAddToCartListeners() {
 }
 
 function addToCart(productId, productName, productPrice) {
+    // Retrieve cart or initialize as empty array
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
 
+    // Check if item already exists in cart
     const existingItem = cart.find(item => item.id === productId);
 
     if (existingItem) {
         existingItem.quantity++;
     } else {
+        // Add new item to cart
         cart.push({
             id: productId,
             name: productName,
@@ -220,6 +238,7 @@ function addToCart(productId, productName, productPrice) {
         });
     }
 
+    // Save updated cart back to local storage
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 
     showCartConfirmation(productName);
@@ -231,6 +250,7 @@ function showCartConfirmation(productName) {
 
 /**
  * Global function linked to the header button: onclick="viewCart()"
+ * NOTE: This function is defined globally using 'window.viewCart' so the HTML can find it.
  */
 window.viewCart = function() {
     // 🛑 LOGIN CHECK 🛑

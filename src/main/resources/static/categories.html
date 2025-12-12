@@ -5,41 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop By Category - Handy Craft</title>
 
-
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
-
     <script defer src="js/auth.js"></script>
+
     <script>
-        // Define a function for viewCart to prevent errors when clicking the cart icon,
-        // as products.js (which defines the full logic) is not loaded on this page.
-        function viewCart() {
-            // Redirect to the products page where the full cart logic is loaded
-            alert("Redirecting to Products page to view cart details.");
-            window.location.href = "products.html";
-        }
-
-
+        // --- TEMPORARY FIX: Authentication and Search Initialization ---
+        // This is necessary to guarantee the Sign In/Sign Up links load immediately
+        // on the Categories page, mirroring the index.html behavior.
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authLinksContainer = document.getElementById('auth-links');
             const username = localStorage.getItem('username');
 
-
-            if (isLoggedIn) {
+            if (isLoggedIn && authLinksContainer) {
+                // User is logged in: show username and logout button
                 authLinksContainer.innerHTML = `
                    <li class="user-greeting">Welcome, <strong>${username}</strong></li>
                    <li><button id="logout-button" class="button primary">Logout</button></li>
                `;
-            } else {
+            } else if (authLinksContainer) {
+                // User is logged out: show Sign In and Sign Up links
                 authLinksContainer.innerHTML = `
                    <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html">Sign Up</a></li>
+                   <li><a href="signup.html" class="button primary">Sign Up</a></li>
                `;
             }
+
+            // Re-bind logout listener if present (uses handleLogout from auth.js)
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton && window.handleLogout) {
+                logoutButton.addEventListener('click', window.handleLogout);
+            }
+
+            // Search function listener
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
         });
+        // --- END TEMPORARY FIX ---
+
+        // Define a function for viewCart to prevent errors when clicking the cart icon.
+        function viewCart() {
+            alert("Redirecting to Products page to view cart details.");
+            window.location.href = "products.html";
+        }
+
+        // NOTE: Keeping the inline styles as requested
     </script>
+
+    <style>
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .category-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--color-shadow);
+            text-align: center;
+        }
+        .category-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+        .logo-link-with-text {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .site-title {
+            color: var(--color-text);
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
 <header class="main-header">
@@ -55,14 +107,21 @@
             <li class="active"><a href="categories.html">Categories</a></li>
             <li><a href="aboutus.html">About Us</a></li>
 
+            <li class="search-container">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-input" placeholder="Search products..." required>
+                    <button type="submit" class="search-button">🔍</button>
+                </form>
+            </li>
 
             <li><a href="#" onclick="event.preventDefault(); viewCart();">
                 <span role="img" aria-label="shopping cart">🛒</span> View Cart
             </a></li>
 
-
-            <ul id="auth-links" class="nav-links">
-            </ul>
+            <li class="auth-links-container">
+                <ul id="auth-links" class="nav-links">
+                </ul>
+            </li>
         </ul>
     </nav>
 </header>
@@ -77,49 +136,49 @@
         <div class="category-card">
             <h3>Crochet Bags</h3>
             <p>Spacious shoulder bags, mini purses, and casual sling bags for all occasions.</p>
-            <a href="products.html?category=bag" class="button secondary">Shop Bags</a>
+            <a href="products.html?category=Bag" class="button secondary">Shop Bags</a>
         </div>
 
         <div class="category-card">
             <h3>Crochet Toys & Plushies</h3>
             <p>Adorable Amigurumi, character-based crochet toys, and decorative keychains.</p>
-            <a href="products.html?category=crochettoy" class="button secondary">Shop Toys & Plushies</a>
+            <a href="products.html?category=Crochet Toy" class="button secondary">Shop Toys & Plushies</a>
         </div>
 
         <div class="category-card">
             <h3>Crochet Decoration</h3>
             <p>Unique items like desk accents, novelty decorations, and whimsical pieces for any room.</p>
-            <a href="products.html?category=crochetdecoration" class="button secondary">Shop Decoration</a>
+            <a href="products.html?category=Crochet Decoration" class="button secondary">Shop Decoration</a>
         </div>
 
         <div class="category-card">
             <h3>Home Accessories</h3>
             <p>Practical and charming handmade items for daily use, including cup coasters and mats.</p>
-            <a href="products.html?category=homeaccessory" class="button secondary">Shop Home</a>
+            <a href="products.html?category=Home Accessory" class="button secondary">Shop Home</a>
         </div>
 
         <div class="category-card">
             <h3>Wearable Accessories</h3>
             <p>Hats, hair accessories, and fashionable items for a handmade touch to your style.</p>
-            <a href="products.html?category=accessory" class="button secondary">Shop Accessories</a>
+            <a href="products.html?category=Accessory" class="button secondary">Shop Accessories</a>
         </div>
 
         <div class="category-card">
             <h3>Concert & Utility</h3>
             <p>Custom light stick sleeves and other specialized handmade functional items.</p>
-            <a href="products.html?category=concertaccessory" class="button secondary">Shop Utility</a>
+            <a href="products.html?category=Concert Accessory" class="button secondary">Shop Utility</a>
         </div>
 
         <div class="category-card">
             <h3>Crochet Sets</h3>
             <p>Matching items, couples sets, or themed collections perfect for gifting.</p>
-            <a href="products.html?category=crochetset" class="button secondary">Shop Sets</a>
+            <a href="products.html?category=Crochet Set" class="button secondary">Shop Sets</a>
         </div>
 
         <div class="category-card">
             <h3>Crochet Toy & Utility</h3>
             <p>Items designed to be both decorative and functional, like themed dust collectors.</p>
-            <a href="products.html?category=crochettoyunutility" class="button secondary">Shop Toy & Utility</a>
+            <a href="products.html?category=Crochet Toy & Utility" class="button secondary">Shop Toy & Utility</a>
         </div>
 
         <div class="category-card">
@@ -135,44 +194,25 @@
 <footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-        <div>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
+        <div class="policy-buttons">
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
 
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
 
-<style>
-    /* NOTE: It is best practice to move this styling into css/style.css */
-    .category-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 30px;
-        margin-top: 30px;
-    }
-    .category-card {
-        background: #fff;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px var(--color-shadow);
-        text-align: center;
-    }
-    .category-card h3 {
-        color: var(--color-primary);
-        margin-bottom: 10px;
-    }
-    .logo-link-with-text {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-    }
-    .site-title {
-        color: var(--color-text);
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-left: 10px;
-    }
-</style>
+
 </body>
 </html>
