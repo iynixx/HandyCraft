@@ -1,0 +1,9 @@
+[
+  {
+    "userId": "852d1d00-b9ae-478b-bbfa-b8a3a003a882",
+    "username": "abc",
+    "email": "abc@gmail.com",
+    "passwordHash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "user"
+  }
+]
