@@ -6,7 +6,7 @@
     --color-text: #333333;       /* Dark text */
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-border: #E0E0E0;
-    --color-policy-bar: #333333; /* Dark Footer/Policy Bar (Aesthetic Request) */
+    --color-policy-bar: #333333; /* Dark Footer/Policy Bar */
     --color-text-light: #FFF;    /* Text color for dark footer */
 }
 
@@ -21,7 +21,7 @@ html, body {
     height: 100%;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--color-background); /* Default background for ALL pages */
+    background-color: var(--color-background); /* Default background */
     color: var(--color-text);
     line-height: 1.6;
 }
@@ -44,14 +44,12 @@ main.container, .hero-main {
 
 /* --- Index Page Specific Styles (Background Image) --- */
 .home-page {
-    /* Apply background image only to index.html body */
     background-image: url('../images/hero.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
-/* Give content containers slight transparency for contrast on index page */
 .home-page .main-header,
 .home-page .hero-content {
     background-color: rgba(255, 255, 255, 0.9);
@@ -122,21 +120,21 @@ nav {
 
 /* --- Logo and Text Alignment --- */
 .logo-link-with-text {
-    display: flex; /* Use flexbox to align image and text */
-    align-items: center; /* Vertically center the logo and text */
-    text-decoration: none !important; /* Ensure the link underline is removed */
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
 }
 
 .logo-link-with-text img {
-    height: 40px; /* Kept for consistency */
+    height: 40px;
     vertical-align: middle;
-    margin-right: 8px; /* Small space between logo image and text */
+    margin-right: 8px;
 }
 
 .site-title {
-    font-size: 1.2em; /* Adjusted size, similar height to the 40px image */
+    font-size: 1.2em;
     font-weight: 700;
-    color: var(--color-text); /* Use the main text color */
+    color: var(--color-text);
 }
 
 .nav-links {
@@ -199,11 +197,9 @@ nav {
     margin-top: 0;
     text-align: center;
     background-color: transparent;
-
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;     /* Center vertically */
-
+    justify-content: center;
+    align-items: center;
     min-height: calc(100vh - 60px - 80px);
 }
 
@@ -227,13 +223,8 @@ nav {
     margin-bottom: 30px;
 }
 
-.product-grid-placeholder {
-    padding: 40px 0;
-}
-
 /* --- Product Page Filter Dropdown Styles --- */
 .product-main {
-    /* Ensure the product main area adapts its layout */
     display: flex;
     flex-direction: column;
 }
@@ -257,17 +248,14 @@ nav {
 }
 
 .category-select {
-    /* Hide default appearance */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-
-    /* Apply button-like styling using pastel colors */
     background-color: var(--color-white);
     border: 2px solid var(--color-primary);
     color: var(--color-text);
-    padding: 10px 40px 10px 15px; /* Extra padding on right for the custom arrow */
-    border-radius: 25px; /* Matches button styling */
+    padding: 10px 40px 10px 15px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1em;
     font-weight: 500;
@@ -275,55 +263,24 @@ nav {
 }
 
 .category-select:hover {
-    background-color: var(--color-secondary); /* Pastel yellow hover effect */
+    background-color: var(--color-secondary);
 }
 
-/* Custom arrow for the dropdown */
 .select-arrow {
     position: absolute;
     top: 50%;
     right: 15px;
     transform: translateY(-50%);
-    pointer-events: none; /* Allows clicks to pass through to the select element */
-
-    /* Create the down arrow shape */
+    pointer-events: none;
     width: 0;
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid var(--color-primary); /* Pink arrow color */
-}
-
-/* --- Footer --- */
-.main-footer {
-    background-color: var(--color-policy-bar); /* Dark Bar Color */
-    color: var(--color-background);
-    padding: 20px 0;
-    margin-top: 0;
-    width: 100%;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9em;
-}
-
-.footer-links a {
-    color: var(--color-secondary); /* Give links a light secondary accent */
-    margin-left: 15px;
-    transition: color 0.3s;
-}
-.footer-links a:hover {
-    color: var(--color-white);
+    border-top: 5px solid var(--color-primary);
 }
 
 /* --- Auth Page Styles --- */
 .auth-page {
-    /* REMOVED 'justify-content: center; align-items: center;'
-       to allow the flex-grow property on main.container to work correctly
-       with the page-wrapper structure. */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -337,10 +294,9 @@ nav {
     width: 100%;
     max-width: 450px;
     margin: 50px auto;
-    text-align: center; /* Ensures content inside the box is centered */
+    text-align: center;
 }
 
-/* AUTH FORM INPUT STYLES */
 .auth-container label {
     display: block;
     font-weight: 600;
@@ -362,8 +318,6 @@ nav {
 
 .auth-container .checkbox-group {
     display: flex;
-    /* FIX: Changed from align-items: flex-start; to align-items: baseline;
-       for better alignment with wrapped text */
     align-items: baseline;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -374,13 +328,137 @@ nav {
 .auth-container .checkbox-group input[type="checkbox"] {
     margin-right: 10px;
     width: auto;
-    /* Removed margin-top: 3px; to allow baseline alignment to work better */
     margin-top: 0;
 }
 
-/* New: Adjust label within checkbox group to override generic label styles */
 .auth-container .checkbox-group label {
     margin: 0;
     font-weight: 400;
     display: inline;
+}
+
+/* --- Footer --- */
+.main-footer {
+    background-color: var(--color-policy-bar);
+    color: var(--color-background);
+    padding: 20px 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.footer-links a {
+    color: var(--color-secondary);
+    margin-left: 15px;
+    transition: color 0.3s;
+}
+.footer-links a:hover {
+    color: var(--color-white);
+}
+
+/* =========================================
+   NEW PRODUCT GRID STYLES (Merged)
+   ========================================= */
+
+/* --- PRODUCT GRID LAYOUT --- */
+#product-grid {
+    display: grid;
+    /* This creates the responsive column layout */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    padding: 20px 0; /* Adjusted padding to fit container */
+    width: 100%;
+}
+
+/* --- PRODUCT CARD --- */
+.product-card {
+    background: var(--color-white);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    /* Ensure card content aligns properly */
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* --- IMAGE (Cropped Square / Kotak Buta Style) --- */
+.product-image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* This forces the square shape */
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0; /* Light gray placeholder while loading */
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the square without stretching */
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05); /* Subtle zoom effect on hover */
+}
+
+/* --- CATEGORY PILL --- */
+.category-tag {
+    align-self: flex-start; /* Aligns tag to the left */
+    display: inline-block;
+    background: #ffe7f0; /* Kept distinct pink for tags */
+    color: #cc2b74;      /* Darker pink text for contrast */
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+/* --- TEXT STYLES --- */
+.product-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: var(--color-text);
+    line-height: 1.3;
+}
+
+.product-description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    flex-grow: 1; /* Pushes the price/button to the bottom */
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 10px;
+}
+
+/* --- ADD TO CART BUTTON OVERRIDES --- */
+/* Targeting the specific button inside the card */
+.product-card button.add-to-cart {
+    width: 100%;
+    margin-top: auto; /* Pushes button to very bottom of card */
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 1em;
 }

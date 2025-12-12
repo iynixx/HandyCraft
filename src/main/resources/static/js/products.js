@@ -19,6 +19,12 @@ function checkLoginStatus() {
     return false;
 }
 
+// --- Helper Functions ---
+function truncateText(text, limit = 55) {
+    if (!text) return "";
+    return text.length > limit ? text.substring(0, limit) + "..." : text;
+}
+
 // --- API Fetching ---
 function fetchProducts() {
     fetch(API_PRODUCTS_URL)
@@ -31,7 +37,7 @@ function fetchProducts() {
         .then(products => {
             if (Array.isArray(products) && products.length > 0) {
 
-                // Normalize backend fields into frontend-friendly names (The necessary fix for field names)
+                // Normalize backend fields into frontend-friendly names
                 const normalizedProducts = products.map(p => ({
                     id: p['Product ID'],
                     category: p.Category,
@@ -51,17 +57,15 @@ function fetchProducts() {
 
                 // Category filtering
                 if (categoryFilter && categoryFilter !== 'all') {
-                    // Note: The filter includes products where the category name contains the filter slug
                     filteredProducts = normalizedProducts.filter(product =>
                         product.category &&
                         product.category.toLowerCase().replace(/\s/g, '')
                             .includes(categoryFilter.toLowerCase())
                     );
 
-                    const categoryName =
-                        filteredProducts.length > 0
-                            ? filteredProducts[0].category
-                            : categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1);
+                    const categoryName = filteredProducts.length > 0 ?
+                        filteredProducts[0].category :
+                        categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1);
 
                     pageTitle = `${categoryName} Collection`;
 
@@ -77,7 +81,6 @@ function fetchProducts() {
                 }
 
                 updatePageTitle(pageTitle);
-
                 populateCategoryFilter(normalizedProducts, categoryFilter);
 
                 if (filteredProducts.length > 0) {
@@ -95,7 +98,7 @@ function fetchProducts() {
         .catch(error => {
             console.error("Error loading products:", error);
             document.getElementById('product-grid').innerHTML =
-                `<p class="error-message">Could not connect to the server. Please check the Java backend is running or consult the console for details.</p>`;
+                `<p class="error-message">Could not connect to the server. Please check the Java backend is running.</p>`;
         });
 }
 
@@ -136,7 +139,7 @@ function populateCategoryFilter(products, currentFilter) {
     });
 }
 
-// --- Render Product Cards ---
+// --- Render Product Cards (Updated with New Design) ---
 function renderProducts(products) {
     const gridContainer = document.getElementById('product-grid');
     gridContainer.innerHTML = '';
@@ -145,32 +148,37 @@ function renderProducts(products) {
         const safePrice = product.price != null ? product.price : 0;
         const formattedPrice = parseFloat(safePrice).toFixed(2);
 
-        const description = product.description || "No description provided.";
-        const shortDescription = description.length > 60 ? description.substring(0, 60) + '...' : description;
+        // Use normalized 'imageUrl' from the old logic
+        const finalImage = product.imageUrl
+            ? `/images/products/${product.imageUrl}`
+            : "/images/placeholder.jpg";
 
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
 
-        // FINAL FIX: Corrected image path to include the 'products' subfolder
+        // NEW HTML STRUCTURE
         productCard.innerHTML = `
-            <img src="/images/products/${product.imageUrl || 'placeholder.jpg'}" 
-                 alt="${product.name}" class="product-image">
-
-            <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-
-                <p class="product-price">RM ${formattedPrice}</p>
-
-                <p class="product-description">${shortDescription}</p>
-
-                <button
-                    class="button secondary add-to-cart"
-                    data-product-id="${product.id}"
-                    data-product-name="${product.name}"
-                    data-product-price="${safePrice}">
-                    Add to Cart
-                </button>
+            <div class="product-image-wrapper">
+                <img src="${finalImage}" alt="${product.name}" class="product-image"/>
             </div>
+
+            <span class="category-tag">${product.category || "New"}</span>
+
+            <h3 class="product-name">${product.name}</h3>
+
+            <p class="product-description">
+                ${truncateText(product.description)}
+            </p>
+
+            <p class="product-price">RM ${formattedPrice}</p>
+
+            <button 
+                class="button primary add-to-cart"
+                data-product-id="${product.id}"
+                data-product-name="${product.name}"
+                data-product-price="${safePrice}">
+                Add to Cart
+            </button>
         `;
 
         gridContainer.appendChild(productCard);
@@ -184,6 +192,7 @@ function attachAddToCartListeners() {
     const buttons = document.querySelectorAll('.add-to-cart');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
+            // Keep the Login Check from the old code
             if (checkLoginStatus()) return;
 
             const productId = btn.dataset.productId;
@@ -222,7 +231,6 @@ function showCartConfirmation(productName) {
 
 /**
  * Global function linked to the header button: onclick="viewCart()"
- * Note: This function is defined globally to be accessible from products.html
  */
 window.viewCart = function() {
     // 🛑 LOGIN CHECK 🛑
@@ -242,17 +250,14 @@ window.viewCart = function() {
     let cartDetails = "🛒 Your Shopping Cart:\n\n";
     let subtotal = 0;
 
-
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         cartDetails += `- ${item.name}: Qty ${item.quantity} x RM ${item.price.toFixed(2)} = RM ${itemTotal.toFixed(2)}\n`;
         subtotal += itemTotal;
     });
 
-
     cartDetails += `\n------------------------\n`;
     cartDetails += `Subtotal: RM ${subtotal.toFixed(2)}`;
-
 
     alert(cartDetails);
 }
