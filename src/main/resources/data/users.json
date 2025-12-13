@@ -14,5 +14,13 @@
     "passwordHash": "195f75872121421b137337266eae088c26dbb8f60ee8576365a6864ec4b9fe8e",
     "salt": "fhC4NcPl327I9rZDHdcJhw\u003d\u003d",
     "role": "user"
+  },
+  {
+    "userId": "f0dcc2a0-6f46-4e68-882e-8cc11d2666f0",
+    "username": "xinyi",
+    "email": "ismexinyina@gmail.com",
+    "passwordHash": "096b4e2acaa97a4ec041e46754fad5ce1c5055d39fe3f62cd7f5aad933c3e4e7",
+    "salt": "lviiDmhqcQcp1BKQBQzpwA\u003d\u003d",
+    "role": "user"
   }
 ]

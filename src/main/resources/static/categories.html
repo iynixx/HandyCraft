@@ -11,33 +11,10 @@
     <script defer src="js/auth.js"></script>
 
     <script>
-        // --- TEMPORARY FIX: Authentication and Search Initialization ---
-        // This is necessary to guarantee the Sign In/Sign Up links load immediately
-        // on the Categories page, mirroring the index.html behavior.
+        // --- Remaining client-side scripts (Search and Cart) ---
+
         document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const authLinksContainer = document.getElementById('auth-links');
-            const username = localStorage.getItem('username');
-
-            if (isLoggedIn && authLinksContainer) {
-                // User is logged in: show username and logout button
-                authLinksContainer.innerHTML = `
-                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
-                   <li><button id="logout-button" class="button primary">Logout</button></li>
-               `;
-            } else if (authLinksContainer) {
-                // User is logged out: show Sign In and Sign Up links
-                authLinksContainer.innerHTML = `
-                   <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html" class="button primary">Sign Up</a></li>
-               `;
-            }
-
-            // Re-bind logout listener if present (uses handleLogout from auth.js)
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton && window.handleLogout) {
-                logoutButton.addEventListener('click', window.handleLogout);
-            }
+            // NOTE: Authentication header update is handled automatically by auth.js on load.
 
             // Search function listener
             const searchForm = document.getElementById('search-form');
@@ -46,12 +23,12 @@
                     event.preventDefault();
                     const query = document.getElementById('search-input').value;
                     if (query.trim()) {
+                        // Redirect to products page with search query
                         window.location.href = `products.html?search=${encodeURIComponent(query)}`;
                     }
                 });
             }
         });
-        // --- END TEMPORARY FIX ---
 
         // Define a function for viewCart to prevent errors when clicking the cart icon.
         function viewCart() {
@@ -118,7 +95,7 @@
                 <span role="img" aria-label="shopping cart">🛒</span> View Cart
             </a></li>
 
-            <li class="auth-links-container">
+            <li id="auth-links-container" class="auth-links-container">
                 <ul id="auth-links" class="nav-links">
                 </ul>
             </li>

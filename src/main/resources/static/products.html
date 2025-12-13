@@ -8,39 +8,11 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
-    <script defer src="js/products.js"></script>
     <script defer src="js/auth.js"></script>
+    <script defer src="js/products.js"></script>
 
     <script>
-        // --- TEMPORARY FIX: Authentication and Search Initialization ---
-        // This is a duplicate of the logic in index.html, used here to guarantee
-        // the Sign In/Sign Up links load immediately on the Products page,
-        // compensating for any timing issues with products.js and auth.js.
         document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const authLinksContainer = document.getElementById('auth-links');
-            const username = localStorage.getItem('username');
-
-            if (isLoggedIn && authLinksContainer) {
-                // User is logged in: show username and logout button
-                authLinksContainer.innerHTML = `
-                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
-                   <li><button id="logout-button" class="button primary">Logout</button></li>
-               `;
-            } else if (authLinksContainer) {
-                // User is logged out: show Sign In and Sign Up links
-                authLinksContainer.innerHTML = `
-                   <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html" class="button primary">Sign Up</a></li>
-               `;
-            }
-
-            // Re-bind logout listener if present (the button might not exist if auth.js loads later)
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton && window.handleLogout) {
-                logoutButton.addEventListener('click', window.handleLogout);
-            }
-
             // Search function listener
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
@@ -53,9 +25,8 @@
                 });
             }
         });
-        // --- END TEMPORARY FIX ---
 
-        // Ensure viewCart is globally accessible
+        // Ensure viewCart is globally accessible (required by the HTML onclick)
         function viewCart() {
             console.log("View Cart function triggered.");
             alert("View Cart button clicked. Cart modal/page logic needs to be implemented in products.js.");
@@ -89,8 +60,10 @@
             </a></li>
 
 
-            <li class="auth-links-container">
+            <li id="auth-links-container" class="auth-links-container">
                 <ul id="auth-links" class="nav-links">
+                    <li><a href="signin.html">Sign In</a></li>
+                    <li><a href="signup.html">Sign Up</a></li>
                 </ul>
             </li>
         </ul>

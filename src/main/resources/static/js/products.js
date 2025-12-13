@@ -1,6 +1,6 @@
 // --- Configuration ---
 const API_PRODUCTS_URL = 'http://localhost:8000/api/products';
-const CART_STORAGE_KEY = 'handyCraftCart';
+// const CART_STORAGE_KEY = 'handyCraftCart'; // <<< REMOVED: This constant is now sourced globally from js/auth.js
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -221,6 +221,7 @@ function attachAddToCartListeners() {
 
 function addToCart(productId, productName, productPrice) {
     // Retrieve cart or initialize as empty array
+    // NOTE: CART_STORAGE_KEY is now available globally from auth.js
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
 
     // Check if item already exists in cart

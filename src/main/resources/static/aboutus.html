@@ -18,31 +18,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const authLinksContainer = document.getElementById('auth-links');
-            const username = localStorage.getItem('username');
+            // NOTE: The authentication logic (checking isLoggedIn, setting innerHTML for auth-links,
+            // and binding the Logout button) has been REMOVED from here.
+            // It is now handled centrally and robustly by the updateAuthHeader() function in auth.js.
 
-            // 1. Authentication Links Logic
-            if (isLoggedIn) {
-                authLinksContainer.innerHTML = `
-                    <li class="user-greeting">Welcome, <strong>${username}</strong></li>
-                    <li><button id="logout-button" class="button primary">Logout</button></li>
-                `;
-            } else {
-                authLinksContainer.innerHTML = `
-                    <li><a href="signin.html">Sign In</a></li>
-                    <li><a href="signup.html">Sign Up</a></li>
-                `;
-            }
-
-            // NOTE: The logout button binding is handled in auth.js, but must be called here:
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                // If the user is logged in, attach the handler from auth.js
-                logoutButton.addEventListener('click', window.handleLogout);
-            }
-
-            // 2. Search Functionality Logic
+            // 1. Search Functionality Logic
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
                 searchForm.addEventListener('submit', (event) => {
@@ -54,7 +34,7 @@
                 });
             }
 
-            // 3. Default Tab Activation
+            // 2. Default Tab Activation
             // Find the first tab button and click it to show the default content (Our Story)
             const defaultTab = document.querySelector('.tab-buttons .tab-button');
             if (defaultTab) {
@@ -62,7 +42,7 @@
                 defaultTab.click();
             }
 
-            // 4. Contact Form Handler (Basic)
+            // 3. Contact Form Handler (Basic)
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
                 contactForm.addEventListener('submit', (event) => {
@@ -182,7 +162,7 @@
                     🛒 View Cart
                 </a>
             </li>
-            <li class="auth-links-container">
+            <li id="auth-links-container" class="auth-links-container">
                 <ul id="auth-links" class="nav-links">
                 </ul>
             </li>
