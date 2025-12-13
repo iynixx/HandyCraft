@@ -84,30 +84,86 @@ function handleSignUp(event) {
     event.preventDefault();
 
     const form = event.target;
+    const username = form.elements['username'].value.trim();
+    const email = form.elements['email'].value.trim();
     const password = form.elements['password'].value;
     const confirmPassword = form.elements['confirm-password'].value;
-
-    // Use the name 'agree-terms' from the corrected HTML
     const termsChecked = form.elements['agree-terms'] ? form.elements['agree-terms'].checked : false;
 
-
-    // 1. Client-Side Validation
-    if (password !== confirmPassword) {
-        alert("Error: Passwords do not match.");
+    // === 1. USERNAME VALIDATION ===
+    if (username.length < 2 || username.length > 20) {
+        alert("Username must be 2-20 characters.");
         return;
     }
+
+    if (!/^[a-zA-Z\s]+$/.test(username)) {
+        alert("Username can only contain letters and spaces.");
+        return;
+    }
+
+    // Auto-capitalize: "john doe" → "John Doe"
+    const formattedUsername = username
+        .toLowerCase()
+        .split(' ')
+        .filter(word => word.length > 0)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+    // === 2. EMAIL VALIDATION ===
+    if (!email.includes('@')) {
+        alert("Please enter a valid email address (must contain @).");
+        return;
+    }
+
+    // === 3. PASSWORD VALIDATION ===
+    // Length: 8-15 characters
+    if (password.length < 8 || password.length > 15) {
+        alert("Password must be 8-15 characters.");
+        return;
+    }
+
+    // Must have at least 1 number
+    if (!/\d/.test(password)) {
+        alert("Password must contain at least 1 number.");
+        return;
+    }
+
+    // Must have at least 1 uppercase letter
+    if (!/[A-Z]/.test(password)) {
+        alert("Password must contain at least 1 uppercase letter.");
+        return;
+    }
+
+    // Must have at least 1 lowercase letter
+    if (!/[a-z]/.test(password)) {
+        alert("Password must contain at least 1 lowercase letter.");
+        return;
+    }
+
+    // No spaces allowed
+    if (password.includes(' ')) {
+        alert("Password cannot contain spaces.");
+        return;
+    }
+
+    // === 4. PASSWORD MATCH ===
+    if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    // === 5. TERMS CHECK ===
     if (!termsChecked) {
         alert("You must agree to the User Agreement, Terms of Service, and Privacy Policy to register.");
         return;
     }
 
-
+    // === ALL VALIDATION PASSED ===
     const userData = {
-        username: form.elements['username'].value,
-        email: form.elements['email'].value,
+        username: formattedUsername,  // Use formatted username
+        email: email.toLowerCase(),    // Lowercase email
         password: password
     };
-
 
     // 2. API Communication (POST to Java server)
     fetch(`${API_BASE_URL}/register`, {

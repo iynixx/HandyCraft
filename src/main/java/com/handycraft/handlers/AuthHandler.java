@@ -15,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class AuthHandler implements HttpHandler {
     private final Gson gson = new Gson();
@@ -64,18 +66,94 @@ public class AuthHandler implements HttpHandler {
     private void handleRegister(HttpExchange exchange) throws IOException {
         RegisterRequest request = readRequestBody(exchange, RegisterRequest.class);
 
-        // Let UserService handle password hashing with salt
-        User newUser = userService.registerUser(
-                request.getUsername(),
-                request.getEmail(),
-                request.getPassword()  // Send PLAIN password
-        );
+        String username = request.getUsername().trim();
+        String email = request.getEmail().trim().toLowerCase();
+        String password = request.getPassword();
+
+        // === 1. CHECK EMPTY FIELDS ===
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"All fields are required.\"}", "application/json");
+            return;
+        }
+
+        // === 2. USERNAME VALIDATION ===
+        if (username.length() < 2 || username.length() > 20) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Username must be 2-20 characters.\"}", "application/json");
+            return;
+        }
+
+        if (!username.matches("^[a-zA-Z\\s]+$")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Username can only contain letters and spaces.\"}", "application/json");
+            return;
+        }
+
+        // Auto-capitalize username
+        String formattedUsername = Arrays.stream(username.toLowerCase().split("\\s+"))
+                .filter(word -> !word.isEmpty())
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+
+        // === 3. EMAIL VALIDATION ===
+        if (!email.contains("@")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Invalid email format (must contain @).\"}", "application/json");
+            return;
+        }
+
+        // === 4. PASSWORD VALIDATION ===
+        // Length: 8-15 characters
+        if (password.length() < 8 || password.length() > 15) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Password must be 8-15 characters.\"}", "application/json");
+            return;
+        }
+
+        // Must have at least 1 number
+        if (!password.matches(".*\\d.*")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Password must contain at least 1 number.\"}", "application/json");
+            return;
+        }
+
+        // Must have at least 1 uppercase
+        if (!password.matches(".*[A-Z].*")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Password must contain at least 1 uppercase letter.\"}", "application/json");
+            return;
+        }
+
+        // Must have at least 1 lowercase
+        if (!password.matches(".*[a-z].*")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Password must contain at least 1 lowercase letter.\"}", "application/json");
+            return;
+        }
+
+        // No spaces allowed
+        if (password.contains(" ")) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"Password cannot contain spaces.\"}", "application/json");
+            return;
+        }
+
+        // === 5. CHECK IF EMAIL EXISTS ===
+        if (userService.findUserByEmail(email) != null) {
+            ResponseUtil.sendResponse(exchange, 409,
+                    "{\"message\": \"Email already registered.\"}", "application/json");
+            return;
+        }
+
+        // === ALL VALIDATION PASSED ===
+        User newUser = userService.registerUser(formattedUsername, email, password);
 
         if (newUser != null) {
             String jsonResponse = "{\"userId\": \"" + newUser.getUserId() + "\", \"username\": \"" + newUser.getUsername() + "\"}";
             ResponseUtil.sendResponse(exchange, 201, jsonResponse, "application/json");
         } else {
-            ResponseUtil.sendResponse(exchange, 400, "{\"message\": \"Registration failed. Invalid data.\"}", "application/json");
+            ResponseUtil.sendResponse(exchange, 400, "{\"message\": \"Registration failed.\"}", "application/json");
         }
     }
 
