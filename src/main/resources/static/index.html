@@ -5,35 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Handy Craft - Local Crochet E-Commerce</title>
 
-
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
-
     <script defer src="js/auth.js"></script>
 
-
     <script>
+        // --- ORIGINAL DOM Content Loaded Logic (Kept for functional requirement) ---
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authLinksContainer = document.getElementById('auth-links');
             const username = localStorage.getItem('username');
 
-
-            if (isLoggedIn) {
+            if (isLoggedIn && authLinksContainer) {
                 // User is logged in: show username and logout button
                 authLinksContainer.innerHTML = `
                    <li class="user-greeting">Welcome, <strong>${username}</strong></li>
                    <li><button id="logout-button" class="button primary">Logout</button></li>
                `;
-            } else {
+            } else if (authLinksContainer) {
                 // User is logged out: show Sign In and Sign Up links
                 authLinksContainer.innerHTML = `
                    <li><a href="signin.html">Sign In</a></li>
                    <li><a href="signup.html">Sign Up</a></li>
                `;
             }
-
 
             // Search function listener
             const searchForm = document.getElementById('search-form');
@@ -47,11 +43,16 @@
                 });
             }
         });
+
+        // Ensure viewCart is defined globally
+        function viewCart() {
+            console.log("View Cart function triggered.");
+            window.location.href = "products.html";
+        }
     </script>
 </head>
 <body class="home-page">
 <div class="page-wrapper">
-
 
     <header class="main-header">
         <nav class="container">
@@ -66,7 +67,6 @@
                 <li><a href="categories.html">Categories</a></li>
                 <li><a href="aboutus.html">About Us</a></li>
 
-
                 <li class="search-container">
                     <form id="search-form" class="search-form">
                         <input type="text" id="search-input" placeholder="Search products..." required>
@@ -74,6 +74,9 @@
                     </form>
                 </li>
 
+                <li><a href="#" onclick="event.preventDefault(); viewCart();">
+                    <span role="img" aria-label="shopping cart">🛒</span> View Cart
+                </a></li>
 
                 <li class="auth-links-container">
                     <ul id="auth-links" class="nav-links">
@@ -83,7 +86,6 @@
         </nav>
     </header>
 
-
     <main class="hero-main">
         <section class="hero-content">
             <h1>Welcome to Handy Craft!</h1>
@@ -91,24 +93,33 @@
             <a href="products.html" class="button primary large-button">Shop Our Collections</a>
         </section>
 
-
         <section class="featured-products container">
         </section>
     </main>
 
-
 </div>
 
-
-<footer class="main-footer policy-bar">
+<footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-        <div class="policy-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
+        <div class="policy-buttons">
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
+
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
-

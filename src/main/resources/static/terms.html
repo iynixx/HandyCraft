@@ -4,119 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service - Handy Craft</title>
-
-
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
-
-
-    <script defer src="js/auth.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const authLinksContainer = document.getElementById('auth-links');
-            const username = localStorage.getItem('username');
-
-
-            if (isLoggedIn) {
-                authLinksContainer.innerHTML = `
-                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
-                   <li><button id="logout-button" class="button primary">Logout</button></li>
-               `;
-            } else {
-                authLinksContainer.innerHTML = `
-                   <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html">Sign Up</a></li>
-               `;
-            }
-        });
-    </script>
 </head>
-<body>
+<body class="page-wrapper">
+
 <header class="main-header">
     <nav class="container">
         <div class="logo">
-            <a href="index.html">
+            <a href="index.html" class="logo-link-with-text">
                 <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <span class="site-title">Handy Craft</span>
             </a>
         </div>
         <ul class="nav-links">
-            <li><a href="products.html">Products</a></li>
-            <li><a href="categories.html">Categories</a></li>
-            <li><a href="aboutus.html">About Us</a></li>
-            <li><a href="#" onclick="event.preventDefault(); viewCart();">
-                <span role="img" aria-label="shopping cart">🛒</span> View Cart
-            </a></li>
-            <ul id="auth-links" class="nav-links"></ul>
+            <li><a href="index.html">Back to Home</a></li>
         </ul>
     </nav>
 </header>
 
+<main class="container page-content" style="padding-top: 40px; padding-bottom: 80px;">
+    <div class="content-box">
+        <h1>Handy Craft Terms of Service</h1>
+        <p><strong>Last Updated: December 12, 2025</strong></p>
 
-<main class="container page-content legal-content">
-    <h1>Handy Craft Terms of Service</h1>
-    <p class="last-updated">Effective Date: December 6, 2025</p>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing or using the Handy Craft website, you agree to be bound by these Terms of Service. If you disagree with any part of the terms, you may not access the service.</p>
 
+        <h2>2. Products and Variations</h2>
+        <p>All products listed on Handy Craft are handmade by independent artisans. As such, slight variations in color, size, and texture may occur compared to the listing photos. This inherent uniqueness is part of the value we offer.</p>
 
-    <section>
-        <h2>1. Introduction (The Agreement)</h2>
-        <p>These Terms of Service (the "Terms") constitute a legally binding contract between you (the "User") and Handy Craft Sdn. Bhd. ("Company", "we", "us", or "our"). By accessing or using our service, you agree to be bound by these Terms.</p>
-    </section>
+        <h2>3. Order Cancellation and Returns</h2>
+        <p>Cancellations for non-custom orders must be made within 12 hours of purchase. Due to the unique nature of handmade goods, we do not offer returns for change of mind, only for items damaged upon delivery within 7 days.</p>
 
+        <h2>4. Intellectual Property</h2>
+        <p>The designs, images, and brand name "Handy Craft" are protected by copyright. Unauthorized replication of our featured crochet patterns or product designs for commercial purposes is strictly prohibited.</p>
 
-    <section>
-        <h2>2. User Guidelines and Restrictions</h2>
-        <p>You agree to use our site only for lawful purposes. Prohibited activities include:</p>
-        <ul>
-            <li>Uploading or transmitting any unlawful, harassing, or harmful content.</li>
-            <li>Attempting to gain unauthorized access to the site's systems or network.</li>
-            <li>Using automated means (bots, scraping) to access the service.</li>
-        </ul>
-    </section>
-
-
-    <section>
-        <h2>3. Intellectual Property</h2>
-        <p>All content on the site, including product designs, text, graphics, logos, and images, are the exclusive property of Handy Craft or its licensors and are protected by intellectual property laws. You may not reproduce, copy, or redistribute any material without express written permission.</p>
-    </section>
-
-
-    <section>
-        <h2>4. Payment and Subscription Terms</h2>
-        <p>All purchases are subject to the payment terms specified at checkout. Prices are subject to change without prior notice. Once an order is placed, cancellation is only possible before the item enters the shipping process. Refunds will be issued only for items confirmed as damaged upon arrival.</p>
-    </section>
-
-
-    <section>
-        <h2>5. Disclaimer of Warranty & Limitation of Liability</h2>
-        <p>The Service is provided on an "as is" and "as available" basis. Handy Craft makes no warranties, expressed or implied, regarding the service's operation or content.</p>
-        <p>In no event shall Handy Craft be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the products or service.</p>
-    </section>
-
-
-    <section>
-        <h2>6. Termination Clause</h2>
-        <p>We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, if you breach the Terms. Upon termination, your right to use the Service will immediately cease.</p>
-    </section>
-
-
-    <section>
-        <h2>7. Governing Law & Dispute Resolution</h2>
-        <p>These Terms shall be governed by and construed in accordance with the laws of Malaysia.</p>
-        <p>Any dispute arising under these Terms shall first be resolved through good-faith informal negotiation. If a dispute cannot be resolved informally, it shall be settled by binding arbitration in Kuala Lumpur, Malaysia.</p>
-    </section>
+        <h2>5. Governing Law</h2>
+        <p>These Terms shall be governed and construed in accordance with the laws of Malaysia, without regard to its conflict of law provisions.</p>
+    </div>
 </main>
-
 
 <footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-        <div>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-        </div>
     </div>
 </footer>
+
 </body>
 </html>
-

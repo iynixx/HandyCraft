@@ -9,25 +9,72 @@
     <link rel="stylesheet" href="css/style.css">
 
     <script defer src="js/auth.js"></script>
+
     <script>
+        // Define viewCart function to prevent errors if the cart icon is present
+        function viewCart() {
+            alert("Redirecting to Products page to view cart details.");
+            window.location.href = "products.html";
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authLinksContainer = document.getElementById('auth-links');
             const username = localStorage.getItem('username');
 
+            // 1. Authentication Links Logic
             if (isLoggedIn) {
                 authLinksContainer.innerHTML = `
-                   <li class="user-greeting">Welcome, <strong>${username}</strong></li>
-                   <li><button id="logout-button" class="button primary">Logout</button></li>
-               `;
+                    <li class="user-greeting">Welcome, <strong>${username}</strong></li>
+                    <li><button id="logout-button" class="button primary">Logout</button></li>
+                `;
             } else {
                 authLinksContainer.innerHTML = `
-                   <li><a href="signin.html">Sign In</a></li>
-                   <li><a href="signup.html">Sign Up</a></li>
-               `;
+                    <li><a href="signin.html">Sign In</a></li>
+                    <li><a href="signup.html">Sign Up</a></li>
+                `;
+            }
+
+            // NOTE: The logout button binding is handled in auth.js, but must be called here:
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                // If the user is logged in, attach the handler from auth.js
+                logoutButton.addEventListener('click', window.handleLogout);
+            }
+
+            // 2. Search Functionality Logic
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+
+            // 3. Default Tab Activation
+            // Find the first tab button and click it to show the default content (Our Story)
+            const defaultTab = document.querySelector('.tab-buttons .tab-button');
+            if (defaultTab) {
+                // Use a slight delay to ensure the DOM is fully rendered before clicking
+                defaultTab.click();
+            }
+
+            // 4. Contact Form Handler (Basic)
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    alert('Thank you for your message! We will get back to you soon.');
+                    // In a real application, you would use fetch() here to send data to a server
+                    contactForm.reset();
+                });
             }
         });
 
+        // Tab Switching Logic (Kept here as it is page-specific)
         function openTab(tabName, element) {
             let i, tabcontent, tablinks;
 
@@ -44,13 +91,6 @@
             document.getElementById(tabName).style.display = "block";
             element.classList.add("active");
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const defaultTab = document.querySelector('.tab-button');
-            if (defaultTab) {
-                defaultTab.click();
-            }
-        });
     </script>
 
     <style>
@@ -67,7 +107,7 @@
             cursor: pointer;
             font-size: 1.1em;
             font-weight: 600;
-            color: var(--color-text-dark);
+            color: var(--color-text);
             transition: all 0.3s;
             position: relative;
         }
@@ -94,14 +134,25 @@
             color: var(--color-primary);
             margin-top: 0;
         }
+        .content-box h3 {
+            color: var(--color-text);
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
         .form-group {
             margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--color-border);
             border-radius: 4px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -109,8 +160,9 @@
 <header class="main-header">
     <nav class="container">
         <div class="logo">
-            <a href="index.html">
+            <a href="index.html" class="logo-link-with-text">
                 <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <span class="site-title">Handy Craft</span>
             </a>
         </div>
         <ul class="nav-links">
@@ -118,9 +170,22 @@
             <li><a href="categories.html">Categories</a></li>
             <li class="active"><a href="aboutus.html">About Us</a></li>
 
+            <li class="search-container">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-input" placeholder="Search products..." required>
+                    <button type="submit" class="search-button">🔍</button>
+                </form>
+            </li>
 
-            <ul id="auth-links" class="nav-links">
-            </ul>
+            <li>
+                <a href="#" onclick="viewCart(); return false;">
+                    🛒 View Cart
+                </a>
+            </li>
+            <li class="auth-links-container">
+                <ul id="auth-links" class="nav-links">
+                </ul>
+            </li>
         </ul>
     </nav>
 </header>
@@ -209,11 +274,24 @@
 <footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-        <div>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
+        <div class="policy-buttons">
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
+
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

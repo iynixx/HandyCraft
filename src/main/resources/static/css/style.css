@@ -1,6 +1,6 @@
 :root {
     --color-primary: #FFC0CB;    /* Pastel Pink (Accent) */
-    --color-secondary: #FFFACD;  /* Pastel Yellow (Secondary Accent) */
+    --color-secondary: #E7DADA;  /* MODIFIED: Light Grayish Pink for Auth Background */
     --color-background: #FAF9F6; /* Off-White/Cream (Main Background) */
     --color-white: #FFFFFF;
     --color-text: #333333;       /* Dark text */
@@ -88,6 +88,32 @@ a:hover {
     transform: translateY(-1px);
 }
 
+/* --- SECONDARY BUTTON STYLE FOR FOOTER & CATEGORIES --- */
+.button.secondary {
+    background-color: transparent;
+    color: var(--color-text-light); /* White text for dark footer, or based on context */
+    /* NOTE: Border now uses the new color: #E7DADA */
+    border: 2px solid var(--color-secondary);
+    padding: 8px 15px;
+    font-weight: 500;
+}
+
+.button.secondary:hover {
+    /* Updated hover effect using the new color */
+    background-color: rgba(231, 218, 218, 0.5);
+    transform: translateY(-1px);
+}
+/* For category page cards (white background) */
+.category-card .button.secondary {
+    color: var(--color-text);
+    border-color: var(--color-primary);
+}
+.category-card .button.secondary:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+/* ------------------------------------------- */
+
 .button.large {
     padding: 12px 30px;
     font-size: 1.1em;
@@ -102,7 +128,7 @@ a:hover {
     width: 100%;
 }
 
-/* --- Header & Navigation --- */
+/* --- Header & Navigation (Standard Header for Product/Category/Other Pages) --- */
 .main-header {
     background-color: var(--color-white);
     box-shadow: 0 2px 4px var(--color-shadow);
@@ -147,7 +173,21 @@ nav {
 }
 
 .nav-links li {
+    /* Base spacing rule */
     margin-left: 10px;
+}
+
+/* Nested Authentication Links Fix */
+.auth-links-container #auth-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-links-container #auth-links li {
+    margin-left: 0;
 }
 
 .nav-links a {
@@ -156,6 +196,78 @@ nav {
     padding: 8px 0;
     font-size: 0.95em;
 }
+
+/* --- CRITICAL ADDITION FOR PLAIN TEXT SIGN IN/SIGN UP --- */
+/* This targets all links within the #auth-links UL to ensure they use basic text styling */
+/* and explicitly removes any padding or background that might come from general .button styles. */
+.auth-links-container #auth-links li a {
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
+    color: var(--color-text); /* Ensure the text color is correct */
+    font-weight: 500;
+}
+
+.auth-links-container #auth-links li a:hover {
+    color: var(--color-primary);
+    background-color: transparent;
+}
+/* ---------------------------------------------------- */
+
+
+/* --- Back Button Styling for Auth Pages (Background-Free Link) --- */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 0;
+
+    /* CRITICAL: Ensure no background and no border */
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+
+    color: var(--color-text);
+    font-weight: 600;
+    transition: color 0.3s;
+    font-size: 0.95em;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    color: var(--color-primary);
+    background-color: transparent !important;
+    text-decoration: none;
+}
+
+/* Style the arrow (the <span> element) to be bigger and more obvious */
+.back-button span {
+    font-size: 1.5em;
+    line-height: 1;
+    color: var(--color-text);
+    transition: color 0.3s;
+}
+
+/* Ensure the arrow color changes on hover with the text */
+.back-button:hover span {
+    color: var(--color-primary);
+}
+/* -------------------------------------------------------- */
+
+
+/* --- User Greeting Text Styling --- */
+.user-greeting {
+    color: var(--color-text);
+    font-size: 0.95em;
+    padding: 8px 0;
+}
+
+.user-greeting strong {
+    font-weight: 700;
+    color: var(--color-primary); /* Highlight the username */
+}
+/* ---------------------------------------------------- */
+
 
 /* --- Search Bar Styling --- */
 .search-container {
@@ -191,25 +303,23 @@ nav {
     cursor: pointer;
 }
 
-/* --- Hero Section--- */
+/* --- Hero Section --- */
 .hero-main {
     padding: 80px 40px;
     margin-top: 0;
-    text-align: center;
     background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 60px - 80px);
+    display: block;
+    min-height: calc(100vh - 60px);
 }
 
 .hero-content {
     padding: 40px 60px;
-    margin: 0 auto;
     border-radius: 15px;
     box-shadow: 0 4px 15px var(--color-shadow);
     background-color: rgba(255, 255, 255, 0.85);
     max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .hero-content h1 {
@@ -279,11 +389,138 @@ nav {
     border-top: 5px solid var(--color-primary);
 }
 
-/* --- Auth Page Styles --- */
+/* =========================================
+   CATEGORY PAGE STYLES
+   ========================================= */
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+.category-card {
+    background: var(--color-white);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--color-shadow);
+    text-align: center;
+    transition: transform 0.2s;
+}
+.category-card:hover {
+    transform: translateY(-2px);
+}
+.category-card h3 {
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+/* =========================================
+   ABOUT PAGE (TAB) STYLES
+   ========================================= */
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    border-bottom: 2px solid var(--color-border);
+}
+.tab-button {
+    background-color: transparent;
+    border: none;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--color-text);
+    transition: all 0.3s;
+    position: relative;
+}
+.tab-button:hover {
+    color: var(--color-primary);
+}
+.tab-button.active {
+    color: var(--color-primary);
+    border-bottom: 3px solid var(--color-primary);
+    margin-bottom: -2px; /* Pulls border up to overlap the main line */
+}
+.tab-content {
+    padding: 20px 0;
+    display: none; /* Hidden by default, shown by JS */
+}
+.content-box {
+    background-color: var(--color-white);
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--color-shadow);
+}
+.content-box h2 {
+    color: var(--color-primary);
+    margin-top: 0;
+}
+.content-box h3 {
+    color: var(--color-text);
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.content-box ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+/* --- Contact Form Styles --- */
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* --- QUANTITY INPUT STYLES (Improvement for Product Details/Cart) --- */
+.quantity-input {
+    width: 80px; /* Small fixed width */
+    padding: 8px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+/* -------------------------------------------------------------------- */
+
+
+/* --- Auth Page Styles (MODIFIED BACKGROUND to #E7DADA) --- */
+
+/* CRITICAL FIX for uniform background color:
+   This ensures the background color is applied to the entire viewport height (html)
+    and the body content, preventing the two-tone look when content is short.
+   Requires both <html class="auth-page"> and <body class="auth-page"> to be set.
+*/
+html.auth-page, body.auth-page {
+    background-color: var(--color-secondary) !important;
+}
+/* Ensure the page wrapper also takes the correct color */
+.auth-page .page-wrapper {
+    background-color: var(--color-secondary);
+}
+/* Fallback/existing body style */
 .auth-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: var(--color-secondary);
 }
 
 .auth-container {
@@ -337,42 +574,17 @@ nav {
     display: inline;
 }
 
-/* --- Footer --- */
-.main-footer {
-    background-color: var(--color-policy-bar);
-    color: var(--color-background);
-    padding: 20px 0;
-    margin-top: 0;
-    width: 100%;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9em;
-}
-
-.footer-links a {
-    color: var(--color-secondary);
-    margin-left: 15px;
-    transition: color 0.3s;
-}
-.footer-links a:hover {
-    color: var(--color-white);
-}
 
 /* =========================================
-   NEW PRODUCT GRID STYLES (Merged)
+   PRODUCT GRID STYLES
    ========================================= */
 
 /* --- PRODUCT GRID LAYOUT --- */
 #product-grid {
     display: grid;
-    /* This creates the responsive column layout */
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 25px;
-    padding: 20px 0; /* Adjusted padding to fit container */
+    padding: 20px 0;
     width: 100%;
 }
 
@@ -383,10 +595,10 @@ nav {
     padding: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    /* Ensure card content aligns properly */
     display: flex;
     flex-direction: column;
+    max-width: 280px;
+    width: 100%;
 }
 
 .product-card:hover {
@@ -394,33 +606,33 @@ nav {
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-/* --- IMAGE (Cropped Square / Kotak Buta Style) --- */
+/* --- IMAGE (Cropped Square) --- */
 .product-image-wrapper {
     width: 100%;
-    aspect-ratio: 1 / 1; /* This forces the square shape */
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     border-radius: 12px;
     margin-bottom: 10px;
-    background-color: #f0f0f0; /* Light gray placeholder while loading */
+    background-color: #f0f0f0;
 }
 
 .product-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures image fills the square without stretching */
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .product-card:hover .product-image {
-    transform: scale(1.05); /* Subtle zoom effect on hover */
+    transform: scale(1.05);
 }
 
 /* --- CATEGORY PILL --- */
 .category-tag {
-    align-self: flex-start; /* Aligns tag to the left */
+    align-self: flex-start;
     display: inline-block;
-    background: #ffe7f0; /* Kept distinct pink for tags */
-    color: #cc2b74;      /* Darker pink text for contrast */
+    background: #ffe7f0;
+    color: #cc2b74;
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
@@ -443,7 +655,7 @@ nav {
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
-    flex-grow: 1; /* Pushes the price/button to the bottom */
+    flex-grow: 1;
 }
 
 .product-price {
@@ -454,11 +666,131 @@ nav {
 }
 
 /* --- ADD TO CART BUTTON OVERRIDES --- */
-/* Targeting the specific button inside the card */
 .product-card button.add-to-cart {
     width: 100%;
-    margin-top: auto; /* Pushes button to very bottom of card */
+    margin-top: auto;
     padding: 12px;
     border-radius: 12px;
     font-size: 1em;
+}
+
+
+/* =========================================
+   FOOTER STYLES
+   ========================================= */
+.main-footer {
+    background-color: var(--color-policy-bar);
+    color: var(--color-background);
+    padding: 20px 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.policy-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.policy-buttons a {
+    text-decoration: none;
+    margin-left: 0;
+}
+
+
+/* =========================================
+   MODAL POP-UP STYLES
+   ========================================= */
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+    padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: var(--color-white);
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    color: var(--color-primary);
+    margin: 0;
+}
+
+/* Close Button */
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+/* Modal Body (Scrollable Content Area) */
+.modal-body {
+    overflow-y: auto;
+    padding-right: 15px;
+    line-height: 1.8;
+}
+
+/* Style the content loaded inside the modal body */
+.modal-body h1, .modal-body h2 {
+    color: var(--color-text);
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+.modal-body h3 {
+    font-size: 1.2em;
+    color: var(--color-primary);
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+.modal-body p {
+    margin-bottom: 15px;
+}
+.modal-body strong {
+    font-weight: 700;
 }
