@@ -359,7 +359,6 @@ nav {
 
 .category-select {
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     background-color: var(--color-white);
     border: 2px solid var(--color-primary);
