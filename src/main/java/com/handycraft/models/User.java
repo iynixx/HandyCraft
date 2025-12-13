@@ -5,6 +5,7 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
+    private String salt;
     private String role = "user"; // <-- ADDED: Default role is "user"
 
     public User() {}
@@ -36,6 +37,9 @@ public class User {
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
+
+    public String getSalt() {return salt;}
+    public void setSalt(String salt) {this.salt = salt;}
 
     public String getRole() {
         return role;

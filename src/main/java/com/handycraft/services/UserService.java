@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.handycraft.models.User;
+import com.handycraft.utils.HashUtil;
 
 
 import java.io.File;
@@ -59,21 +60,31 @@ public class UserService {
         }
     }
 
-    public User registerUser(String username, String email, String passwordHash) {
+    public User registerUser(String username, String email, String plainPassword) {
         if (findUserByEmail(email) != null) {
-            return null;
+            return null; // User already exists
         }
 
         User newUser = new User();
         newUser.setUserId(UUID.randomUUID().toString());
         newUser.setUsername(username);
         newUser.setEmail(email);
-        newUser.setPasswordHash(passwordHash);
+
+        // Generate unique salt for this user
+        String salt = HashUtil.generateSalt();
+        // Hash password with the salt
+        String hashedPassword = HashUtil.hashPassword(plainPassword, salt);
+        // Store both
+        newUser.setSalt(salt);
+        newUser.setPasswordHash(hashedPassword);
+        newUser.setRole("user"); // Default role
 
         synchronized (this.users) {
             this.users.add(newUser);
             saveUsers();
         }
+
+        System.out.println("New user registered with salt: " + salt.substring(0, 8) + "...");
         return newUser;
     }
 
@@ -82,5 +93,25 @@ public class UserService {
                 .filter(u -> u.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public User authenticateUser(String email, String plainPassword) {
+        User user = findUserByEmail(email);
+        if (user == null) {
+            return null;  // User not found
+        }
+
+        // 1. Get user's stored salt
+        String storedSalt = user.getSalt();
+
+        // 2. Hash entered password WITH stored salt
+        String hashedInput = HashUtil.hashPassword(plainPassword, storedSalt);
+
+        // 3. Compare with stored hash
+        if (hashedInput.equals(user.getPasswordHash())) {
+            return user;  // Password matches!
+        }
+
+        return null;  // Password doesn't match
     }
 }

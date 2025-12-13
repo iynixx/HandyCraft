@@ -1,9 +1,18 @@
 [
   {
-    "userId": "852d1d00-b9ae-478b-bbfa-b8a3a003a882",
-    "username": "abc",
-    "email": "abc@gmail.com",
-    "passwordHash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "userId": "b2ed875e-8ad6-4626-b014-a9a153fbeccb",
+    "username": "tommy",
+    "email": "tommy@gmail.com",
+    "passwordHash": "335385c3c6f7cb958092c7da132007627406b9654f33f9a50f80058a398eb0ac",
+    "salt": "B5d/pe2+3oxfRwEfof1tvw\u003d\u003d",
+    "role": "user"
+  },
+  {
+    "userId": "368ce10e-c064-426e-91a3-4e90afdaabd6",
+    "username": "iris",
+    "email": "iris@gmail.com",
+    "passwordHash": "195f75872121421b137337266eae088c26dbb8f60ee8576365a6864ec4b9fe8e",
+    "salt": "fhC4NcPl327I9rZDHdcJhw\u003d\u003d",
     "role": "user"
   }
 ]

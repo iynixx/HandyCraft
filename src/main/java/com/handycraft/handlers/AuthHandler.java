@@ -64,17 +64,11 @@ public class AuthHandler implements HttpHandler {
     private void handleRegister(HttpExchange exchange) throws IOException {
         RegisterRequest request = readRequestBody(exchange, RegisterRequest.class);
 
-        if (userService.findUserByEmail(request.getEmail()) != null) {
-            ResponseUtil.sendResponse(exchange, 409, "{\"message\": \"Email already registered.\"}", "application/json");
-            return;
-        }
-
-        String hashedPassword = HashUtil.hashPassword(request.getPassword());
-
+        // Let UserService handle password hashing with salt
         User newUser = userService.registerUser(
                 request.getUsername(),
                 request.getEmail(),
-                hashedPassword
+                request.getPassword()  // Send PLAIN password
         );
 
         if (newUser != null) {
@@ -86,32 +80,34 @@ public class AuthHandler implements HttpHandler {
     }
 
     // --- Login Logic (UPDATED to include ROLE) ---
+    // handlers/AuthHandler.java - LOGIN METHOD
     private void handleLogin(HttpExchange exchange) throws IOException {
         LoginRequest credentials = readRequestBody(exchange, LoginRequest.class);
 
-        User storedUser = userService.findUserByEmail(credentials.getEmail());
+        // Use the NEW authenticateUser method
+        User storedUser = userService.authenticateUser(
+                credentials.getEmail(),
+                credentials.getPassword()
+        );
 
         if (storedUser == null) {
-            ResponseUtil.sendResponse(exchange, 401, "{\"message\": \"Invalid email or password.\"}", "application/json");
+            ResponseUtil.sendResponse(exchange, 401,
+                    "{\"message\": \"Invalid email or password.\"}",
+                    "application/json"
+            );
             return;
         }
 
-        String inputHash = HashUtil.hashPassword(credentials.getPassword());
+        // Login successful
+        String jsonResponse = String.format(
+                "{\"userId\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"role\": \"%s\"}",
+                storedUser.getUserId(),
+                storedUser.getUsername(),
+                storedUser.getEmail(),
+                storedUser.getRole()
+        );
 
-        if (inputHash.equals(storedUser.getPasswordHash())) {
-            String jsonResponse = String.format(
-                    "{\"userId\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"role\": \"%s\"}",
-                    storedUser.getUserId(),
-                    storedUser.getUsername(),
-                    storedUser.getEmail(),
-                    storedUser.getRole()
-            );
-
-            ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
-        } else {
-            // Failure: Password mismatch
-            ResponseUtil.sendResponse(exchange, 401, "{\"message\": \"Invalid email or password.\"}", "application/json");
-        }
+        ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
     }
 
     // --- Helper to read and deserialize JSON from the request body ---
