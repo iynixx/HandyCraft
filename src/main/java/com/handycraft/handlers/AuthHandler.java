@@ -92,7 +92,7 @@ public class AuthHandler implements HttpHandler {
 
         if (storedUser == null) {
             ResponseUtil.sendResponse(exchange, 401,
-                    "{\"message\": \"Invalid email or password.\"}",
+                    "{\"message\": \"Login failed. Please check your email and password.\"}",
                     "application/json"
             );
             return;

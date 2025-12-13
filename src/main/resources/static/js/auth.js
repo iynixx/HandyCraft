@@ -152,11 +152,10 @@ function handleSignIn(event) {
         body: JSON.stringify(credentials)
     })
         .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            // Use a specific message for failed login attempts
-            throw new Error('Login failed. Please check your email and password.');
+            return response.json().then(data => {
+                if (response.ok) return data;
+                throw new Error(data.message);
+                });
         })
         .then(data => {
             alert(`Login successful! Welcome ${data.username}.`);
