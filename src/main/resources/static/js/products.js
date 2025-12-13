@@ -182,7 +182,7 @@ function renderProducts(products) {
             <h3 class="product-name">${product.name}</h3>
 
             <p class="product-description">
-                ${truncateText(product.description)}
+                ${(product.description)}
             </p>
 
             <p class="product-price">RM ${formattedPrice}</p>
