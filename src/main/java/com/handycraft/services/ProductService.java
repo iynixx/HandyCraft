@@ -1,65 +1,159 @@
 package com.handycraft.services;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.handycraft.models.Product;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Handles the business logic for products, including loading data from the JSON file.
+ * Handles the business logic for products, implementing persistent CRUD operations
+ * by writing to a file path.
  */
 public class ProductService {
 
-    // 🏆 FINAL FIX: This path is confirmed by the console output to be correct for your environment.
-    private static final String PRODUCT_DATA_RESOURCE = "data/products.json";
+    // IMPORTANT: Path changed to be writable on the file system
+    private static final String PRODUCT_DATA_FILE = "src/main/resources/data/products.json";
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private List<Product> products;
+    private final ReentrantLock fileLock = new ReentrantLock();
+
+    public ProductService() {
+        // Load data on service initialization
+        this.products = loadProductsFromFile();
+    }
+
+    // --- Private File I/O Methods (Writable) ---
+
+    private List<Product> loadProductsFromFile() {
+        File dataFile = new File(PRODUCT_DATA_FILE);
+
+        if (!dataFile.exists() || dataFile.length() == 0) {
+            return new ArrayList<>();
+        }
+
+        try (FileReader reader = new FileReader(dataFile)) {
+            Type productListType = new TypeToken<ArrayList<Product>>() {}.getType();
+            List<Product> loadedList = gson.fromJson(reader, productListType);
+
+            return loadedList != null ? loadedList : new ArrayList<>();
+        } catch (IOException e) {
+            System.err.println("Error reading product data file: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private void saveProductsToFile() throws IOException {
+        fileLock.lock();
+        try {
+            File dataDir = new File("src/main/resources/data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
+            }
+
+            try (FileWriter writer = new FileWriter(PRODUCT_DATA_FILE)) {
+                gson.toJson(this.products, writer);
+            }
+        } finally {
+            fileLock.unlock();
+        }
+    }
+
+    // --- Public Read Method ---
+
+    public List<Product> loadAllProducts() {
+        // Return a read-only copy of the internal list
+        return Collections.unmodifiableList(this.products);
+    }
+
+    // ====================================================================
+    // --- ADMIN-REQUIRED CRUD METHODS ---
+    // ====================================================================
 
     /**
-     * Loads all products from the products.json file using the ClassLoader.
-     * @return A List of Product objects, or an empty list if loading fails.
+     * Adds a new product and persists the change. (CREATE)
      */
-    public List<Product> loadAllProducts() {
+    public Product addProduct(Product newProduct) throws IOException {
+        fileLock.lock();
+        try {
+            // Generate a proper unique ID
+            String newId = UUID.randomUUID().toString();
+            newProduct.setId(newId);
 
-        // Use try-with-resources to ensure the InputStream is safely closed
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PRODUCT_DATA_RESOURCE)) {
-
-            if (inputStream == null) {
-                // If the file is not found, log an error and return empty list
-                System.err.println("CRITICAL ERROR: Product data file not found at resource path: " + PRODUCT_DATA_RESOURCE);
-                return Collections.emptyList();
+            // Set default fields
+            if (newProduct.getCategory() == null || newProduct.getCategory().isBlank()) {
+                newProduct.setCategory("Uncategorized");
             }
 
-            // Create a Reader from the InputStream to feed into Gson
-            Reader reader = new InputStreamReader(inputStream);
-
-            // Define the target type for Gson: a List of Product objects
-            Type productListType = new TypeToken<ArrayList<Product>>() {}.getType();
-
-            // Deserialize the JSON array into the List<Product>.
-            List<Product> products = gson.fromJson(reader, productListType);
-
-            // Check if the list is null or empty after parsing (bad JSON syntax)
-            if (products == null || products.isEmpty()) {
-                System.err.println("WARNING: Product data loaded successfully but the resulting list is empty or null. Check JSON syntax.");
-                return Collections.emptyList();
+            // FIX: If inventory map is missing or empty, initialize it with a default variant
+            if (newProduct.getInventory() == null || newProduct.getInventory().isEmpty()) {
+                Map<String, Integer> defaultInventory = new HashMap<>();
+                defaultInventory.put("Default", 10); // Start with 10 units of a default variant
+                newProduct.setInventory(defaultInventory);
             }
 
-            // Success log
-            System.out.println("SUCCESS: Loaded " + products.size() + " products from " + PRODUCT_DATA_RESOURCE);
+            this.products.add(newProduct);
+            saveProductsToFile();
 
-            return products;
+            return newProduct;
+        } finally {
+            fileLock.unlock();
+        }
+    }
 
-        } catch (Exception e) {
-            System.err.println("ERROR: Failed to load or parse product data. Check JSON syntax and Product model mapping.");
-            e.printStackTrace();
-            return Collections.emptyList();
+    /**
+     * Updates an existing product and persists the change. (UPDATE)
+     */
+    public boolean updateProduct(Product updatedProduct) throws IOException {
+        fileLock.lock();
+        boolean found = false;
+        try {
+            for (int i = 0; i < this.products.size(); i++) {
+                if (this.products.get(i).getId().equals(updatedProduct.getId())) {
+                    this.products.set(i, updatedProduct);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                saveProductsToFile();
+            }
+            return found;
+        } finally {
+            fileLock.unlock();
+        }
+    }
+
+    /**
+     * Deletes a product by ID and persists the change. (DELETE)
+     */
+    public boolean deleteProduct(String productId) throws IOException {
+        fileLock.lock();
+        boolean removed = false;
+        try {
+            // The removeIf method is clean and efficient
+            removed = this.products.removeIf(p -> p.getId().equals(productId));
+
+            if (removed) {
+                saveProductsToFile();
+            }
+            return removed;
+        } finally {
+            fileLock.unlock();
         }
     }
 }

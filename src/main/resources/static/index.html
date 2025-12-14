@@ -8,6 +8,16 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
+    <script>
+        const userRole = localStorage.getItem('userRole');
+        const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+
+        if (isLoggedIn && userRole === 'admin') {
+            // Redirect the admin to the dashboard with the necessary hash
+            window.location.href = 'admin.html#dashboard';
+        }
+    </script>
+
     <script defer src="js/auth.js"></script>
 
     <script>

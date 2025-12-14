@@ -254,7 +254,7 @@ function showCartConfirmation(productName) {
  * NOTE: This function is defined globally using 'window.viewCart' so the HTML can find it.
  */
 window.viewCart = function() {
-    // 🛑 LOGIN CHECK 🛑
+    // LOGIN CHECK
     if (checkLoginStatus()) {
         return;
     }

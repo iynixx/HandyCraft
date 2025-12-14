@@ -8,6 +8,11 @@
     --color-border: #E0E0E0;
     --color-policy-bar: #333333; /* Dark Footer/Policy Bar */
     --color-text-light: #FFF;    /* Text color for dark footer */
+
+    /* --- NEW ADMIN STYLES --- */
+    --color-admin-bg: #F8F8F8;
+    --color-admin-sidebar: #FFFFFF;
+    --color-admin-card: #EAEFF4; /* Light secondary color for stat cards */
 }
 
 /* --- Global Reset and Layout Structure --- */
@@ -88,27 +93,27 @@ a:hover {
     transform: translateY(-1px);
 }
 
-/* --- SECONDARY BUTTON STYLE FOR FOOTER & CATEGORIES --- */
+/* --- SECONDARY BUTTON STYLE --- */
 .button.secondary {
     background-color: transparent;
-    color: var(--color-text-light); /* White text for dark footer, or based on context */
-    /* NOTE: Border now uses the new color: #E7DADA */
+    color: var(--color-text-light); /* Default for dark contexts */
     border: 2px solid var(--color-secondary);
     padding: 8px 15px;
     font-weight: 500;
 }
 
 .button.secondary:hover {
-    /* Updated hover effect using the new color */
     background-color: rgba(231, 218, 218, 0.5);
     transform: translateY(-1px);
 }
 /* For category page cards (white background) */
-.category-card .button.secondary {
+.category-card .button.secondary,
+.admin-content .button.secondary { /* Added admin context */
     color: var(--color-text);
     border-color: var(--color-primary);
 }
-.category-card .button.secondary:hover {
+.category-card .button.secondary:hover,
+.admin-content .button.secondary:hover { /* Added admin context */
     background-color: var(--color-primary);
     color: var(--color-white);
 }
@@ -117,6 +122,11 @@ a:hover {
 .button.large {
     padding: 12px 30px;
     font-size: 1.1em;
+}
+
+.button.small {
+    padding: 6px 12px;
+    font-size: 0.9em;
 }
 
 .large-button {
@@ -198,13 +208,11 @@ nav {
 }
 
 /* --- CRITICAL ADDITION FOR PLAIN TEXT SIGN IN/SIGN UP --- */
-/* This targets all links within the #auth-links UL to ensure they use basic text styling */
-/* and explicitly removes any padding or background that might come from general .button styles. */
 .auth-links-container #auth-links li a {
     padding: 0;
     background-color: transparent;
     border-radius: 0;
-    color: var(--color-text); /* Ensure the text color is correct */
+    color: var(--color-text);
     font-weight: 500;
 }
 
@@ -221,12 +229,9 @@ nav {
     align-items: center;
     gap: 5px;
     padding: 8px 0;
-
-    /* CRITICAL: Ensure no background and no border */
     background-color: transparent !important;
     border: none !important;
     border-radius: 0 !important;
-
     color: var(--color-text);
     font-weight: 600;
     transition: color 0.3s;
@@ -240,7 +245,6 @@ nav {
     text-decoration: none;
 }
 
-/* Style the arrow (the <span> element) to be bigger and more obvious */
 .back-button span {
     font-size: 1.5em;
     line-height: 1;
@@ -248,7 +252,6 @@ nav {
     transition: color 0.3s;
 }
 
-/* Ensure the arrow color changes on hover with the text */
 .back-button:hover span {
     color: var(--color-primary);
 }
@@ -502,19 +505,12 @@ nav {
 
 /* --- Auth Page Styles (MODIFIED BACKGROUND to #E7DADA) --- */
 
-/* CRITICAL FIX for uniform background color:
-   This ensures the background color is applied to the entire viewport height (html)
-    and the body content, preventing the two-tone look when content is short.
-   Requires both <html class="auth-page"> and <body class="auth-page"> to be set.
-*/
 html.auth-page, body.auth-page {
     background-color: var(--color-secondary) !important;
 }
-/* Ensure the page wrapper also takes the correct color */
 .auth-page .page-wrapper {
     background-color: var(--color-secondary);
 }
-/* Fallback/existing body style */
 .auth-page {
     display: flex;
     flex-direction: column;
@@ -716,6 +712,7 @@ html.auth-page, body.auth-page {
 .modal {
     display: none;
     position: fixed;
+    /* CRITICAL FIX: Ensure Z-index is high enough */
     z-index: 2000;
     left: 0;
     top: 0;
@@ -739,6 +736,9 @@ html.auth-page, body.auth-page {
     display: flex;
     flex-direction: column;
     max-height: 85vh;
+
+    /* Clips content that tries to spill out */
+    overflow: hidden;
 }
 
 /* Modal Header */
@@ -797,4 +797,210 @@ html.auth-page, body.auth-page {
 }
 .modal-body strong {
     font-weight: 700;
+}
+
+/* =========================================
+   FIX FOR ADMIN PRODUCT MODAL OVERFLOW (File Input)
+   ========================================= */
+
+/* Use the existing admin form group styles and ensure file input is included */
+#product-form .form-group { margin-bottom: 15px; }
+#product-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+
+/* CRITICAL FIX: Ensure all relevant inputs (including file) use 100% width and box-sizing */
+#product-form input[type="text"],
+#product-form input[type="number"],
+#product-form textarea,
+#product-form input[type="file"] {
+    width: 100%;
+    max-width: 100%; /* Added max-width safeguard */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding/border is calculated *inside* the 100% width */
+
+    /* ADDED: Explicitly handle overflow for the tricky file input element */
+    overflow: hidden;
+}
+
+/* Added scroll behavior to the form itself to handle long content gracefully */
+#product-form {
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* =========================================
+   ADMIN DASHBOARD STYLES (NEW)
+   ========================================= */
+
+/* 1. Global Admin Page Background */
+.admin-page {
+    background-color: var(--color-admin-bg);
+}
+
+/* 2. Admin Header */
+.admin-header {
+    background-color: var(--color-text); /* Dark background for admin header */
+    color: var(--color-white);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.admin-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.user-controls span {
+    font-size: 1em;
+}
+
+/* 3. Main Layout */
+.admin-layout {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    min-height: 80vh;
+}
+
+/* 4. Sidebar Navigation */
+.sidebar {
+    flex: 0 0 220px; /* Wider sidebar */
+    padding: 20px;
+    background-color: var(--color-admin-sidebar);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--color-shadow);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+.sidebar h2 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+.admin-nav ul {
+    list-style: none;
+    padding: 0;
+}
+.admin-nav a {
+    display: block;
+    padding: 10px 0;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    transition: color 0.2s;
+    font-weight: 500;
+}
+.admin-nav a:hover {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* 5. Main Content Area */
+.admin-content {
+    flex: 1;
+    padding: 30px;
+    background-color: var(--color-admin-sidebar);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--color-shadow);
+}
+.dashboard-section {
+    display: none;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
+.dashboard-section.active {
+    display: block;
+}
+
+/* 6. Dashboard Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.stat-card {
+    background-color: var(--color-admin-card);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 1px 3px var(--color-shadow);
+    color: var(--color-text);
+}
+.stat-card h3 {
+    margin-top: 0;
+    font-size: 1em;
+    color: var(--color-primary);
+}
+.stat-card p {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 5px 0 0 0;
+}
+
+/* 7. Admin Data Table Styles */
+.data-table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+.admin-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95em;
+}
+.admin-data-table th, .admin-data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    /* Ensure vertical alignment is centered for rows containing images */
+    vertical-align: middle;
+}
+.admin-data-table th {
+    background-color: var(--color-admin-card);
+    color: var(--color-text);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.admin-data-table tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* NEW: Style for the product image thumbnail in the table */
+.admin-data-table .product-thumb {
+    width: 50px; /* Container size */
+    height: 50px;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #f0f0f0; /* Placeholder background */
+    display: block; /* Ensures the div takes up the space */
+}
+.admin-data-table .product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* END NEW STYLES */
+
+/* 8. Role Tags for User Management */
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85em;
+}
+.admin-tag {
+    background-color: #e6ffed; /* Light Green */
+    color: #007c2a; /* Dark Green */
+}
+.self-tag {
+    background-color: #fffbe6; /* Light Yellow */
+    color: #b38800; /* Dark Yellow */
 }

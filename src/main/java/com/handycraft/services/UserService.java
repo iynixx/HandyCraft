@@ -17,16 +17,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock; // Using a lock for thread-safe list modification
 
 public class UserService {
     private static final String USER_DATA_FILE = "src/main/resources/data/users.json";
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private List<User> users;
+    // Use a lock to ensure thread safety when modifying the users list and saving the file
+    private final ReentrantLock fileLock = new ReentrantLock();
 
     public UserService() {
+        // Load users on service initialization
         this.users = loadUsers();
     }
 
+    // --- Private File I/O Methods ---
+
+    // Updated to return a list for internal use
     private List<User> loadUsers() {
         File dataFile = new File(USER_DATA_FILE);
 
@@ -46,6 +53,8 @@ public class UserService {
     }
 
     private void saveUsers() {
+        // Ensure only one thread writes to the file at a time
+        fileLock.lock();
         try {
             File dataDir = new File("src/main/resources/data");
             if (!dataDir.exists()) {
@@ -53,12 +62,17 @@ public class UserService {
             }
 
             try (FileWriter writer = new FileWriter(USER_DATA_FILE)) {
+                // Save the current state of the users list
                 gson.toJson(this.users, writer);
             }
         } catch (IOException e) {
             System.err.println("Error saving user data: " + e.getMessage());
+        } finally {
+            fileLock.unlock();
         }
     }
+
+    // --- Public Authentication/Registration Methods ---
 
     public User registerUser(String username, String email, String plainPassword) {
         if (findUserByEmail(email) != null) {
@@ -70,14 +84,12 @@ public class UserService {
         newUser.setUsername(username);
         newUser.setEmail(email);
 
-        // Generate unique salt for this user
         String salt = HashUtil.generateSalt();
-        // Hash password with the salt
         String hashedPassword = HashUtil.hashPassword(plainPassword, salt);
-        // Store both
+
         newUser.setSalt(salt);
         newUser.setPasswordHash(hashedPassword);
-        newUser.setRole("user"); // Default role
+        newUser.setRole("customer"); // Default role (Changed from "user" to be explicit)
 
         synchronized (this.users) {
             this.users.add(newUser);
@@ -101,17 +113,64 @@ public class UserService {
             return null;  // User not found
         }
 
-        // 1. Get user's stored salt
         String storedSalt = user.getSalt();
-
-        // 2. Hash entered password WITH stored salt
         String hashedInput = HashUtil.hashPassword(plainPassword, storedSalt);
 
-        // 3. Compare with stored hash
         if (hashedInput.equals(user.getPasswordHash())) {
             return user;  // Password matches!
         }
 
         return null;  // Password doesn't match
+    }
+
+    // ====================================================================
+    // --- NEW ADMIN-REQUIRED METHODS ---
+    // ====================================================================
+
+    /**
+     * Retrieves the entire list of users. Used by AdminHandler for /users and /stats.
+     */
+    public List<User> getAllUsers() {
+        // Return a read-only copy of the list to prevent outside modification
+        return Collections.unmodifiableList(this.users);
+    }
+
+    /**
+     * Finds a user by their unique ID. Used by AdminHandler for security check.
+     */
+    public User findUserById(String userId) {
+        return this.users.stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Updates the role of a user and persists the change to users.json.
+     * Used by AdminHandler's handleUpdateUserRole.
+     */
+    public boolean updateUserRole(String userId, String newRole) {
+        boolean success = false;
+
+        // Synchronization is necessary as we are modifying the shared list
+        synchronized (this.users) {
+            for (int i = 0; i < this.users.size(); i++) {
+                User user = this.users.get(i);
+                if (user.getUserId().equals(userId)) {
+                    // Update the role
+                    user.setRole(newRole);
+                    // Update the object in the list
+                    this.users.set(i, user);
+                    success = true;
+                    break;
+                }
+            }
+
+            if (success) {
+                // Only save the file if a modification occurred
+                saveUsers();
+            }
+        }
+        return success;
     }
 }

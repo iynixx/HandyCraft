@@ -6,21 +6,98 @@
     <title>Admin Dashboard - Handy Craft</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
+
     <script defer src="js/auth.js"></script>
+    <script defer src="js/admin.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const userRole = localStorage.getItem('userRole');
-            // If user is not logged in OR role is not 'admin', redirect to signin
+
+            // --- CRITICAL ACCESS CONTROL ---
+            //
+            // If user is not logged in OR role is not 'admin', redirect
             if (userRole !== 'admin') {
-                alert("Access Denied: You must be an administrator to view this page.");
-                window.location.href = 'signin.html';
+                // Check if user is logged in at all; if not, redirect silently.
+                if (localStorage.getItem('userLoggedIn') !== 'true') {
+                    window.location.href = 'signin.html';
+                } else {
+                    // Alert only if a non-admin user tries to access
+                    alert("Access Denied: You must be an administrator to view this page.");
+                    window.location.href = 'index.html'; // Redirect non-admins to home
+                }
+                return; // Stop execution
             }
-            // Display username upon successful verification
+
+            // --- UI Initialization (Only runs if userRole === 'admin') ---
+
             const adminUsername = localStorage.getItem('username');
             if (adminUsername) {
                 document.getElementById('admin-username').textContent = adminUsername;
             }
+
+            // 1. LOGOUT BINDING
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                // handleLogout is assumed to be defined globally in js/auth.js
+                logoutButton.addEventListener('click', window.handleLogout);
+            }
+
+            // 2. SIDEBAR NAVIGATION LOGIC
+            const navLinks = document.querySelectorAll('.admin-nav a');
+            const sections = document.querySelectorAll('.dashboard-section');
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    }
+                });
+            }
+
+            // Initialize: show the section based on the URL hash, or default to dashboard
+            const initialHash = window.location.hash.substring(1) || 'dashboard';
+            showSection(initialHash);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    window.history.pushState(null, null, link.href); // Update URL hash cleanly
+                    showSection(targetId);
+                });
+            });
+
+            // 3. IMAGE PREVIEW (Optional but helpful for UX)
+            const fileInput = document.getElementById('product-file-name');
+            const previewContainer = document.getElementById('image-preview');
+
+            if(fileInput && previewContainer) {
+                fileInput.addEventListener('change', function() {
+                    previewContainer.innerHTML = ''; // Clear existing preview
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = "Image Preview";
+                            img.style.maxWidth = '100px';
+                            img.style.maxHeight = '100px';
+                            img.style.marginTop = '10px';
+                            previewContainer.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
+
+        // Assume closeProductModal is defined either globally or in admin.js
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('active');
+        }
     </script>
 </head>
 <body class="admin-page">
@@ -52,40 +129,260 @@
         <section id="dashboard" class="dashboard-section active">
             <h2>Dashboard Overview</h2>
             <div class="stats-grid">
-                <div class="stat-card"><h3>Total Products</h3><p>--</p></div>
-                <div class="stat-card"><h3>Pending Orders</h3><p>--</p></div>
-                <div class="stat-card"><h3>Registered Users</h3><p>--</p></div>
+                <div class="stat-card"><h3>Total Products</h3><p id="stat-products">0</p></div>
+                <div class="stat-card"><h3>Pending Orders</h3><p id="stat-orders">0</p></div>
+                <div class="stat-card"><h3>Registered Users</h3><p id="stat-users">0</p></div>
             </div>
+            <p style="margin-top: 30px;">(Data loaded by js/admin.js)</p>
         </section>
 
         <section id="products" class="dashboard-section">
             <h2>Product Management</h2>
-            <button class="button primary">Add New Product</button>
-            <div id="product-list-admin">
+            <button id="add-product-btn" class="button primary">Add New Product</button>
+            <div id="product-list-admin" class="data-table-container">
                 <p>Product list will be loaded here...</p>
             </div>
         </section>
 
         <section id="orders" class="dashboard-section">
             <h2>Order Management</h2>
-            <p>Track, fulfill, and manage all customer orders here.</p>
+            <div id="order-list-admin" class="data-table-container">
+                <p>Track, fulfill, and manage all customer orders here.</p>
+            </div>
+        </section>
+
+        <section id="customers" class="dashboard-section">
+            <h2>Customer Management (Role Assignment)</h2>
+            <div id="customer-list-admin" class="data-table-container">
+                <p>Manage user roles here (e.g., promote customer to admin).</p>
+            </div>
+        </section>
+
+        <section id="reports" class="dashboard-section">
+            <h2>Sales Reports</h2>
+            <p>Generate sales and inventory reports here.</p>
         </section>
     </main>
 </div>
 
+<div id="product-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeProductModal()">&times;</span>
+        <h3 id="product-modal-title">Add New Product</h3>
+
+        <form id="product-form" data-product-id="">
+            <div class="form-group">
+                <label for="product-name">Product Name:</label>
+                <input type="text" id="product-name" name="product-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="product-category">Category:</label>
+                <input type="text" id="product-category" name="product-category" required>
+            </div>
+
+            <div class="form-group">
+                <label for="product-price">Price (RM):</label>
+                <input type="number" step="0.01" id="product-price" name="product-price" required>
+            </div>
+
+            <div class="form-group">
+                <label for="product-inventory">Total Inventory:</label>
+                <input type="number" id="product-inventory" name="product-inventory" required>
+                <small>For demonstration, enter total count.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="product-description">Description:</label>
+                <textarea id="product-description" name="product-description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="product-file-name">Product Image (.jpg, .png)</label>
+                <input type="file" id="product-file-name" name="file" accept="image/jpeg, image/png">
+                <small class="form-help">Required when adding a *new* product.</small>
+                <div id="image-preview" class="image-preview"></div>
+            </div>
+            <button type="submit" class="button primary">Save Product</button>
+        </form>
+    </div>
+</div>
+
 <style>
-    .admin-page { background-color: #F8F8F8; } /* Lighter background for the admin area */
+    /* Admin Specific Variables */
+    :root {
+        --color-admin-bg: #F8F8F8;
+        --color-admin-sidebar: #FFFFFF;
+        --color-admin-card: #EAEFF4; /* Light secondary color */
+        /* Assuming other variables like --color-primary, --color-text are in style.css */
+        --color-shadow: rgba(0, 0, 0, 0.1); /* Assuming this is defined elsewhere or adding a fallback */
+        --color-white: #FFFFFF;
+        --color-primary: #FFC0CB;
+        --color-text: #333333;
+        --color-border: #E0E0E0;
+    }
+
+    .admin-page { background-color: var(--color-admin-bg); }
     .admin-header { background-color: var(--color-text); color: var(--color-white); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .admin-header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
-    .admin-layout { display: flex; gap: 30px; margin-top: 20px; }
-    .sidebar { flex: 0 0 200px; padding: 20px; background-color: var(--color-white); border-radius: 8px; box-shadow: 0 2px 4px var(--color-shadow); }
+    .user-controls { display: flex; align-items: center; gap: 15px; }
+    .user-controls span { font-size: 1em; }
+
+    .admin-layout { display: flex; gap: 30px; margin-top: 20px; min-height: 80vh; }
+    .sidebar {
+        flex: 0 0 200px;
+        padding: 20px;
+        background-color: var(--color-admin-sidebar);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px var(--color-shadow);
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
     .sidebar h2 { color: var(--color-primary); margin-bottom: 15px; font-size: 1.2em; }
     .admin-nav ul { list-style: none; padding: 0; }
-    .admin-nav a { display: block; padding: 10px 0; color: var(--color-text); border-bottom: 1px solid #eee; }
-    .admin-content { flex: 1; padding: 20px; background-color: var(--color-white); border-radius: 8px; box-shadow: 0 2px 4px var(--color-shadow); }
-    .dashboard-section { margin-bottom: 30px; border-bottom: 1px solid var(--color-border); padding-bottom: 20px; }
+    .admin-nav a {
+        display: block;
+        padding: 10px 0;
+        color: var(--color-text);
+        text-decoration: none;
+        border-bottom: 1px solid #eee;
+        transition: color 0.2s;
+    }
+    .admin-nav a:hover { color: var(--color-primary); }
+
+    .admin-content {
+        flex: 1;
+        padding: 20px;
+        background-color: var(--color-admin-sidebar);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px var(--color-shadow);
+    }
+    .dashboard-section {
+        display: none;
+        margin-bottom: 30px;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 20px;
+    }
+    .dashboard-section.active {
+        display: block;
+    }
+
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; }
-    .stat-card { background-color: var(--color-secondary); padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px var(--color-shadow); }
+    .stat-card {
+        background-color: var(--color-admin-card);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 1px 3px var(--color-shadow);
+        color: var(--color-text);
+    }
+    .stat-card h3 { margin-top: 0; font-size: 1em; color: var(--color-primary); }
+    .stat-card p { font-size: 2em; font-weight: bold; margin: 5px 0 0 0; }
+
+    /* --- Modal Styles --- */
+    .modal {
+        display: none;
+        position: fixed;
+        /* CRITICAL FIX 1: Increased z-index to ensure it sits above all other content */
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        /* Ensure the backdrop is opaque enough */
+        background-color: rgba(0,0,0,0.7);
+    }
+    .modal.active { display: block; }
+
+    .modal-content {
+        /* CRITICAL FIX 2: Ensure the content box has a solid, opaque background */
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+        /* Keeps file input contained (from prior step) */
+        overflow: hidden;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #product-form {
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    #product-form .form-group { margin-bottom: 15px; }
+    #product-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+
+    #product-form input[type="text"],
+    #product-form input[type="number"],
+    #product-form textarea,
+    #product-form input[type="file"] {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        /* Ensures the file input button stays within bounds */
+        overflow: hidden;
+    }
+
+    /* Ensure the Save button is also contained */
+    #product-form .button.primary {
+        margin-top: 20px;
+    }
+
+    /* --- NEW STYLES FOR PRODUCT TABLE IMAGE THUMBNAIL --- */
+
+    /* Container for the table data */
+    .data-table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+    .admin-data-table th, .admin-data-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+        /* Ensure vertical alignment is centered for rows containing images */
+        vertical-align: middle;
+    }
+    /* Specific class for the image container in the table cell */
+    .product-thumb {
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+        border-radius: 4px;
+        background-color: #f0f0f0; /* Placeholder background */
+    }
+    .product-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
 </style>
 </body>
 </html>

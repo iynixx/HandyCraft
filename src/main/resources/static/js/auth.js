@@ -1,5 +1,7 @@
-// Base URL for the Java HTTP server
-const API_BASE_URL = 'http://localhost:8000/api/auth';
+// Base URL for all APIs (Root endpoint)
+const API_ROOT_URL = 'http://localhost:8000/api';
+// Auth specific endpoint
+const API_AUTH_URL = `${API_ROOT_URL}/auth`;
 const CART_STORAGE_KEY = 'handyCraftCart';
 const AUTH_LINKS_CONTAINER_ID = 'auth-links-container';
 
@@ -13,9 +15,11 @@ function saveSession(data) {
 }
 
 // Helper Function for Redirection based on Role
+// *** FIX 1: Ensure the function uses the passed 'role' argument. ***
+// *** FIX 2: Admin redirect must include #dashboard hash. ***
 function redirectToDashboard(role) {
     if (role === 'admin') {
-        window.location.href = 'admin.html'; // Redirect to Admin Dashboard
+        window.location.href = 'admin.html#dashboard'; // Redirect to Admin Dashboard with hash
     } else {
         window.location.href = 'index.html'; // Redirect to standard Product Page or Home
     }
@@ -53,7 +57,6 @@ function updateAuthHeader() {
         `;
     } else {
         // Logged Out: Sign In and Sign Up.
-        // FINAL FIX APPLIED: Ensure both links are simple text links without any button classes.
         htmlContent = `
             <li><a href="signin.html">Sign In</a></li>
             <li><a href="signup.html">Sign Up</a></li>
@@ -166,7 +169,7 @@ function handleSignUp(event) {
     };
 
     // 2. API Communication (POST to Java server)
-    fetch(`${API_BASE_URL}/register`, {
+    fetch(`${API_AUTH_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
@@ -202,7 +205,7 @@ function handleSignIn(event) {
         password: password
     };
 
-    fetch(`${API_BASE_URL}/login`, {
+    fetch(`${API_AUTH_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -211,7 +214,7 @@ function handleSignIn(event) {
             return response.json().then(data => {
                 if (response.ok) return data;
                 throw new Error(data.message);
-                });
+            });
         })
         .then(data => {
             alert(`Login successful! Welcome ${data.username}.`);
@@ -223,6 +226,7 @@ function handleSignIn(event) {
             updateAuthHeader();
 
             // 3. Redirect based on role
+            // *** CRITICAL: Call redirectToDashboard with the role from the server response (data.role) ***
             redirectToDashboard(data.role);
         })
         .catch(error => {

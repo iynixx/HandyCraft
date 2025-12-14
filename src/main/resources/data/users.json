@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "userId": "d7a4b8c1-f2e3-4d5a-9b0c-1e2f3g4h5i6j",
+    "username": "Sarah Johnson",
+    "email": "customer1@shop.com",
+    "salt": "YnU2r8/j3q4m5s6t7u8v9w==",
+    "passwordHash": "a92c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c",
+    "role": "customer"
+  },
+  {
+    "userId": "e8b5d9c2-g3f4-5e6b-a0c1-2f3g4h5i6j7k",
+    "username": "Michael Chen",
+    "email": "customer2@shop.com",
+    "salt": "t6v7w8x9y0z1a2b3c4d5e6==",
+    "passwordHash": "c20253457a4128521d8b67b14041a7d6e4f3588267232247b9264f331d20042f",
+    "role": "customer"
+  },
+  {
+    "userId": "f9c6e0d3-h4g5-6f7c-b1d2-3g4h5i6j7k8l",
+    "username": "David Lee",
+    "email": "admin1@shop.com",
+    "salt": "Xvy2PJH08jszj+rrIDQMSA==",
+    "passwordHash": "f6e1e6381e0d6125fa0f1dba6254a1d7dd7d74f5e93ad78c0913685bc2eb03da",
+    "role": "admin"
+  },
+  {
+    "userId": "0a1d2e3f-i5h6-7g8d-c2e3-4h5i6j7k8l9m",
+    "username": "Emily Davis",
+    "email": "admin2@shop.com",
+    "salt": "p0q1r2s3t4u5v6w7x8y9z0==",
+    "passwordHash": "b2c3d4e5f601a2b3c4d5e6f70a1b2c3d4e5f601a2b3c4d5e6f70a1b2c3d4e5f6",
+    "role": "admin"
+  }
+]
