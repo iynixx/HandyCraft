@@ -155,6 +155,7 @@ function populateCategoryFilter(products, currentFilter) {
 }
 
 // --- Render Product Cards (Updated with New Design) ---
+// --- Render Products ---
 function renderProducts(products) {
     const gridContainer = document.getElementById('product-grid');
     gridContainer.innerHTML = '';
@@ -163,26 +164,29 @@ function renderProducts(products) {
         const safePrice = product.price != null ? product.price : 0;
         const formattedPrice = parseFloat(safePrice).toFixed(2);
 
-        // Construct image path
         const finalImage = product.imageUrl
-            ? `/images/products/${product.imageUrl}`
-            : "/images/placeholder.jpg";
+            ? `images/products/${product.imageUrl}` // Ensure path doesn't start with slash if running locally
+            : "images/placeholder.jpg";
 
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
 
-        // HTML structure for a single product card
+        // START OF CLICKABLE LINK LOGIC
         productCard.innerHTML = `
-            <div class="product-image-wrapper">
-                <img src="${finalImage}" alt="${product.name}" class="product-image"/>
-            </div>
+            <a href="product-detail.html?id=${product.id}" class="product-link">
+                <div class="product-image-wrapper">
+                    <img src="${finalImage}" alt="${product.name}" class="product-image"/>
+                </div>
+            </a>
 
             <span class="category-tag">${product.category || "New"}</span>
 
-            <h3 class="product-name">${product.name}</h3>
+            <a href="product-detail.html?id=${product.id}" class="product-link">
+                <h3 class="product-name">${product.name}</h3>
+            </a>
 
             <p class="product-description">
-                ${(product.description)}
+                ${product.description}
             </p>
 
             <p class="product-price">RM ${formattedPrice}</p>
@@ -195,6 +199,7 @@ function renderProducts(products) {
                 Add to Cart
             </button>
         `;
+        // END OF CLICKABLE LINK LOGIC
 
         gridContainer.appendChild(productCard);
     });

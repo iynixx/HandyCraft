@@ -1,0 +1,237 @@
+// --- Configuration (Needed for cart storage) ---
+const CART_STORAGE_KEY = 'handyCraftCart';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Get Product ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    if (productId) {
+        fetchProductDetails(productId);
+    } else {
+        document.getElementById('product-detail-container').innerHTML =
+            "<p>Product not found.</p>";
+    }
+});
+
+// --- Authentication and Security (COPIED from product.js) ---
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        alert("You must be signed in to access your cart or add items. Please sign in first.");
+        // Redirect is handled here, returning true signifies redirection happened
+        window.location.href = 'signin.html';
+        return true; // Return true means STOP
+    }
+    // Return false signifies the user is logged in
+    return false; // Return false means PROCEED
+}
+
+function fetchProductDetails(id) {
+    // Reuse the API URL from your configuration
+    fetch('http://localhost:8000/api/products')
+        .then(res => res.json())
+        .then(products => {
+            // Find the specific product (Convert ID to string for comparison)
+            const product = products.find(p => p['Product ID'].toString() === id);
+
+            if (product) {
+                renderProductDetail(product);
+            } else {
+                document.getElementById('product-detail-container').innerHTML =
+                    "<p>Product ID not found.</p>";
+            }
+        })
+        .catch(err => console.error("Error:", err));
+}
+
+function renderProductDetail(product) {
+    const container = document.getElementById('product-detail-container');
+    const imageUrl = product['File Name'] ? `images/products/${product['File Name']}` : 'images/placeholder.jpg';
+
+    // 1. Determine Inventory/Variants
+    const inventoryObj = product.Inventory || {};
+    const variants = Object.keys(inventoryObj);
+
+    let variantHtml = '';
+    let initialStock = 0;
+
+    // Logic to build the dropdown
+    if (variants.length > 0) {
+        // Fix for stock showing [object Object] when it's a number/object
+        const firstVariantKey = variants[0];
+
+        // Check stock type (handles number, string, or object)
+        let rawStock = inventoryObj[firstVariantKey];
+        if (typeof rawStock === 'number') {
+            initialStock = rawStock;
+        } else if (typeof rawStock === 'object' && rawStock !== null) {
+            initialStock = rawStock.quantity || rawStock.count || 0;
+        } else if (typeof rawStock === 'string') {
+            initialStock = parseInt(rawStock) || 0;
+        } else {
+            initialStock = 0;
+        }
+
+        if (variants.length === 1 && firstVariantKey === 'Default') {
+            variantHtml = `<input type="hidden" id="selected-variant" value="Default">`;
+        } else {
+            const options = variants.map(v =>
+                `<option value="${v}">${v}</option>`
+            ).join('');
+
+            variantHtml = `
+                <div class="variant-selector">
+                    <label class="variant-label">Choose Variation:</label>
+                    <select id="variant-dropdown" class="variant-select">
+                        ${options}
+                    </select>
+                </div>
+            `;
+        }
+    }
+
+    // 2. Build the HTML
+    container.innerHTML = `
+        <div class="detail-image-wrapper">
+            <img src="${imageUrl}" alt="${product['Product Name']}" class="detail-image">
+        </div>
+        
+        <div class="detail-info">
+            <span class="detail-category">${product.Category}</span>
+            <h1 class="detail-title">${product['Product Name']}</h1>
+            <p class="detail-price">RM ${product['Price (RM)'].toFixed(2)}</p>
+            
+            <p class="detail-description">${product.Description}</p>
+
+            ${variantHtml}
+
+            <p class="stock-status">
+                Stock: <span id="stock-display">${initialStock}</span> units
+            </p>
+
+            <button id="detail-add-btn" class="button large primary">Add to Cart</button>
+        </div>
+    `;
+
+    // 3. Add Logic for Dropdown Changes
+    const dropdown = document.getElementById('variant-dropdown');
+    const stockDisplay = document.getElementById('stock-display');
+    const addBtn = document.getElementById('detail-add-btn');
+
+    if (dropdown) {
+        dropdown.addEventListener('change', (e) => {
+            const selectedColor = e.target.value;
+            const rawNewStock = inventoryObj[selectedColor];
+
+            // Check stock type again for the change event
+            let newStock = 0;
+            if (typeof rawNewStock === 'number') {
+                newStock = rawNewStock;
+            } else if (typeof rawNewStock === 'object' && rawNewStock !== null) {
+                newStock = rawNewStock.quantity || rawNewStock.count || 0;
+            } else if (typeof rawNewStock === 'string') {
+                newStock = parseInt(rawNewStock) || 0;
+            }
+
+            stockDisplay.textContent = newStock;
+
+            // Disable button if stock is 0
+            if(newStock <= 0) {
+                addBtn.disabled = true;
+                addBtn.textContent = "Out of Stock";
+                addBtn.style.backgroundColor = "#ccc";
+            } else {
+                addBtn.disabled = false;
+                addBtn.textContent = "Add to Cart";
+                addBtn.style.backgroundColor = ""; // Reset to CSS default
+            }
+        });
+    }
+
+    // 4. ADD TO CART FUNCTION (MODIFIED)
+    addBtn.addEventListener('click', () => {
+        // --- ADD LOGIN CHECK HERE ---
+        if (checkLoginStatus()) {
+            return;
+        }
+
+        // Get the chosen variant (or "Default")
+        const variant = dropdown ? dropdown.value : "Default";
+
+        // Use a customized Add To Cart function
+        const cartItemName = variant === "Default"
+            ? product['Product Name']
+            : `${product['Product Name']} (${variant})`;
+
+        addToCart(
+            product['Product ID'],
+            cartItemName,
+            product['Price (RM)']
+        );
+    });
+}
+
+
+// --- CART LOGIC (COPIED from product.js) ---
+function addToCart(productId, productName, productPrice) {
+    // Retrieve cart or initialize as empty array
+    let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+
+    // Check if item already exists in cart (matching ID and Name/Variant)
+    const existingItem = cart.find(item => item.id === productId && item.name === productName);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        // Add new item to cart
+        cart.push({
+            id: productId,
+            name: productName,
+            price: productPrice,
+            quantity: 1
+        });
+    }
+
+    // Save updated cart back to local storage
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+
+    showCartConfirmation(productName);
+}
+
+function showCartConfirmation(productName) {
+    alert(`"${productName}" added to your cart.`);
+}
+
+/**
+ * Global function linked to the header button: onclick="viewCart()" (COPIED from product.js)
+ */
+window.viewCart = function() {
+    // LOGIN CHECK
+    if (checkLoginStatus()) {
+        return;
+    }
+
+    const cartString = localStorage.getItem(CART_STORAGE_KEY);
+    let cart = cartString ? JSON.parse(cartString) : [];
+
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    // Create a readable summary of cart contents
+    let cartDetails = "🛒 Your Shopping Cart:\n\n";
+    let subtotal = 0;
+
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        cartDetails += `- ${item.name}: Qty ${item.quantity} x RM ${item.price.toFixed(2)} = RM ${itemTotal.toFixed(2)}\n`;
+        subtotal += itemTotal;
+    });
+
+    cartDetails += `\n------------------------\n`;
+    cartDetails += `Subtotal: RM ${subtotal.toFixed(2)}`;
+
+    alert(cartDetails);
+}

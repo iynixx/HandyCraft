@@ -1004,3 +1004,97 @@ html.auth-page, body.auth-page {
     background-color: #fffbe6; /* Light Yellow */
     color: #b38800; /* Dark Yellow */
 }
+
+/* --- PRODUCT DETAIL PAGE --- */
+.product-detail-layout {
+    display: flex;
+    gap: 40px;
+    padding: 40px 0;
+    flex-wrap: wrap; /* Mobile friendly */
+}
+
+/* Removes the default blue underline from product links */
+.product-link {
+    text-decoration: none;
+    color: inherit; /* Keeps the text color you defined (black/dark grey) */
+    cursor: pointer;
+    display: block; /* Ensures the link covers the whole image area */
+}
+
+.detail-image-wrapper {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.detail-image {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.detail-info {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detail-category {
+    color: #cc2b74;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.detail-title {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    color: var(--color-text);
+}
+
+.detail-price {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 20px;
+}
+
+.detail-description {
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Variation Selector Styles */
+.variant-selector {
+    margin-bottom: 20px;
+}
+
+.variant-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.variant-select {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    min-width: 200px;
+}
+
+.stock-status {
+    margin-bottom: 25px;
+    font-weight: 500;
+    color: #666;
+}
+
+.out-of-stock {
+    color: red;
+    font-weight: bold;
+}
