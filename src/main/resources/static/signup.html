@@ -115,6 +115,42 @@
                     <input type="password" id="confirm-password" name="confirm-password" required>
                 </div>
 
+                <div class="form-group">
+                    <label>Security Questions (For password recovery)</label>
+                    <div class="info-box" style="background-color: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                        <p><strong>Important:</strong> These answers will be used to verify your identity if you forget your password.</p>
+                        <ul style="margin: 5px 0 0 15px;">
+                            <li>Answers are case-sensitive (exact match required)</li>
+                            <li>Choose answers you can remember exactly</li>
+                            <li>Avoid answers that might change</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="security-answer-1">What is your favourite colour?</label>
+                    <input type="text" id="security-answer-1" name="securityAnswer1" required>
+                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
+                        Example: Blue
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="security-answer-2">What is your best friend's nickname?</label>
+                    <input type="text" id="security-answer-2" name="securityAnswer2" required>
+                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
+                        Example: Max
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="security-answer-3">What city were you born in?</label>
+                    <input type="text" id="security-answer-3" name="securityAnswer3" required>
+                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
+                        Example: Kuala Lumpur
+                    </small>
+                </div>
+
                 <div class="checkbox-group">
                     <input type="checkbox" id="agree-terms" name="agree-terms" required>
                     <label for="agree-terms">I agree to the <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">User Agreement, Terms of Service</a>, and <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.</label>

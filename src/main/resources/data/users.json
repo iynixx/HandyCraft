@@ -3,32 +3,72 @@
     "userId": "d7a4b8c1-f2e3-4d5a-9b0c-1e2f3g4h5i6j",
     "username": "Sarah Johnson",
     "email": "customer1@shop.com",
-    "salt": "YnU2r8/j3q4m5s6t7u8v9w==",
     "passwordHash": "a92c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c3d4e5f601b2c",
+    "salt": "YnU2r8/j3q4m5s6t7u8v9w\u003d\u003d",
     "role": "customer"
   },
   {
     "userId": "e8b5d9c2-g3f4-5e6b-a0c1-2f3g4h5i6j7k",
     "username": "Michael Chen",
     "email": "customer2@shop.com",
-    "salt": "t6v7w8x9y0z1a2b3c4d5e6==",
     "passwordHash": "c20253457a4128521d8b67b14041a7d6e4f3588267232247b9264f331d20042f",
+    "salt": "t6v7w8x9y0z1a2b3c4d5e6\u003d\u003d",
     "role": "customer"
   },
   {
     "userId": "f9c6e0d3-h4g5-6f7c-b1d2-3g4h5i6j7k8l",
     "username": "David Lee",
     "email": "admin1@shop.com",
-    "salt": "Xvy2PJH08jszj+rrIDQMSA==",
     "passwordHash": "f6e1e6381e0d6125fa0f1dba6254a1d7dd7d74f5e93ad78c0913685bc2eb03da",
+    "salt": "Xvy2PJH08jszj+rrIDQMSA\u003d\u003d",
     "role": "admin"
   },
   {
     "userId": "0a1d2e3f-i5h6-7g8d-c2e3-4h5i6j7k8l9m",
     "username": "Emily Davis",
     "email": "admin2@shop.com",
-    "salt": "p0q1r2s3t4u5v6w7x8y9z0==",
     "passwordHash": "b2c3d4e5f601a2b3c4d5e6f70a1b2c3d4e5f601a2b3c4d5e6f70a1b2c3d4e5f6",
+    "salt": "p0q1r2s3t4u5v6w7x8y9z0\u003d\u003d",
     "role": "admin"
+  },
+  {
+    "userId": "8965ce9a-db22-4043-9549-57231b298c85",
+    "username": "Lee En",
+    "email": "leeen@gmail.com",
+    "passwordHash": "8349ff75b53719d3a2c2419e30c9df18b299b966b2e83a63e07484036b0f3797",
+    "salt": "kyAr/ZQmlg0InesfNZKOcQ\u003d\u003d",
+    "role": "customer"
+  },
+  {
+    "userId": "62efef04-ef5c-4998-8a71-e5d72f4c2d63",
+    "username": "Aris",
+    "email": "aris@gmail.com",
+    "passwordHash": "84ca72004ba747e2e74ef3db0c178bd0761b5f47a80675e03bbbfdd62d88f25a",
+    "salt": "PZDooYhhZOIisjLqrvdjwA\u003d\u003d",
+    "role": "customer"
+  },
+  {
+    "userId": "d6aa23bc-33c0-4290-a89b-7e19feeaf577",
+    "username": "Abu",
+    "email": "abubakar@gmail.com",
+    "passwordHash": "5be177fe0c0fc4ad3a3c6e671d7d49368ff2ee5c5cefe8c7e556eac3bae6ac9f",
+    "salt": "31O/DzlasaoX/e33EIpfmA\u003d\u003d",
+    "role": "customer",
+    "securityAnswer1Hash": "cfeec951f4583e6364c9d3f718286992ea5ba14e4aa12387f9a83924690b3d87",
+    "securityAnswer2Hash": "2c071acf9e96e8640be6d54de0118514316b3aba7a5804408d833c2dd187250b",
+    "securityAnswer3Hash": "8ba1aa2517b72c73d8eeee13f39ee43d1d62263bc253c122528d5b23961c2068",
+    "securitySalt": "AWB8atN2jqKQCrb5ZavnxQ\u003d\u003d"
+  },
+  {
+    "userId": "0fa4104f-6212-4f97-bcf6-391699a3f75b",
+    "username": "Siti",
+    "email": "siti@gmail.com",
+    "passwordHash": "3b1f4721167ec66fc44dd8d9e40e16452a3e1c8d69573dd8389154233a930f7c",
+    "salt": "gGU8l5i6IAknNM+I9TEiEw\u003d\u003d",
+    "role": "customer",
+    "securityAnswer1Hash": "375b50cc689402c2b98cb95b797ea7f90948a145406a2705e3c85a268a36c0f6",
+    "securityAnswer2Hash": "a0dc8f3dcbac6498aea19c4993c990a6788dafe98400638e804cb9fb89b814a0",
+    "securityAnswer3Hash": "ac87df375d219586cd650e86a58cbc9ba943c30c9d54ec7d5332a732f12ffe6a",
+    "securitySalt": "m8X9AUwX6BBC+VEEYMWjpA\u003d\u003d"
   }
 ]

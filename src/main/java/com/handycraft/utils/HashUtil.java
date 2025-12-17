@@ -16,11 +16,19 @@ public class HashUtil {
     }
 
     // Hash password with salt
-    public static String hashPassword(String password, String salt) {
+    public static String hashPassword(String password, String salt){
+        return hashWithSalt(password, salt);
+    }
+    // Hash security answers
+    public static String hashSecurityAnswer(String answer, String salt){
+        return hashWithSalt(answer.toLowerCase(), salt); // Convert to lowercase for case-insensitive comparison
+    }
+    // Private helper method for hashing
+    private static String hashWithSalt(String input, String salt) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt.getBytes()); // Combine salt with password
-            md.update(password.getBytes());
+            md.update(salt.getBytes()); // Combine salt with input
+            md.update(input.getBytes());
             byte[] bytes = md.digest();
             // Convert to hex string
             StringBuilder sb = new StringBuilder();

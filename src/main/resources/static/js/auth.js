@@ -91,6 +91,9 @@ function handleSignUp(event) {
     const email = form.elements['email'].value.trim();
     const password = form.elements['password'].value;
     const confirmPassword = form.elements['confirm-password'].value;
+    const securityAnswer1 = form.elements['securityAnswer1'].value;
+    const securityAnswer2 = form.elements['securityAnswer2'].value;
+    const securityAnswer3 = form.elements['securityAnswer3'].value;
     const termsChecked = form.elements['agree-terms'] ? form.elements['agree-terms'].checked : false;
 
     // === 1. USERNAME VALIDATION ===
@@ -155,7 +158,13 @@ function handleSignUp(event) {
         return;
     }
 
-    // === 5. TERMS CHECK ===
+    // 5. Validate security answers
+    if (!securityAnswer1 || !securityAnswer2 || !securityAnswer3) {
+        alert("Please answer all security questions for password recovery.");
+        return;
+    }
+
+    // === 6. TERMS CHECK ===
     if (!termsChecked) {
         alert("You must agree to the User Agreement, Terms of Service, and Privacy Policy to register.");
         return;
@@ -165,7 +174,10 @@ function handleSignUp(event) {
     const userData = {
         username: formattedUsername,  // Use formatted username
         email: email.toLowerCase(),    // Lowercase email
-        password: password
+        password: password,
+        securityAnswer1: securityAnswer1,
+        securityAnswer2: securityAnswer2,
+        securityAnswer3: securityAnswer3
     };
 
     // 2. API Communication (POST to Java server)

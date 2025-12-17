@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock; // Using a lock for thread-safe list modification
+import java.util.Map;
+import java.util.HashMap;
 
 public class UserService {
     private static final String USER_DATA_FILE = "src/main/resources/data/users.json";
@@ -42,9 +44,9 @@ public class UserService {
         }
 
         try (FileReader reader = new FileReader(dataFile)) {
-            Type listType = new TypeToken<ArrayList<User>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<User>>() {
+            }.getType();
             List<User> loadedList = gson.fromJson(reader, listType);
-
             return loadedList != null ? loadedList : new ArrayList<>();
         } catch (IOException e) {
             System.err.println("Error reading user data file: " + e.getMessage());
@@ -63,7 +65,9 @@ public class UserService {
 
             try (FileWriter writer = new FileWriter(USER_DATA_FILE)) {
                 // Save the current state of the users list
-                gson.toJson(this.users, writer);
+                String json = gson.toJson(this.users);
+                writer.write(json);
+                System.out.println("DEBUG: Saved " + this.users.size() + " users to file");
             }
         } catch (IOException e) {
             System.err.println("Error saving user data: " + e.getMessage());
@@ -74,7 +78,7 @@ public class UserService {
 
     // --- Public Authentication/Registration Methods ---
 
-    public User registerUser(String username, String email, String plainPassword) {
+    public User registerUser(String username, String email, String plainPassword, String answer1, String answer2, String answer3) {
         if (findUserByEmail(email) != null) {
             return null; // User already exists
         }
@@ -84,19 +88,29 @@ public class UserService {
         newUser.setUsername(username);
         newUser.setEmail(email);
 
-        String salt = HashUtil.generateSalt();
-        String hashedPassword = HashUtil.hashPassword(plainPassword, salt);
-
-        newUser.setSalt(salt);
+        // Generate salt and hash for password
+        String passwordSalt = HashUtil.generateSalt();
+        String hashedPassword = HashUtil.hashPassword(plainPassword, passwordSalt);
+        newUser.setSalt(passwordSalt);
         newUser.setPasswordHash(hashedPassword);
         newUser.setRole("customer"); // Default role (Changed from "user" to be explicit)
+
+        // Generate separate salt for security answers
+        String securitySalt = HashUtil.generateSalt();
+        newUser.setSecuritySalt(securitySalt); // Store the salt
+
+        // Hash security answers with the security salt
+        // Convert to lowercase for case-insensitive matching
+        newUser.setSecurityAnswer1Hash(HashUtil.hashSecurityAnswer(answer1, securitySalt));
+        newUser.setSecurityAnswer2Hash(HashUtil.hashSecurityAnswer(answer2, securitySalt));
+        newUser.setSecurityAnswer3Hash(HashUtil.hashSecurityAnswer(answer3, securitySalt));
 
         synchronized (this.users) {
             this.users.add(newUser);
             saveUsers();
         }
 
-        System.out.println("New user registered with salt: " + salt.substring(0, 8) + "...");
+        System.out.println("New user registered with hashed security answers");
         return newUser;
     }
 
@@ -121,6 +135,89 @@ public class UserService {
         }
 
         return null;  // Password doesn't match
+    }
+
+    // Get security questions
+    public Map<String, String> getSecurityQuestions() {
+        Map<String, String> questions = new HashMap<>();
+        questions.put("question1", "What is your favourite colour?");
+        questions.put("question2", "What is your best friend's nickname?");
+        questions.put("question3", "What city were you born in?");
+        return questions;
+    }
+
+    // Verify security answers
+    public boolean verifySecurityAnswers(String email, String answer1, String answer2, String answer3) {
+        User user = findUserByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        // Get the security salt stored with the user
+        String securitySalt = user.getSecuritySalt();
+        if (securitySalt == null || securitySalt.isEmpty()) {
+            return false; // No security salt means answers aren't properly set up
+        }
+
+        // Hash the provided answers with the same salt
+        String providedHash1 = HashUtil.hashSecurityAnswer(answer1, securitySalt);
+        String providedHash2 = HashUtil.hashSecurityAnswer(answer2, securitySalt);
+        String providedHash3 = HashUtil.hashSecurityAnswer(answer3, securitySalt);
+
+        // Compare the hashes
+        return providedHash1.equals(user.getSecurityAnswer1Hash()) &&
+                providedHash2.equals(user.getSecurityAnswer2Hash()) &&
+                providedHash3.equals(user.getSecurityAnswer3Hash());
+    }
+
+    // Reset password
+    public boolean resetPassword(String email, String newPassword) {
+        User user = findUserByEmail(email);
+        if (user == null) {
+            System.err.println("User not found with email: " + email);
+            return false;
+        }
+        System.out.println("Resetting password for user: " + email);
+        String newSalt = HashUtil.generateSalt();
+        String newHash = HashUtil.hashPassword(newPassword, newSalt);
+
+        // Update the user in the synchronized list
+        synchronized (this.users) {
+            // Find the user in the list and update it
+            for (int i = 0; i < this.users.size(); i++) {
+                User u = this.users.get(i);
+                if (u.getEmail().equalsIgnoreCase(email)) {
+                    // Update this specific user object
+                    u.setSalt(newSalt);
+                    u.setPasswordHash(newHash);
+                    this.users.set(i, u); // Update in the list
+                    System.out.println("Password updated in memory for: " + email);
+                    break;
+                }
+            }
+
+            // Save the updated list to file
+            saveUsers();
+        }
+
+        System.out.println("Password reset successful for: " + email);
+        return true;
+    }
+
+    // Check if user has set up security answers
+    public boolean hasSecurityAnswers(String email) {
+        User user = findUserByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        // Check if answer hash fields AND security salt are not null
+        return user.getSecurityAnswer1Hash() != null &&
+                !user.getSecurityAnswer1Hash().isEmpty() &&
+                user.getSecurityAnswer2Hash() != null &&
+                !user.getSecurityAnswer2Hash().isEmpty() &&
+                user.getSecurityAnswer3Hash() != null &&
+                !user.getSecurityAnswer3Hash().isEmpty() &&
+                user.getSecuritySalt() != null &&
+                !user.getSecuritySalt().isEmpty();
     }
 
     // ====================================================================

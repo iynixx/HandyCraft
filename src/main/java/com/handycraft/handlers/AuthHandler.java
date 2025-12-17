@@ -139,7 +139,22 @@ public class AuthHandler implements HttpHandler {
             return;
         }
 
-        // === 5. CHECK IF EMAIL EXISTS ===
+        // === 5. SECURITY QUESTIONS VALIDATION ===
+        // Get security answers from the request
+        String securityAnswer1 = request.getSecurityAnswer1();
+        String securityAnswer2 = request.getSecurityAnswer2();
+        String securityAnswer3 = request.getSecurityAnswer3();
+
+        // Validate security answers exist
+        if (securityAnswer1 == null || securityAnswer1.isEmpty() ||
+                securityAnswer2 == null || securityAnswer2.isEmpty() ||
+                securityAnswer3 == null || securityAnswer3.isEmpty()) {
+            ResponseUtil.sendResponse(exchange, 400,
+                    "{\"message\": \"All security questions must be answered.\"}", "application/json");
+            return;
+        }
+
+        // === 6. CHECK IF EMAIL EXISTS ===
         if (userService.findUserByEmail(email) != null) {
             ResponseUtil.sendResponse(exchange, 409,
                     "{\"message\": \"Email already registered.\"}", "application/json");
@@ -147,7 +162,7 @@ public class AuthHandler implements HttpHandler {
         }
 
         // === ALL VALIDATION PASSED ===
-        User newUser = userService.registerUser(formattedUsername, email, password);
+        User newUser = userService.registerUser(formattedUsername, email, password,securityAnswer1,securityAnswer2,securityAnswer3);
 
         if (newUser != null) {
             String jsonResponse = "{\"userId\": \"" + newUser.getUserId() + "\", \"username\": \"" + newUser.getUsername() + "\"}";

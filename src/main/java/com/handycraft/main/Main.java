@@ -8,6 +8,7 @@ import com.handycraft.handlers.StaticFileHandler;
 import com.handycraft.handlers.CartHandler;
 import com.handycraft.handlers.AdminHandler;
 // import com.handycraft.utils.HashUtil; // <-- REMOVED: No longer needed here
+import com.handycraft.handlers.PasswordResetHandler;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -33,9 +34,10 @@ public class Main {
             server.createContext("/api/auth", new AuthHandler());
             server.createContext("/api/products", new ProductHandler());
             server.createContext("/api/checkout", new CartHandler());
-
-            // ⭐️ Admin Handler is still correctly registered
             server.createContext("/api/admin", new AdminHandler());
+
+            // 3. Password Reset Handler
+            server.createContext("/api/password-reset", new PasswordResetHandler());
 
             // Server Configuration
             server.setExecutor(Executors.newFixedThreadPool(10));
