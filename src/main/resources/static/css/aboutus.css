@@ -1,0 +1,227 @@
+:root {
+    --color-primary: #FFC0CB;
+    --color-accent: #D67D8C;     /* Rose Gold Accent */
+    --color-charcoal: #333333;   /* Charcoal text/headers */
+    --color-secondary: #E7DADA;
+    --color-background: #FAF9F6;
+    --color-white: #FFFFFF;
+    --color-text: #555555;
+    --color-border: #E0E0E0;
+    --color-shadow: rgba(0, 0, 0, 0.05);
+}
+
+/* Enable smooth scrolling for jump links */
+html {
+    scroll-behavior: smooth;
+}
+
+.about-page-body {
+    background-color: var(--color-background);
+}
+
+/* --- Typography & Elegant Header --- */
+.about-page h1 {
+    text-align: center;
+    margin: 50px 0 20px;
+    font-weight: 800;
+    font-size: 2.8rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--color-charcoal) 30%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Tab Navigation --- */
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 40px;
+    border-bottom: 1px solid var(--color-border);
+    max-width: 800px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 15px 35px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-button:hover {
+    color: var(--color-accent);
+}
+
+.tab-button.active {
+    color: var(--color-charcoal);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    width: 60%;
+    height: 3px;
+    background: var(--color-accent);
+    border-radius: 10px;
+}
+
+/* --- Jump Links Styling --- */
+.navigation-links {
+    margin-top: 15px;
+    font-size: 0.95rem;
+}
+
+.jump-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 700;
+    margin: 0 5px;
+    transition: opacity 0.3s;
+}
+
+.jump-link:hover {
+    opacity: 0.7;
+}
+
+/* --- Content Boxes --- */
+.content-box {
+    background: var(--color-white);
+    padding: 45px;
+    margin-bottom: 35px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px var(--color-shadow);
+    border: 1px solid rgba(214, 125, 140, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.content-box:hover {
+    transform: translateY(-5px);
+}
+
+/* Specific styling for the Mission/Vision/Values individual boxes */
+.section-box {
+    scroll-margin-top: 100px; /* Ensures space above the box after jumping */
+}
+
+.content-box h2 {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: var(--color-charcoal);
+    border-left: 5px solid var(--color-accent);
+    padding-left: 18px;
+    line-height: 1.2;
+}
+
+.values-list {
+    list-style: none;
+    padding: 0;
+}
+
+.values-list li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 25px;
+}
+
+.content-box p, .content-box li {
+    color: var(--color-text);
+    line-height: 1.9;
+    font-size: 1.1rem;
+}
+
+/* --- FAQ Specific Styles --- */
+.faq-item {
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-item h3 {
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--color-charcoal);
+    margin-top: 0;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* --- Contact Form Styling --- */
+#contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+#contact-form label {
+    font-size: 0.9rem;
+    color: var(--color-charcoal);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+#contact-form input,
+#contact-form textarea {
+    width: 100%;
+    border: 1px solid #EDEEF0;
+    background: #FAFAFA;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#contact-form input:focus,
+#contact-form textarea:focus {
+    border-color: var(--color-accent);
+    background: var(--color-white);
+    box-shadow: 0 0 0 4px rgba(214, 125, 140, 0.1);
+    outline: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--color-charcoal);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: var(--color-accent);
+}
+
+.contact-info-center {
+    text-align: center;
+}
+
+.contact-info-center a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* --- Mobile Optimization --- */
+@media (max-width: 768px) {
+    .tab-button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    .content-box {
+        padding: 25px;
+    }
+}

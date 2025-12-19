@@ -7,22 +7,17 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/aboutus.css">
 
     <script defer src="js/auth.js"></script>
 
     <script>
-        // Define viewCart function to prevent errors if the cart icon is present
         function viewCart() {
-            alert("Redirecting to Products page to view cart details.");
             window.location.href = "products.html";
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // NOTE: The authentication logic (checking isLoggedIn, setting innerHTML for auth-links,
-            // and binding the Logout button) has been REMOVED from here.
-            // It is now handled centrally and robustly by the updateAuthHeader() function in auth.js.
-
-            // 1. Search Functionality Logic
+            // Search functionality
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
                 searchForm.addEventListener('submit', (event) => {
@@ -34,114 +29,46 @@
                 });
             }
 
-            // 2. Default Tab Activation
-            // Find the first tab button and click it to show the default content (Our Story)
+            // Default Tab Activation (Starts on Our Story)
             const defaultTab = document.querySelector('.tab-buttons .tab-button');
             if (defaultTab) {
-                // Use a slight delay to ensure the DOM is fully rendered before clicking
                 defaultTab.click();
             }
 
-            // 3. Contact Form Handler (Basic)
+            // Contact Form Handler
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
                 contactForm.addEventListener('submit', (event) => {
                     event.preventDefault();
-                    alert('Thank you for your message! We will get back to you soon.');
-                    // In a real application, you would use fetch() here to send data to a server
+                    alert('Thank you for your message. We will get back to you soon.');
                     contactForm.reset();
                 });
             }
         });
 
-        // Tab Switching Logic (Kept here as it is page-specific)
+        // Tab Switching Logic
         function openTab(tabName, element) {
             let i, tabcontent, tablinks;
-
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].style.display = "none";
             }
-
             tablinks = document.getElementsByClassName("tab-button");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].classList.remove("active");
             }
-
             document.getElementById(tabName).style.display = "block";
             element.classList.add("active");
         }
     </script>
-
-    <style>
-        .tab-buttons {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-            border-bottom: 2px solid var(--color-border);
-        }
-        .tab-button {
-            background-color: transparent;
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--color-text);
-            transition: all 0.3s;
-            position: relative;
-        }
-        .tab-button:hover {
-            color: var(--color-primary);
-        }
-        .tab-button.active {
-            color: var(--color-primary);
-            border-bottom: 3px solid var(--color-primary);
-            margin-bottom: -2px; /* Pulls border up to overlap the main line */
-        }
-        .tab-content {
-            padding: 20px 0;
-            display: none; /* Hidden by default, shown by JS */
-        }
-        .content-box {
-            background-color: var(--color-white);
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px var(--color-shadow);
-        }
-        .content-box h2 {
-            color: var(--color-primary);
-            margin-top: 0;
-        }
-        .content-box h3 {
-            color: var(--color-text);
-            margin-top: 15px;
-            margin-bottom: 5px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--color-border);
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-    </style>
 </head>
-<body>
+<body class="about-page-body">
+
 <header class="main-header">
     <nav class="container">
         <div class="logo">
             <a href="index.html" class="logo-link-with-text">
-                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <img src="images/logo.png" alt="Handy Craft Logo">
                 <span class="site-title">Handy Craft</span>
             </a>
         </div>
@@ -153,18 +80,13 @@
             <li class="search-container">
                 <form id="search-form" class="search-form">
                     <input type="text" id="search-input" placeholder="Search products..." required>
-                    <button type="submit" class="search-button">🔍</button>
+                    <button type="submit" class="search-button">Search</button>
                 </form>
             </li>
 
-            <li>
-                <a href="#" onclick="viewCart(); return false;">
-                    🛒 View Cart
-                </a>
-            </li>
+            <li><a href="#" onclick="viewCart(); return false;">View Cart</a></li>
             <li id="auth-links-container" class="auth-links-container">
-                <ul id="auth-links" class="nav-links">
-                </ul>
+                <ul id="auth-links" class="nav-links"></ul>
             </li>
         </ul>
     </nav>
@@ -181,22 +103,33 @@
 
     <div id="our-story" class="tab-content">
         <div class="content-box">
-            <h2>Our Story: The Handy Craft Collective</h2>
+            <h2>The Handy Craft Collective</h2>
             <p>Handy Craft was born from a passion for sustainable, slow craft and the desire to support local Malaysian artisans. We aim to be the premier online destination for unique, high-quality crochet and handmade goods.</p>
+
+            <div class="navigation-links">
+                <p>
+                    <a href="#mission-box" class="jump-link">Mission</a> |
+                    <a href="#vision-box" class="jump-link">Vision</a> |
+                    <a href="#values-box" class="jump-link">Values</a>
+                </p>
+            </div>
         </div>
 
-        <div class="content-box">
-            <h2>Our Mission, Vision, and Values</h2>
-            <h3>Mission</h3>
+        <div class="content-box section-box" id="mission-box">
+            <h2>Mission</h2>
             <p>We aim to be the premier online destination for unique, high-quality crochet and handmade goods, offering an alternative to mass-produced items.</p>
+        </div>
 
-            <h3>Vision</h3>
+        <div class="content-box section-box" id="vision-box">
+            <h2>Vision</h2>
             <p>To foster a thriving community where creativity meets conscious consumption, ensuring every purchase tells a story and contributes positively to the artisan economy.</p>
+        </div>
 
-            <h3>Values</h3>
-            <ul>
+        <div class="content-box section-box" id="values-box">
+            <h2>Values</h2>
+            <ul class="values-list">
                 <li><strong>Quality:</strong> Every item is thoroughly inspected for superior craftsmanship.</li>
-                <li><strong>Sustainability:</strong> We prioritize eco-friendly materials and ethical production methods.</li>
+                <li><strong>Sustainability:</strong> We prioritize eco-friendly materials and ethical production.</li>
                 <li><strong>Community:</strong> We are committed to empowering local makers.</li>
             </ul>
         </div>
@@ -206,47 +139,68 @@
         <div class="content-box">
             <h2>Frequently Asked Questions</h2>
 
-            <h3>Q: How long does shipping take?</h3>
-            <p>A: Since all items are handmade, processing time can take 3-5 business days. Shipping within Malaysia usually takes an additional 2-3 days.</p>
+            <div class="faq-item">
+                <h3>How long does shipping take?</h3>
+                <p>Since all items are handmade, processing time can take 3-5 business days. Shipping within Malaysia usually takes an additional 2-3 days.</p>
+            </div>
 
-            <h3>Q: What is your return policy?</h3>
-            <p>A: We accept returns on damaged items within 7 days of delivery. Due to the unique nature of handmade goods, we do not offer returns for change of mind.</p>
+            <div class="faq-item">
+                <h3>What is your return policy?</h3>
+                <p>We accept returns on damaged items within 7 days of delivery. Due to the unique nature of handmade goods, we do not offer returns for change of mind.</p>
+            </div>
 
-            <h3>Q: Are the products machine washable?</h3>
-            <p>A: Most items require delicate hand washing or spot cleaning. Please refer to the specific care instructions provided with your product.</p>
+            <div class="faq-item">
+                <h3>Are the products machine washable?</h3>
+                <p>Most items require delicate hand washing or spot cleaning. Please refer to the specific care instructions provided with your product.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Do you accept custom commissions?</h3>
+                <p>Yes. Many of our artisans love creating custom pieces. Please use the contact form to provide details, and we will get back to you with a quote.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How do I track my order?</h3>
+                <p>Once your order is shipped, you will receive an email containing your tracking number and a link to the courier portal.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is international shipping available?</h3>
+                <p>Currently, we primarily ship within Malaysia. However, we can arrange international shipping on a case-by-case basis. Contact us for an estimate.</p>
+            </div>
         </div>
     </div>
 
     <div id="contact-us" class="tab-content">
         <div class="content-box">
             <h2>Get In Touch</h2>
-            <p>We'd love to hear from you. Please fill out the form below or use our contact information.</p>
+            <p>We would love to hear from you. Please fill out the form below and our team will respond within 24 hours.</p>
 
             <form action="#" method="POST" id="contact-form">
                 <div class="form-group">
-                    <label for="name">Your Name:</label>
+                    <label for="name">Your Name</label>
                     <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Your Email:</label>
+                    <label for="email">Your Email</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="subject">Subject:</label>
+                    <label for="subject">Subject</label>
                     <input type="text" id="subject" name="subject" required>
                 </div>
                 <div class="form-group">
-                    <label for="message">Message:</label>
+                    <label for="message">Message</label>
                     <textarea id="message" name="message" rows="5" required></textarea>
                 </div>
-                <button type="submit" class="button primary">Send Message</button>
+                <button type="submit" class="submit-btn">Send Message</button>
             </form>
         </div>
 
-        <div class="content-box">
+        <div class="content-box contact-info-center">
             <h2>Direct Contact Info</h2>
-            <p>Email: <a href="mailto:support@handycraft.my">support@handycraft.my</a></p>
-            <p>Address: USM Innovation Centre, Penang, Malaysia</p>
+            <p><strong>Email:</strong> <a href="mailto:support@handycraft.my">support@handycraft.my</a></p>
+            <p><strong>Address:</strong> USM Innovation Centre, Penang, Malaysia</p>
         </div>
     </div>
 </main>
@@ -255,23 +209,11 @@
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
         <div class="policy-buttons">
-            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
-            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
+            <a href="#" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
-
-<div id="policyModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle"></h2>
-            <span class="close-button" onclick="closePolicyModal()">&times;</span>
-        </div>
-        <div class="modal-body" id="modalContent">
-            Loading...
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

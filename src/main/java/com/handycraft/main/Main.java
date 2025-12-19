@@ -17,12 +17,7 @@ public class Main {
     private static final int PORT = 8000;
     private static final String STATIC_ROOT = "src/main/resources/static";
 
-    // REMOVED: The generateAdminCredentials() method has been deleted.
-
-
     public static void main(String[] args) {
-
-        // REMOVED: The call to generateAdminCredentials() has been deleted.
 
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);

@@ -21,13 +21,8 @@
     <script defer src="js/auth.js"></script>
 
     <script>
-        // --- Remaining client-side scripts (Search and Cart) ---
-
+        // --- Search and Cart scripts ---
         document.addEventListener('DOMContentLoaded', () => {
-            // NOTE: The authentication link rendering logic was removed from here.
-            // It is now handled entirely by the updateAuthHeader() function in auth.js,
-            // which runs on DOMContentLoaded.
-
             // Search function listener
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
@@ -44,8 +39,38 @@
         // Ensure viewCart is defined globally
         function viewCart() {
             console.log("View Cart function triggered.");
-            // Assuming this redirects to the products page to view the cart/checkout
             window.location.href = "products.html";
+        }
+
+        // Policy Modal Functions
+        function showPolicyModal(file, title) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.innerText = title;
+            modal.style.display = "block";
+
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    modalContent.innerHTML = data;
+                })
+                .catch(err => {
+                    modalContent.innerHTML = "Error loading policy.";
+                });
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').style.display = "none";
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </head>
@@ -56,7 +81,7 @@
         <nav class="container">
             <div class="logo">
                 <a href="index.html" class="logo-link-with-text">
-                    <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                    <img src="images/logo.png" alt="Handy Craft Logo">
                     <span class="site-title">Handy Craft</span>
                 </a>
             </div>
