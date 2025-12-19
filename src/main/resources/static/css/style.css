@@ -117,6 +117,19 @@ a:hover {
     background-color: var(--color-primary);
     color: var(--color-white);
 }
+.admin-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+.admin-message.success { border-left: 4px solid green; }
+.admin-message.error { border-left: 4px solid red; }
+.admin-message.info { border-left: 4px solid blue; }
 /* ------------------------------------------- */
 
 .button.large {
@@ -1097,4 +1110,76 @@ html.auth-page, body.auth-page {
 .out-of-stock {
     color: red;
     font-weight: bold;
+}
+
+/* Table Controls Container */
+.table-controls {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+.table-controls input[type="text"],
+.table-controls select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.table-controls input[type="text"]:focus,
+.table-controls select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.table-controls button {
+    margin-right: 10px;
+}
+
+/* Product count info text */
+#product-count {
+    color: #666;
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 15px;
+}
+
+/* Make table headers sortable - show it's clickable */
+.admin-data-table th[style*="cursor: pointer"]:hover {
+    background-color: #ddd;
+    text-decoration: underline;
+}
+
+/* Loading spinner animation */
+.spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments for table controls */
+@media (max-width: 768px) {
+    .table-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .table-controls input[type="text"],
+    .table-controls select,
+    .table-controls button {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #product-count {
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }

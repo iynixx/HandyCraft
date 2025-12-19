@@ -1,7 +1,223 @@
 // --- Configuration ---
 const API_BASE_URL = 'http://localhost:8000/api';
 const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
-const API_PRODUCTS_URL = `${API_BASE_URL}/products`;
+//const API_PRODUCTS_URL = `${API_BASE_URL}/products`;
+
+// --- FEATURE 1: Simple Product Search (Easy to implement) ---
+function setupProductSearch() {
+    const searchInput = document.getElementById('product-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function(e) {
+        const searchValue = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#product-list-admin tbody tr');
+
+        rows.forEach(row => {
+            const productName = row.cells[2].textContent.toLowerCase(); // Name column
+            const category = row.cells[3].textContent.toLowerCase(); // Category column
+
+            if (productName.includes(searchValue) || category.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
+// --- FEATURE 2: Category Filter Dropdown (Simple) ---
+function setupCategoryFilter() {
+    const filterSelect = document.getElementById('category-filter');
+    if (!filterSelect) return;
+
+    filterSelect.addEventListener('change', function(e) {
+        const selectedCategory = e.target.value;
+        const rows = document.querySelectorAll('#product-list-admin tbody tr');
+
+        rows.forEach(row => {
+            const category = row.cells[3].textContent; // Category column
+
+            if (selectedCategory === '' || category === selectedCategory) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
+// Populate filter dropdown with categories
+function populateCategoryFilter() {
+    const filterSelect = document.getElementById('category-filter');
+    if (!filterSelect) return;
+
+    // Get unique categories from the table
+    const rows = document.querySelectorAll('#product-list-admin tbody tr');
+    const categories = new Set();
+
+    rows.forEach(row => {
+        const category = row.cells[3].textContent;
+        if (category !== 'N/A') {
+            categories.add(category);
+        }
+    });
+    // Clear and rebuild options
+    filterSelect.innerHTML = '<option value="">All Categories</option>';
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        filterSelect.appendChild(option);
+    });
+}
+// --- FEATURE 3: Low Stock Warning Badge (Visual Enhancement) ---
+function addLowStockWarnings() {
+    const rows = document.querySelectorAll('#product-list-admin tbody tr');
+
+    rows.forEach(row => {
+        const inventoryCell = row.cells[5]; // Inventory column
+        const inventory = parseInt(inventoryCell.textContent);
+
+        if (inventory < 10) {
+            inventoryCell.style.color = 'red';
+            inventoryCell.style.fontWeight = 'bold';
+            inventoryCell.innerHTML += ' ⚠️'; // Warning emoji
+        } else if (inventory < 30) {
+            inventoryCell.style.color = 'orange';
+        }
+    });
+}
+
+// --- FEATURE 4: Simple Confirmation Dialog (Better UX) ---
+function confirmDelete(productId) {
+    // More detailed confirmation
+    const confirmed = confirm(
+        `Delete Product?\n\n` +
+        `Product ID: ${productId}\n` +
+        `This action cannot be undone.\n\n` +
+        `Click OK to confirm deletion.`
+    );
+
+    if (confirmed) {
+        deleteProduct(productId);
+    }
+}
+
+// --- FEATURE 5: Success/Error Messages (Toast-like but simpler) ---
+function showMessage(message, type = 'info') {
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `admin-message ${type}`;
+    messageDiv.textContent = message;
+
+    // Add to page
+    document.body.appendChild(messageDiv);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 3000);
+}
+
+// --- FEATURE 6: Sort Table by Column (Click header to sort) ---
+function makeSortable() {
+    const headers = document.querySelectorAll('#product-list-admin th');
+
+    headers.forEach((header, index) => {
+        // Skip the first column (thumbnail) and last column (actions)
+        if (index === 0 || index === headers.length - 1) return;
+
+        header.style.cursor = 'pointer';
+        header.title = 'Click to sort';
+
+        header.addEventListener('click', () => {
+            sortTable(index);
+        });
+    });
+}
+
+function sortTable(columnIndex) {
+    const table = document.querySelector('#product-list-admin tbody');
+    const rows = Array.from(table.querySelectorAll('tr'));
+
+    // Toggle sort direction
+    const isAscending = table.dataset.sortDir !== 'asc';
+    table.dataset.sortDir = isAscending ? 'asc' : 'desc';
+
+    rows.sort((a, b) => {
+        const aValue = a.cells[columnIndex].textContent;
+        const bValue = b.cells[columnIndex].textContent;
+
+        // Try to parse as number for price and inventory columns
+        const aNum = parseFloat(aValue);
+        const bNum = parseFloat(bValue);
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return isAscending ? aNum - bNum : bNum - aNum;
+        }
+
+        // Otherwise sort as string
+        return isAscending
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+    });
+
+    // Re-append rows in sorted order
+    rows.forEach(row => table.appendChild(row));
+}
+
+// --- FEATURE 7: Export to CSV (Simple version) ---
+function exportProductsToCSV() {
+    const rows = document.querySelectorAll('#product-list-admin tbody tr');
+    let csv = 'ID,Name,Category,Price,Inventory\n';
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        // Skip thumbnail (0) and actions (last)
+        const data = [
+            cells[1].textContent, // ID
+            cells[2].textContent, // Name
+            cells[3].textContent, // Category
+            cells[4].textContent, // Price
+            cells[5].textContent  // Inventory
+        ];
+        csv += data.join(',') + '\n';
+    });
+
+    // Download file
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'products.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+
+    showMessage('Products exported successfully!', 'success');
+}
+
+// --- FEATURE 8: Customer Search (Same pattern as product search) ---
+function setupCustomerSearch() {
+    const searchInput = document.getElementById('customer-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function(e) {
+        const searchValue = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#customer-list-admin tbody tr');
+
+        rows.forEach(row => {
+            const username = row.cells[1].textContent.toLowerCase();
+            const email = row.cells[2].textContent.toLowerCase();
+
+            if (username.includes(searchValue) || email.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+}
+
 
 // --- Global State ---
 let adminProductsCache = []; // Store the full product list for quick access
@@ -94,6 +310,18 @@ function renderProductTable(products) {
 
     // ADDED: Thumbnail column header
     let html = `
+         <div class="table-controls" style="margin-bottom: 15px;">
+            <input type="text" id="product-search" placeholder="Search products..." 
+                   style="padding: 8px; margin-right: 10px; width: 250px;">
+            <select id="category-filter" style="padding: 8px; margin-right: 10px;">
+                <option value="">All Categories</option>
+            </select>
+            <button onclick="exportProductsToCSV()" class="button secondary" 
+                    style="padding: 8px 15px;">Export CSV</button>
+            <p id="product-count" style="display: inline; margin-left: 15px; color: #666;">
+                Showing ${products.length} products
+            </p>
+        </div>
         <table class="admin-data-table">
             <thead>
                 <tr>
@@ -132,7 +360,8 @@ function renderProductTable(products) {
 
         // Calculate total inventory from the inventory map
         const inventoryMap = p.Inventory;
-        const totalInventory = inventoryMap ? Object.values(inventoryMap).reduce((sum, count) => sum + count, 0) : 0;
+        const totalInventory = inventoryMap ?
+            Object.values(inventoryMap).reduce((sum, count) => sum + count, 0) : 0;
 
         html += `
             <tr>
@@ -148,7 +377,7 @@ function renderProductTable(products) {
                 <td>${totalInventory}</td>
                 <td>
                     <button class="button small secondary edit-product-btn" data-id="${productId}">Edit</button>
-                    <button class="button small danger delete-product-btn" data-id="${productId}">Delete</button>
+                    <button class="button small danger" onclick="confirmDelete('${productId}')">Delete</button>
                 </td>
             </tr>
         `;
@@ -157,12 +386,19 @@ function renderProductTable(products) {
     html += `</tbody></table>`;
     container.innerHTML = html;
 
+    //initialization new features
+    setupProductSearch();
+    populateCategoryFilter();
+    setupCategoryFilter();
+    addLowStockWarnings();
+    makeSortable();
+
     // Bind listeners to the new buttons
     document.querySelectorAll('.edit-product-btn').forEach(btn => {
         btn.addEventListener('click', () => showProductModal(btn.dataset.id));
     });
     document.querySelectorAll('.delete-product-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
+        btn.addEventListener('click', () => confirmDelete(btn.dataset.id));
     });
 }
 
@@ -170,6 +406,7 @@ function renderProductTable(products) {
 
 async function listProductsForAdmin() {
     try {
+        showLoading('product-list-admin');
         const headers = checkAdminAccessAndGetHeaders('application/json');
 
         // We now fetch from the protected Admin endpoint to ensure security policies are met
@@ -197,6 +434,7 @@ async function listProductsForAdmin() {
 
     } catch (error) {
         console.error("Failed to load product list for admin:", error);
+        showMessage('Failed to load products', 'error');
         document.getElementById('product-list-admin').innerHTML = `<p style="color: red;">Failed to load products: ${error.message}</p>`;
     }
 }
@@ -369,7 +607,7 @@ async function handleProductSubmit(event) {
 // --- 2.4 Deleting ---
 
 async function deleteProduct(productId) {
-    if (confirm(`Are you sure you want to delete Product ID ${productId}? This action is permanent.`)) {
+    //if (confirm(`Are you sure you want to delete Product ID ${productId}? This action is permanent.`)) {
         try {
             const headers = checkAdminAccessAndGetHeaders('application/json');
 
@@ -379,19 +617,20 @@ async function deleteProduct(productId) {
             });
 
             if (response.status === 204) { // 204 No Content is success for DELETE
-                alert(`Product ID ${productId} deleted successfully.`);
+                //alert(`Product ID ${productId} deleted successfully.`);
+                showMessage('Product deleted successfully!', 'success');
                 listProductsForAdmin(); // Refresh the table
             } else if (response.status === 404) {
-                alert(`Error: Product ID ${productId} not found.`);
+                //alert(`Error: Product ID ${productId} not found.`);
+                showMessage('Product not found', 'error');
             } else {
-                const errorBody = await response.json();
+                //const errorBody = await response.json();
                 throw new Error(errorBody.message || `Deletion failed with status: ${response.status}`);
             }
         } catch (error) {
             console.error("Product deletion failed:", error);
-            alert(`Deletion failed: ${error.message}`);
+            showMessage('Failed to delete product', 'error');
         }
-    }
 }
 
 
@@ -402,6 +641,11 @@ function renderCustomerTable(users) {
     if (!container) return;
 
     let html = `
+        <div class="table-controls" style="margin-bottom: 15px;">
+            <input type="text" id="customer-search" placeholder="Search customers..." 
+                   style="padding: 8px; width: 250px;">
+        </div>
+        
         <table class="admin-data-table">
             <thead>
                 <tr>
@@ -438,6 +682,9 @@ function renderCustomerTable(users) {
     html += `</tbody></table>`;
     container.innerHTML = html;
 
+    // Initialize search
+    setupCustomerSearch();
+
     // Bind listeners to the new buttons
     document.querySelectorAll('.promote-btn').forEach(btn => {
         btn.addEventListener('click', () => updateRole(btn.dataset.id, 'admin'));
@@ -449,6 +696,7 @@ function renderCustomerTable(users) {
 
 async function listCustomersForAdmin() {
     try {
+        showLoading('product-list-admin');
         const headers = checkAdminAccessAndGetHeaders('application/json');
 
         const response = await fetch(`${API_ADMIN_BASE_URL}/users`, {
@@ -457,16 +705,18 @@ async function listCustomersForAdmin() {
         });
 
         if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.message || `Failed to load users list: ${response.statusText}`);
+            throw new Error(`Failed to load products: ${response.statusText}`);
         }
 
-        const users = await response.json();
-        renderCustomerTable(users);
+        const products = await response.json();
+        adminProductsCache = products;
+        renderProductTable(products);
 
     } catch (error) {
-        console.error("Failed to load users list for admin:", error);
-        document.getElementById('customer-list-admin').innerHTML = `<p style="color: red;">Failed to load users: ${error.message}</p>`;
+        console.error("Failed to load product list:", error);
+        showMessage('Failed to load products', 'error');
+        document.getElementById('product-list-admin').innerHTML =
+            `<p style="color: red;">Failed to load products: ${error.message}</p>`;
     }
 }
 
@@ -554,3 +804,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Expose functions globally if needed by inline HTML (e.g., modal close buttons)
 window.showProductModal = showProductModal;
 window.closeProductModal = closeProductModal;
+window.exportProductsToCSV = exportProductsToCSV;
+window.confirmDelete = confirmDelete;
+window.showMessage = showMessage;
