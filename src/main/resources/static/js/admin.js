@@ -217,6 +217,20 @@ function setupCustomerSearch() {
         });
     });
 }
+/**
+ * Simple helper to show a loading indicator in a container
+ * @param {string} containerId - The ID of the element to show loading in
+ */
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <span class="spinner">⏳</span> Loading data, please wait...
+            </div>
+        `;
+    }
+}
 
 
 // --- Global State ---
