@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class PasswordResetHandler implements HttpHandler {
     private final Gson gson = new Gson();
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -109,19 +109,38 @@ public class PasswordResetHandler implements HttpHandler {
                 return;
             }
 
-            // Validate password strength
+            // 1. Length Validation (8-15)
             if (newPassword.length() < 8 || newPassword.length() > 15) {
                 ResponseUtil.sendResponse(exchange, 400,
-                        "{\"message\": \"Password must be 8-15 characters\"}", "application/json");
+                        "{\"message\": \"Password must be 8-15 characters.\"}", "application/json");
                 return;
             }
 
-            if (!newPassword.matches(".*\\d.*") ||
-                    !newPassword.matches(".*[A-Z].*") ||
-                    !newPassword.matches(".*[a-z].*") ||
-                    newPassword.contains(" ")) {
+            // 2. Number Validation
+            if (!newPassword.matches(".*\\d.*")) {
                 ResponseUtil.sendResponse(exchange, 400,
-                        "{\"message\": \"Password must contain at least 1 number, 1 uppercase, 1 lowercase letter, and no spaces\"}", "application/json");
+                        "{\"message\": \"Password must contain at least 1 number.\"}", "application/json");
+                return;
+            }
+
+            // 3. Uppercase Validation
+            if (!newPassword.matches(".*[A-Z].*")) {
+                ResponseUtil.sendResponse(exchange, 400,
+                        "{\"message\": \"Password must contain at least 1 uppercase letter.\"}", "application/json");
+                return;
+            }
+
+            // 4. Lowercase Validation
+            if (!newPassword.matches(".*[a-z].*")) {
+                ResponseUtil.sendResponse(exchange, 400,
+                        "{\"message\": \"Password must contain at least 1 lowercase letter.\"}", "application/json");
+                return;
+            }
+
+            // 5. No Spaces Validation
+            if (newPassword.contains(" ")) {
+                ResponseUtil.sendResponse(exchange, 400,
+                        "{\"message\": \"Password cannot contain spaces.\"}", "application/json");
                 return;
             }
 

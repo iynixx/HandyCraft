@@ -1,25 +1,24 @@
 package com.handycraft.services;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.handycraft.models.User;
 import com.handycraft.utils.HashUtil;
 
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.ArrayList; //delete
+import java.util.Collections; //delete
+import java.util.List; //delete
+import java.util.UUID; //delete
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock; // Using a lock for thread-safe list modification
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Map; //delete
+import java.util.HashMap; //delete
 
 public class UserService {
     private static final String USER_DATA_FILE = "src/main/resources/data/users.json";
@@ -28,7 +27,15 @@ public class UserService {
     // Use a lock to ensure thread safety when modifying the users list and saving the file
     private final ReentrantLock fileLock = new ReentrantLock();
 
-    public UserService() {
+    // SINGLETON IMPLEMENTATION
+    private static UserService instance;
+    public static synchronized UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
+    private UserService() {
         // Load users on service initialization
         this.users = loadUsers();
     }
@@ -44,12 +51,11 @@ public class UserService {
         }
 
         try (FileReader reader = new FileReader(dataFile)) {
-            Type listType = new TypeToken<ArrayList<User>>() {
-            }.getType();
+            Type listType = new TypeToken<ArrayList<User>>() {}.getType();
             List<User> loadedList = gson.fromJson(reader, listType);
             return loadedList != null ? loadedList : new ArrayList<>();
         } catch (IOException e) {
-            System.err.println("Error reading user data file: " + e.getMessage());
+            //System.err.println("Error reading user data file: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -65,12 +71,12 @@ public class UserService {
 
             try (FileWriter writer = new FileWriter(USER_DATA_FILE)) {
                 // Save the current state of the users list
-                String json = gson.toJson(this.users);
-                writer.write(json);
-                System.out.println("DEBUG: Saved " + this.users.size() + " users to file");
+                gson.toJson(this.users, writer);
+                //System.out.println("DEBUG: Saved " + this.users.size() + " users to file");
             }
         } catch (IOException e) {
-            System.err.println("Error saving user data: " + e.getMessage());
+            e.printStackTrace();
+            //System.err.println("Error saving user data: " + e.getMessage());
         } finally {
             fileLock.unlock();
         }
@@ -86,14 +92,13 @@ public class UserService {
         User newUser = new User();
         newUser.setUserId(UUID.randomUUID().toString());
         newUser.setUsername(username);
-        newUser.setEmail(email);
+        newUser.setEmail(email.toLowerCase());
+        newUser.setRole("customer");
 
         // Generate salt and hash for password
         String passwordSalt = HashUtil.generateSalt();
-        String hashedPassword = HashUtil.hashPassword(plainPassword, passwordSalt);
         newUser.setSalt(passwordSalt);
-        newUser.setPasswordHash(hashedPassword);
-        newUser.setRole("customer"); // Default role (Changed from "user" to be explicit)
+        newUser.setPasswordHash(HashUtil.hashPassword(plainPassword, passwordSalt));
 
         // Generate separate salt for security answers
         String securitySalt = HashUtil.generateSalt();
@@ -101,16 +106,15 @@ public class UserService {
 
         // Hash security answers with the security salt
         // Convert to lowercase for case-insensitive matching
-        newUser.setSecurityAnswer1Hash(HashUtil.hashSecurityAnswer(answer1, securitySalt));
-        newUser.setSecurityAnswer2Hash(HashUtil.hashSecurityAnswer(answer2, securitySalt));
-        newUser.setSecurityAnswer3Hash(HashUtil.hashSecurityAnswer(answer3, securitySalt));
+        newUser.setSecurityAnswer1Hash(HashUtil.hashSecurityAnswer(answer1.trim().toLowerCase(), securitySalt));
+        newUser.setSecurityAnswer2Hash(HashUtil.hashSecurityAnswer(answer2.trim().toLowerCase(), securitySalt));
+        newUser.setSecurityAnswer3Hash(HashUtil.hashSecurityAnswer(answer3.trim().toLowerCase(), securitySalt));
 
         synchronized (this.users) {
             this.users.add(newUser);
             saveUsers();
         }
-
-        System.out.println("New user registered with hashed security answers");
+        //System.out.println("New user registered with hashed security answers");
         return newUser;
     }
 
@@ -149,19 +153,16 @@ public class UserService {
     // Verify security answers
     public boolean verifySecurityAnswers(String email, String answer1, String answer2, String answer3) {
         User user = findUserByEmail(email);
-        if (user == null) {
+        if (user == null || user.getSecuritySalt() == null) {
             return false;
         }
         // Get the security salt stored with the user
         String securitySalt = user.getSecuritySalt();
-        if (securitySalt == null || securitySalt.isEmpty()) {
-            return false; // No security salt means answers aren't properly set up
-        }
 
         // Hash the provided answers with the same salt
-        String providedHash1 = HashUtil.hashSecurityAnswer(answer1, securitySalt);
-        String providedHash2 = HashUtil.hashSecurityAnswer(answer2, securitySalt);
-        String providedHash3 = HashUtil.hashSecurityAnswer(answer3, securitySalt);
+        String providedHash1 = HashUtil.hashSecurityAnswer(answer1.trim().toLowerCase(), securitySalt);
+        String providedHash2 = HashUtil.hashSecurityAnswer(answer2.trim().toLowerCase(), securitySalt);
+        String providedHash3 = HashUtil.hashSecurityAnswer(answer3.trim().toLowerCase(), securitySalt);
 
         // Compare the hashes
         return providedHash1.equals(user.getSecurityAnswer1Hash()) &&
@@ -171,53 +172,25 @@ public class UserService {
 
     // Reset password
     public boolean resetPassword(String email, String newPassword) {
-        User user = findUserByEmail(email);
-        if (user == null) {
-            System.err.println("User not found with email: " + email);
-            return false;
-        }
-        System.out.println("Resetting password for user: " + email);
-        String newSalt = HashUtil.generateSalt();
-        String newHash = HashUtil.hashPassword(newPassword, newSalt);
-
-        // Update the user in the synchronized list
         synchronized (this.users) {
-            // Find the user in the list and update it
-            for (int i = 0; i < this.users.size(); i++) {
-                User u = this.users.get(i);
-                if (u.getEmail().equalsIgnoreCase(email)) {
-                    // Update this specific user object
-                    u.setSalt(newSalt);
-                    u.setPasswordHash(newHash);
-                    this.users.set(i, u); // Update in the list
-                    System.out.println("Password updated in memory for: " + email);
-                    break;
-                }
+            User user = findUserByEmail(email);
+            if (user == null) {
+                //System.err.println("User not found with email: " + email);
+                return false;
             }
+            String newSalt = HashUtil.generateSalt();
+            user.setSalt(newSalt);
+            user.setPasswordHash(HashUtil.hashPassword(newPassword, newSalt));
 
-            // Save the updated list to file
             saveUsers();
+            return true;
         }
-
-        System.out.println("Password reset successful for: " + email);
-        return true;
     }
 
     // Check if user has set up security answers
     public boolean hasSecurityAnswers(String email) {
         User user = findUserByEmail(email);
-        if (user == null) {
-            return false;
-        }
-        // Check if answer hash fields AND security salt are not null
-        return user.getSecurityAnswer1Hash() != null &&
-                !user.getSecurityAnswer1Hash().isEmpty() &&
-                user.getSecurityAnswer2Hash() != null &&
-                !user.getSecurityAnswer2Hash().isEmpty() &&
-                user.getSecurityAnswer3Hash() != null &&
-                !user.getSecurityAnswer3Hash().isEmpty() &&
-                user.getSecuritySalt() != null &&
-                !user.getSecuritySalt().isEmpty();
+        return user != null && user.getSecurityAnswer1Hash() != null && user.getSecurityAnswer2Hash() != null && user.getSecurityAnswer3Hash() != null;
     }
 
     // ====================================================================

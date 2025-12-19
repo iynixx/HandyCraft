@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class AuthHandler implements HttpHandler {
     private final Gson gson = new Gson();
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {

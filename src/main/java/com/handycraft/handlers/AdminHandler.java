@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class AdminHandler implements HttpHandler {
 
     // --- Dependencies ---
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
     private final ProductService productService = new ProductService();
     private final Gson gson = new Gson();
 
