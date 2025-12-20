@@ -38,4 +38,15 @@ public class FeedbackService {
             return gson.fromJson(reader, new TypeToken<List<Feedback>>(){}.getType());
         } catch (Exception e) { return new ArrayList<>(); }
     }
+
+    public double getAverageRating(String productId) {
+        List<Feedback> productFeedback = getFeedbackByProduct(productId);
+        if (productFeedback.isEmpty()) return 0.0;
+
+        double sum = 0;
+        for (Feedback f : productFeedback) {
+            sum += f.getRating();
+        }
+        return sum / productFeedback.size();
+    }
 }

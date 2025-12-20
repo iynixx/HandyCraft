@@ -2,17 +2,35 @@
 const CART_STORAGE_KEY = 'handyCraftCart';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Get Product ID from URL
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
 
     if (productId) {
+        // Load product data first
         fetchProductDetails(productId);
+        // loadFeedback handles the reviews list AND internal data
+        loadFeedback(productId);
+        // updateAverageDisplay handles the score at the top
+        updateAverageDisplay(productId);
     } else {
-        document.getElementById('product-detail-container').innerHTML =
-            "<p>Product not found.</p>";
+        const container = document.getElementById('product-detail-container');
+        if (container) container.innerHTML = "<p>Product not found.</p>";
     }
 });
+
+async function updateAverageDisplay(productId) {
+    try {
+        const res = await fetch(`http://localhost:8000/api/feedback?id=${productId}`);
+        const data = await res.json();
+
+        const avgDisplay = document.getElementById('avg-rating-value');
+        if (avgDisplay) {
+            avgDisplay.textContent = (data.average || 0).toFixed(1);
+        }
+    } catch (error) {
+        console.error("Error updating average:", error);
+    }
+}
 
 // --- Authentication and Security (COPIED from product.js) ---
 function checkLoginStatus() {
@@ -37,6 +55,7 @@ function fetchProductDetails(id) {
 
             if (product) {
                 renderProductDetail(product);
+                updateAverageDisplay(id);
             } else {
                 document.getElementById('product-detail-container').innerHTML =
                     "<p>Product ID not found.</p>";
@@ -108,6 +127,10 @@ function renderProductDetail(product) {
 
             <p class="stock-status">
                 Stock: <span id="stock-display">${initialStock}</span> units
+            </p>
+            
+            <p class="average-rating" style="margin-top: 10px; font-weight: bold; color: #D67D8C;">
+                Average Customer Rating: <span id="avg-rating-value">Loading...</span>/5
             </p>
 
             <button id="detail-add-btn" class="button large primary">Add to Cart</button>
@@ -239,10 +262,18 @@ window.viewCart = function() {
 // 1. Function to display reviews
 async function loadFeedback(productId) {
     const res = await fetch(`http://localhost:8000/api/feedback?id=${productId}`);
-    const reviews = await res.json();
-    const container = document.getElementById('reviews-list');
+    const data = await res.json(); // 'data' is now the Object { reviews: [], average: 0 }
 
-    if (reviews.length === 0) {
+    // Access the reviews property specifically
+    const reviews = data.reviews;
+    const container = document.getElementById('reviews-list');
+    const countHeader = document.querySelector('.feedback-section h3');
+
+    if(countHeader && reviews){
+        countHeader.textContent = `Customer Reviews (${reviews.length})`;
+    }
+
+    if (!reviews || reviews.length === 0) {
         container.innerHTML = "<p>Be the first to review this product!</p>";
         return;
     }
@@ -287,7 +318,8 @@ document.getElementById('feedback-form').addEventListener('submit', async (e) =>
     if (response.ok) {
         alert("Thank you for your feedback!");
         document.getElementById('feedback-form').reset();
-        loadFeedback(productId); // Refresh the list
+        loadFeedback(productId); // Refresh the list of comments
+        updateAverageDisplay(productId); // Refresh the average rating
     }
 });
 

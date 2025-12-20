@@ -94,5 +94,17 @@
     "securityAnswer2Hash": "74c300d98e36c94794a245379a0c84dbabf8bf97f549dd9b5dada49e862826ed",
     "securityAnswer3Hash": "f365ce77ce02bba1bdc95fe12a45717554226a1ee69e3af8490b734eb1129d78",
     "securitySalt": "vXbkOGma0/ByVqrmKIRSpA\u003d\u003d"
+  },
+  {
+    "userId": "49ea422e-56a3-470a-87d2-7576dc7797fc",
+    "username": "Dino",
+    "email": "dino@gmail.com",
+    "passwordHash": "49d2c4ff25e152a5683b5433bd8edd83f210e1330fb9b151ddc2e96e93bd964a",
+    "salt": "/oOA0sIlYOaQYk+SyBGHVQ\u003d\u003d",
+    "role": "customer",
+    "securityAnswer1Hash": "20f8476bd26d9af866a7df7bf278a1cabb1c2a79c588161a90b6679bedebbfb2",
+    "securityAnswer2Hash": "709c00a784440e918111171489bb29a43c660399ab927d60bbde599ad44bfaf8",
+    "securityAnswer3Hash": "4e62b53b20d8fd9ae83e7d099087503a9fbbf009a3ab6ff40869e029042d026b",
+    "securitySalt": "BHx9acqhIYRRycGgdg99RQ\u003d\u003d"
   }
 ]
