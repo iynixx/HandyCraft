@@ -252,15 +252,50 @@ input[type="text"],
 input[type="search"],
 select {
     border-radius: 25px !important;
-    padding: 8px 15px;
+    padding: 10px 20px;
     border: 1px solid var(--color-border);
     outline: none;
+    font-size: 0.95em;
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+select:focus{
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 192, 203, 0.1);
 }
 
 select {
     background-color: #FFF5F6;
     border: 1px solid var(--color-primary);
     cursor: pointer;
+    padding-right: 35px;
+}
+
+/* Table Controls Container - Better Spacing */
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table-controls input[type="text"],
+.table-controls input[type="search"] {
+    min-width: 250px;
+}
+
+.table-controls select {
+    min-width: 180px;
+}
+
+.table-controls #product-count {
+    color: #888;
+    font-size: 0.9em;
+    margin-left: 15px;
 }
 
 /* --- EXPORT CSV BUTTON STYLE --- */
@@ -269,15 +304,18 @@ select {
     color: var(--color-primary-dark);
     border: 2px solid var(--color-primary) !important;
     border-radius: 25px !important;
-    padding: 8px 20px;
+    padding: 10px 25px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(255, 192, 203, 0.15);
 }
 
 .btn-export:hover {
     background-color: var(--color-primary);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 192, 203, 0.3);
 }
 
 /* --- ORIGINAL DATA TABLES & FIXED IMAGE SIZE --- */
@@ -286,11 +324,13 @@ select {
     border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
+    background-color: var(--color-white);
 }
 
 .admin-data-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
 .admin-data-table th {
@@ -302,14 +342,32 @@ select {
 }
 
 .admin-data-table td {
-    padding: 15px;
+    padding: 18px 15px;
     border-bottom: 1px solid #eee;
     vertical-align: middle;
 }
-
 .admin-data-table tr:hover {
     background-color: #FFF9FA;
 }
+/*show full comment on hover*/
+.admin-data-table td:last-child:hover {
+    white-space: normal;    /*Allow text to wrap to multiple lines */
+    overflow: visible;      /* Show all text */
+}
+
+/* Actions column - better spacing */
+.admin-data-table td:last-child {
+    white-space: nowrap;
+}
+
+.admin-data-table td button {
+    display: inline-block;
+    margin: 2px 0;
+}
+
+/*.admin-data-table tr:hover {
+    background-color: #FFF9FA;
+}*/
 
 .product-thumb {
     width: 45px;
@@ -335,6 +393,8 @@ select {
     cursor: pointer;
     font-weight: 600;
     transition: 0.2s;
+    margin-right: 8px;
+    box-shadow: 0 2px 6px rgba(214, 125, 140, 0.1);
 }
 
 .btn-delete {
@@ -346,11 +406,25 @@ select {
     cursor: pointer;
     font-weight: 600;
     transition: 0.2s;
+    box-shadow: 0 2px 6px rgba(193, 106, 115, 0.1);
 }
 
-.btn-edit:hover, .btn-delete:hover {
+/*.btn-edit:hover, .btn-delete:hover {
     opacity: 0.8;
     transform: translateY(-1px);
+}*/
+.btn-edit:hover {
+    background-color: #D67D8C !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(214, 125, 140, 0.25);
+}
+
+.btn-delete:hover {
+    background-color: #C16A73 !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(193, 106, 115, 0.25);
 }
 
 /* --- MODAL LOGIC (FIXED TO POPUP) --- */
