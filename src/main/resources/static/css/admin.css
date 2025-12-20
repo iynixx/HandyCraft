@@ -17,6 +17,60 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
 }
+/* --- BUTTON STYLES --- */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95em;
+}
+
+.button.primary {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 192, 203, 0.3);
+}
+
+.button.primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 192, 203, 0.4);
+}
+
+.button.secondary {
+    background-color: var(--color-white);
+    color: var(--color-primary-dark);
+    border: 2px solid var(--color-primary);
+}
+
+.button.secondary:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.button.small {
+    padding: 6px 15px;
+    font-size: 0.85em;
+}
+
+.button.danger {
+    background-color: #F8F1F2;
+    color: #C16A73;
+    border: 1px solid #FADADD;
+}
+
+.button.danger:hover {
+    background-color: #C16A73;
+    color: white;
+}
+
+.button.full-width {
+    width: 100%;
+}
 
 /* --- ELEGANT TOP HEADER & GRADIENT LOGO --- */
 .admin-header {
