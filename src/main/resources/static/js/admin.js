@@ -526,7 +526,55 @@ async function updateRole(userId, newRole) {
     }
 }
 
-// --- 4. Main Initialization ---
+// 4. Fetch and display feedback in table format
+async function listFeedbackForAdmin() {
+    try {
+        showLoading('feedback-list-admin');
+        const headers = checkAdminAccessAndGetHeaders('application/json');
+        const response = await fetch(`${API_ADMIN_BASE_URL}/feedback`, { headers });
+
+        if (!response.ok) throw new Error("Failed to load feedback");
+        const feedbackList = await response.json();
+
+        renderFeedbackTable(feedbackList);
+    } catch (error) {
+        showMessage('Error loading feedback', 'error');
+    }
+}
+
+function renderFeedbackTable(feedbackList) {
+    const container = document.getElementById('feedback-list-admin');
+    if (!container) return;
+
+    let html = `
+        <table class="admin-data-table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>User</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    feedbackList.forEach(fb => {
+        html += `
+            <tr>
+                <td>${fb.productId}</td>
+                <td>${fb.username}</td>
+                <td><span class="tag admin-tag">${fb.rating}/5</span></td>
+                <td>${fb.comment}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+// --- 5. Main Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchDashboardStats();
 

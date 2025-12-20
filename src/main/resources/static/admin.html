@@ -58,6 +58,8 @@
                     listCustomersForAdmin();
                 } else if (targetId === 'dashboard' && typeof fetchDashboardStats === 'function') {
                     fetchDashboardStats();
+                } else if (targetId === 'feedback'){
+                    listFeedbackForAdmin();
                 }
             }
 
@@ -137,6 +139,7 @@
                 <li><a href="#orders">Order Management</a></li>
                 <li><a href="#customers">Customer Management</a></li>
                 <li><a href="#reports">Sales Reports</a></li>
+                <li><a href="#feedback">Feedback Management</a></li>
             </ul>
         </nav>
     </aside>
@@ -178,6 +181,13 @@
         <section id="reports" class="dashboard-section">
             <h2 class="section-title">Sales Reports</h2>
             <p>Generate sales and inventory reports here.</p>
+        </section>
+
+        <section id="feedback" class="dashboard-section">
+            <h2 class="section-title">Feedback Management</h2>
+            <div id="feedback-list-admin" class="data-table-container">
+                <p>Loading customer reviews...</p>
+            </div>
         </section>
     </main>
 </div>

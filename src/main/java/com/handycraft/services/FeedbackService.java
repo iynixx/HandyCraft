@@ -31,12 +31,23 @@ public class FeedbackService {
         return filtered;
     }
 
-    private List<Feedback> getAllFeedback() {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return new ArrayList<>();
-        try (FileReader reader = new FileReader(file)) {
-            return gson.fromJson(reader, new TypeToken<List<Feedback>>(){}.getType());
-        } catch (Exception e) { return new ArrayList<>(); }
+    public List<Feedback> getAllFeedback() {
+        lock.lock(); // Use the lock for safety
+        try {
+            File file = new File(FILE_PATH);
+            if (!file.exists() || file.length() == 0) {
+                return new ArrayList<>();
+            }
+            try (FileReader reader = new FileReader(file)) {
+                // Using GSON to convert JSON file content back into a Java List
+                return gson.fromJson(reader, new TypeToken<List<Feedback>>(){}.getType());
+            } catch (IOException e) {
+                System.err.println("Error reading feedback file: " + e.getMessage());
+                return new ArrayList<>();
+            }
+        } finally {
+            lock.unlock(); // Always unlock
+        }
     }
 
     public double getAverageRating(String productId) {

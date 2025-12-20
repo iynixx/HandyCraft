@@ -1,6 +1,8 @@
 package com.handycraft.handlers;
 
 import com.google.gson.Gson;
+import com.handycraft.models.Feedback;
+import com.handycraft.services.FeedbackService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.handycraft.services.ProductService;
@@ -83,6 +85,9 @@ public class AdminHandler implements HttpHandler {
             else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/users")) {
                 handleGetUsers(exchange);
             }
+            else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/feedback")) {
+                handleGetAllFeedback(exchange);
+            }
             else if (method.equalsIgnoreCase("POST") && path.equals(ADMIN_BASE + "/products")) {
                 handleAddProduct(exchange);
             }
@@ -145,6 +150,24 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, 200, gson.toJson(users), "application/json");
         } catch (Exception e) {
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to retrieve user list.\"}", "application/json");
+        }
+    }
+
+    private void handleGetAllFeedback(HttpExchange exchange) throws IOException {
+        try {
+            // 1. Initialize the service
+            FeedbackService fbService = new FeedbackService();
+
+            // 2. Fetch data using the NEW public method
+            List<Feedback> allFeedback = fbService.getAllFeedback();
+
+            // 3. Convert to JSON and send to the Admin GUI
+            String jsonResponse = gson.toJson(allFeedback);
+            ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error loading feedback\"}", "application/json");
         }
     }
 
