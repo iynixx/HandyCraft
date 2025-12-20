@@ -235,3 +235,64 @@ window.viewCart = function() {
 
     alert(cartDetails);
 }
+
+// 1. Function to display reviews
+async function loadFeedback(productId) {
+    const res = await fetch(`http://localhost:8000/api/feedback?id=${productId}`);
+    const reviews = await res.json();
+    const container = document.getElementById('reviews-list');
+
+    if (reviews.length === 0) {
+        container.innerHTML = "<p>Be the first to review this product!</p>";
+        return;
+    }
+
+    container.innerHTML = reviews.map(r => `
+        <div style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+            <strong>${r.username}</strong> 
+            <span style="color: #D67D8C; font-weight: bold;">(${r.rating}/5)</span>
+            <p style="margin-top: 5px;">${r.comment}</p>
+        </div>
+    `).join('');
+}
+
+// 2. Function to submit reviews
+document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        alert("Please sign in to leave a review.");
+        window.location.href = 'signin.html';
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    const username = localStorage.getItem('username');
+
+    const feedbackData = {
+        productId: productId,
+        username: username,
+        rating: parseInt(document.getElementById('fb-rating').value),
+        comment: document.getElementById('fb-comment').value
+    };
+
+    const response = await fetch('http://localhost:8000/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedbackData)
+    });
+
+    if (response.ok) {
+        alert("Thank you for your feedback!");
+        document.getElementById('feedback-form').reset();
+        loadFeedback(productId); // Refresh the list
+    }
+});
+
+// 3. Initialize loading on page load
+const currentProductId = new URLSearchParams(window.location.search).get('id');
+if (currentProductId) {
+    loadFeedback(currentProductId);
+}

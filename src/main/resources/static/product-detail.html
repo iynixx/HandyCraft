@@ -22,6 +22,33 @@
     <div id="product-detail-container" class="product-detail-layout">
         <p>Loading product details...</p>
     </div>
+    <section class="container feedback-section" style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee;">
+        <h3>Customer Reviews</h3>
+        <div id="reviews-list">
+            <p>No reviews yet.</p>
+        </div>
+
+        <div class="feedback-form-container" style="background: #fff; padding: 20px; border-radius: 12px; margin-top: 30px;">
+            <h4>Leave a Review</h4>
+            <form id="feedback-form">
+                <div class="form-group">
+                    <label>Rating:</label>
+                    <select id="fb-rating" style="width: 100%; padding: 10px; border-radius: 8px;">
+                        <option value="5">5/5 - Excellent</option>
+                        <option value="4">4/5 - Good</option>
+                        <option value="3">3/5 - Average</option>
+                        <option value="2">2/5 - Poor</option>
+                        <option value="1">1/5 - Very Poor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Comment:</label>
+                    <textarea id="fb-comment" rows="4" style="width: 100%; padding: 10px; border-radius: 8px;" required></textarea>
+                </div>
+                <button type="submit" class="button primary">Submit Review</button>
+            </form>
+        </div>
+    </section>
 </main>
 
 <footer class="main-footer">
