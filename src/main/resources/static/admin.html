@@ -11,174 +11,86 @@
 
     <script defer src="js/auth.js"></script>
     <script defer src="js/admin.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const userRole = localStorage.getItem('userRole');
-
-            // --- 1. ACCESS CONTROL ---
-            if (userRole !== 'admin') {
-                if (localStorage.getItem('userLoggedIn') !== 'true') {
-                    window.location.href = 'signin.html';
-                } else {
-                    alert("Access Denied: You must be an administrator.");
-                    window.location.href = 'index.html';
-                }
-                return;
-            }
-
-            // --- 2. UI INITIALIZATION ---
-            const adminUsername = localStorage.getItem('username');
-            if (adminUsername) {
-                document.getElementById('admin-username').textContent = adminUsername;
-            }
-
-            // --- 3. SIDEBAR NAVIGATION & DATA LOADING ---
-            const navLinks = document.querySelectorAll('.admin-nav a');
-            const sections = document.querySelectorAll('.dashboard-section');
-
-            function showSection(targetId) {
-                sections.forEach(section => section.classList.remove('active'));
-                navLinks.forEach(link => link.classList.remove('active-nav'));
-
-                const targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                }
-
-                const activeLink = document.querySelector(`.admin-nav a[href="#${targetId}"]`);
-                if (activeLink) {
-                    activeLink.classList.add('active-nav');
-                }
-
-                // Trigger data loading
-                if (targetId === 'products' && typeof listProductsForAdmin === 'function') {
-                    listProductsForAdmin();
-                } else if (targetId === 'customers' && typeof listCustomersForAdmin === 'function') {
-                    listCustomersForAdmin();
-                } else if (targetId === 'dashboard' && typeof fetchDashboardStats === 'function') {
-                    fetchDashboardStats();
-                } else if (targetId === 'feedback'){
-                    listFeedbackForAdmin();
-                }
-            }
-
-            const initialHash = window.location.hash.substring(1) || 'dashboard';
-            showSection(initialHash);
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    window.history.pushState(null, null, link.href);
-                    showSection(targetId);
-                });
-            });
-
-            // --- 4. MODAL CONTROL ---
-            const addProductBtn = document.getElementById('add-product-btn');
-            const productModal = document.getElementById('product-modal');
-
-            if (addProductBtn) {
-                addProductBtn.onclick = () => {
-                    document.getElementById('product-form').reset();
-                    document.getElementById('image-preview').innerHTML = '';
-                    document.getElementById('product-modal-title').textContent = 'Add New Product';
-                    productModal.classList.add('active');
-                };
-            }
-
-            // --- 5. IMAGE PREVIEW ---
-            const fileInput = document.getElementById('product-file-name');
-            const previewContainer = document.getElementById('image-preview');
-
-            if(fileInput && previewContainer) {
-                fileInput.addEventListener('change', function() {
-                    previewContainer.innerHTML = '';
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.style.maxWidth = '100px';
-                            img.style.borderRadius = '8px';
-                            previewContainer.appendChild(img);
-                        }
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        });
-
-        function closeProductModal() {
-            document.getElementById('product-modal').classList.remove('active');
-        }
-    </script>
 </head>
 <body class="admin-page">
 
 <header class="main-header admin-header">
-    <div class="container admin-header-content">
-        <h1 class="site-title">Handy Craft <span class="admin-label">Admin Portal</span></h1>
+    <div class="admin-header-content">
+        <div class="header-left">
+            <h1 class="site-title">Handy Craft</h1>
+            <span class="admin-label">ADMIN PORTAL</span>
+        </div>
 
         <div class="user-controls">
-            <span class="welcome-text">Welcome, <strong id="admin-username">Admin</strong></span>
-            <button id="logout-button" class="logout-btn" onclick="window.handleLogout()">Logout</button>
+            <span id="admin-username" class="admin-name-display">Admin</span>
+            <button class="logout-btn" onclick="window.handleLogout()">Logout</button>
         </div>
     </div>
 </header>
 
 <div class="admin-layout">
     <aside class="sidebar">
-        <h2>Management</h2>
+        <h2 class="sidebar-title">MANAGEMENT</h2>
         <nav class="admin-nav">
             <ul>
                 <li><a href="#dashboard">Dashboard Overview</a></li>
                 <li><a href="#products">Product Management</a></li>
                 <li><a href="#orders">Order Management</a></li>
                 <li><a href="#customers">Customer Management</a></li>
-                <li><a href="#reports">Sales Reports</a></li>
+                <li><a href="#sales-reports">Sales Reports</a></li>
                 <li><a href="#feedback">Feedback Management</a></li>
             </ul>
         </nav>
     </aside>
 
     <main class="admin-content">
-        <section id="dashboard" class="dashboard-section">
+        <section id="dashboard" class="dashboard-section active">
             <h2 class="section-title">Dashboard Overview</h2>
             <div class="stats-grid">
-                <div class="stat-card"><h3>Total Products</h3><p id="stat-products">0</p></div>
-                <div class="stat-card"><h3>Pending Orders</h3><p id="stat-orders">0</p></div>
-                <div class="stat-card"><h3>Registered Users</h3><p id="stat-users">0</p></div>
+                <div class="stat-card">
+                    <h3>Total Products</h3>
+                    <p id="stat-products">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Orders</h3>
+                    <p id="stat-orders">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Registered Users</h3>
+                    <p id="stat-users">0</p> </div>
             </div>
         </section>
 
         <section id="products" class="dashboard-section">
-            <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <div class="section-header">
                 <h2 class="section-title">Product Management</h2>
-                <button id="add-product-btn" class="button primary">Add New Product</button>
+                <button id="add-product-btn" class="button primary" onclick="showProductModal()">Add New Product</button>
             </div>
-            <div id="product-list-admin" class="data-table-container">
+            <div id="product-list-admin">
                 <p>Loading products...</p>
+            </div>
+        </section>
+
+        <section id="customers" class="dashboard-section">
+            <h2 class="section-title">Customer Management</h2>
+            <div class="customer-container">
+                <div class="table-controls">
+                    <input type="text" id="customer-search" placeholder="Search customers..." oninput="filterCustomers()">
+                </div>
+                <div id="customer-list-admin" class="data-table-container">
+                    <p>Loading customer list...</p>
+                </div>
             </div>
         </section>
 
         <section id="orders" class="dashboard-section">
             <h2 class="section-title">Order Management</h2>
             <div id="order-list-admin" class="data-table-container">
-                <p>Track and fulfill customer orders.</p>
+                <p>Order data loading...</p>
             </div>
         </section>
 
-        <section id="customers" class="dashboard-section">
-            <h2 class="section-title">Customer Management</h2>
-            <div id="customer-list-admin" class="data-table-container">
-                <p>Loading user list and roles...</p>
-            </div>
-        </section>
-
-        <section id="reports" class="dashboard-section">
+        <section id="sales-reports" class="dashboard-section">
             <h2 class="section-title">Sales Reports</h2>
             <p>Generate sales and inventory reports here.</p>
         </section>
@@ -186,10 +98,55 @@
         <section id="feedback" class="dashboard-section">
             <h2 class="section-title">Feedback Management</h2>
             <div id="feedback-list-admin" class="data-table-container">
-                <p>Loading customer reviews...</p>
+                <p>Loading feedback...</p>
             </div>
         </section>
     </main>
+</div>
+
+<div id="product-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeProductModal()">&times;</span>
+        <h3 id="product-modal-title">Edit Product</h3>
+
+        <form id="product-form">
+            <input type="hidden" id="product-id-hidden">
+            <input type="hidden" id="product-image-hidden">
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="product-category" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (RM)</label>
+                    <input type="number" step="0.01" id="product-price" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Inventory</label>
+                    <input type="number" id="product-inventory" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <div id="image-preview" style="margin-bottom: 10px;"></div>
+                    <input type="file" id="product-file-name" accept="image/*">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="button secondary" onclick="closeProductModal()">Cancel</button>
+                <button type="submit" id="save-product-btn" class="button primary">Save Product</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <footer class="admin-footer">
@@ -197,41 +154,6 @@
         <p>&copy; 2025 Handy Craft. Admin Management System.</p>
     </div>
 </footer>
-
-<div id="product-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeProductModal()">&times;</span>
-        <h3 id="product-modal-title">Product Details</h3>
-        <form id="product-form">
-            <div class="form-group">
-                <label for="product-name">Product Name</label>
-                <input type="text" id="product-name" required>
-            </div>
-            <div class="form-group">
-                <label for="product-category">Category</label>
-                <input type="text" id="product-category" required>
-            </div>
-            <div class="form-group">
-                <label for="product-price">Price (RM)</label>
-                <input type="number" step="0.01" id="product-price" required>
-            </div>
-            <div class="form-group">
-                <label for="product-inventory">Total Inventory</label>
-                <input type="number" id="product-inventory" required>
-            </div>
-            <div class="form-group">
-                <label for="product-description">Description</label>
-                <textarea id="product-description" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="product-file-name">Product Image</label>
-                <input type="file" id="product-file-name" accept="image/*">
-                <div id="image-preview" class="image-preview" style="margin-top:10px;"></div>
-            </div>
-            <button type="submit" class="button primary full-width">Save Product</button>
-        </form>
-    </div>
-</div>
 
 </body>
 </html>

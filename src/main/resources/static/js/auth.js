@@ -325,9 +325,6 @@ window.showPolicyModal = showPolicyModal;
 window.closePolicyModal = closePolicyModal;
 window.handleLogout = handleLogout; // Expose handleLogout globally for header script blocks
 
-// --- DOM Initialization ---
-
-
 document.addEventListener('DOMContentLoaded', () => {
     // A. BIND FORM SUBMISSIONS
     const signUpForm = document.getElementById('signup-form');

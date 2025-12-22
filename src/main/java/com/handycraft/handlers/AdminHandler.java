@@ -19,32 +19,23 @@ import java.util.HashMap;
 
 public class AdminHandler implements HttpHandler {
 
-    // --- Dependencies ---
     private final UserService userService = UserService.getInstance();
     private final ProductService productService = new ProductService();
     private final Gson gson = new Gson();
 
-    // --- RBAC Implementation ---
     private boolean checkAdminAccess(HttpExchange exchange) {
         List<String> userIdHeaders = exchange.getRequestHeaders().get("X-User-ID");
-
-        if (userIdHeaders == null || userIdHeaders.isEmpty()) {
-            return false;
-        }
+        if (userIdHeaders == null || userIdHeaders.isEmpty()) return false;
 
         String userId = userIdHeaders.get(0);
-
         try {
             User user = userService.findUserById(userId);
-            // Only allow access if the user exists and has the 'admin' role
             return user != null && "admin".equals(user.getRole());
         } catch (Exception e) {
-            System.err.println("Error during Admin access check: " + e.getMessage());
             return false;
         }
     }
 
-    // --- CORS Helper ---
     private void setCorsHeaders(HttpExchange exchange) {
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -57,7 +48,6 @@ public class AdminHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         final String ADMIN_BASE = "/api/admin";
 
-        // Handle preflight CORS request
         if (method.equalsIgnoreCase("OPTIONS")) {
             setCorsHeaders(exchange);
             exchange.sendResponseHeaders(204, -1);
@@ -66,16 +56,12 @@ public class AdminHandler implements HttpHandler {
 
         setCorsHeaders(exchange);
 
-        // 1. *** SECURITY CHECK ***
         if (!checkAdminAccess(exchange)) {
-            ResponseUtil.sendResponse(exchange, 403,
-                    "{\"message\": \"Access Denied: Admin privileges required.\"}",
-                    "application/json");
+            ResponseUtil.sendResponse(exchange, 403, "{\"message\": \"Access Denied.\"}", "application/json");
             return;
         }
 
         try {
-            // 2. Routing Logic
             if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/stats")) {
                 handleGetStats(exchange);
             }
@@ -89,11 +75,11 @@ public class AdminHandler implements HttpHandler {
                 handleGetAllFeedback(exchange);
             }
             else if (method.equalsIgnoreCase("POST") && path.equals(ADMIN_BASE + "/products")) {
-                handleAddProduct(exchange);
+                handleSaveProduct(exchange, null);
             }
             else if (method.equalsIgnoreCase("PUT") && path.startsWith(ADMIN_BASE + "/products/")) {
                 String id = path.substring((ADMIN_BASE + "/products/").length());
-                handleUpdateProduct(exchange, id);
+                handleSaveProduct(exchange, id);
             }
             else if (method.equalsIgnoreCase("DELETE") && path.startsWith(ADMIN_BASE + "/products/")) {
                 String id = path.substring((ADMIN_BASE + "/products/").length());
@@ -104,137 +90,84 @@ public class AdminHandler implements HttpHandler {
                 handleUpdateUserRole(exchange, id);
             }
             else {
-                ResponseUtil.sendResponse(exchange, 404,
-                        "{\"message\": \"Admin Endpoint Not Found\"}", "application/json");
+                ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Not Found\"}", "application/json");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ResponseUtil.sendResponse(exchange, 500,
-                    "{\"message\": \"Internal Server Error in Admin Handler.\"}",
-                    "application/json");
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Internal Error\"}", "application/json");
         }
     }
 
-    // ======================================================================
-    // PRIVATE HANDLER METHODS
-    // ======================================================================
+    private void handleSaveProduct(HttpExchange exchange, String productId) throws IOException {
+        try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
+            Map<String, Object> data = gson.fromJson(isr, Map.class);
+            if (data == null) throw new Exception("Empty request body");
+
+            Product product = new Product();
+            if (productId != null) {
+                product.setId(productId);
+            }
+
+            product.setName((String) data.get("Product Name"));
+            product.setCategory((String) data.get("Category"));
+            product.setDescription((String) data.get("Description"));
+
+            // FIX: Using setImageUrl to match your Product.java model
+            if (data.containsKey("File Name")) {
+                product.setImageUrl((String) data.get("File Name"));
+            }
+
+            if (data.containsKey("Price (RM)")) {
+                product.setPrice(Double.parseDouble(data.get("Price (RM)").toString()));
+            }
+
+            if (data.containsKey("Inventory")) {
+                product.setInventory((Map<String, Integer>) data.get("Inventory"));
+            }
+
+            boolean success = (productId == null)
+                    ? productService.addProduct(product) != null
+                    : productService.updateProduct(product);
+
+            ResponseUtil.sendResponse(exchange, success ? 200 : 400,
+                    "{\"message\": \"" + (success ? "Success" : "Failed to save") + "\"}", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error processing data\"}", "application/json");
+        }
+    }
 
     private void handleGetStats(HttpExchange exchange) throws IOException {
-        try {
-            List<User> allUsers = userService.getAllUsers();
-            List<Product> allProducts = productService.loadAllProducts();
-
-            Map<String, Integer> stats = new HashMap<>();
-            stats.put("totalProducts", allProducts.size());
-            stats.put("registeredUsers", allUsers.size());
-            stats.put("pendingOrders", 5); // Placeholder for now
-
-            ResponseUtil.sendResponse(exchange, 200, gson.toJson(stats), "application/json");
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to retrieve stats.\"}", "application/json");
-        }
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("totalProducts", productService.loadAllProducts().size());
+        stats.put("registeredUsers", userService.getAllUsers().size());
+        stats.put("pendingOrders", 5);
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(stats), "application/json");
     }
 
     private void handleGetProducts(HttpExchange exchange) throws IOException {
-        try {
-            String productsJson = gson.toJson(productService.loadAllProducts());
-            ResponseUtil.sendResponse(exchange, 200, productsJson, "application/json");
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to load products.\"}", "application/json");
-        }
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(productService.loadAllProducts()), "application/json");
     }
 
     private void handleGetUsers(HttpExchange exchange) throws IOException {
-        try {
-            List<User> users = userService.getAllUsers();
-            ResponseUtil.sendResponse(exchange, 200, gson.toJson(users), "application/json");
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to retrieve user list.\"}", "application/json");
-        }
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(userService.getAllUsers()), "application/json");
     }
 
     private void handleGetAllFeedback(HttpExchange exchange) throws IOException {
-        try {
-            // 1. Initialize the service
-            FeedbackService fbService = new FeedbackService();
-
-            // 2. Fetch data using the NEW public method
-            List<Feedback> allFeedback = fbService.getAllFeedback();
-
-            // 3. Convert to JSON and send to the Admin GUI
-            String jsonResponse = gson.toJson(allFeedback);
-            ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error loading feedback\"}", "application/json");
-        }
-    }
-
-    private void handleAddProduct(HttpExchange exchange) throws IOException {
-        try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Product newProduct = gson.fromJson(isr, Product.class);
-            if (newProduct.getName() == null || newProduct.getPrice() <= 0) {
-                ResponseUtil.sendResponse(exchange, 400, "{\"message\": \"Product name and price are required.\"}", "application/json");
-                return;
-            }
-            Product addedProduct = productService.addProduct(newProduct);
-            ResponseUtil.sendResponse(exchange, 201, gson.toJson(addedProduct), "application/json");
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to add product.\"}", "application/json");
-        }
-    }
-
-    private void handleUpdateProduct(HttpExchange exchange, String productId) throws IOException {
-        try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Product updatedProduct = gson.fromJson(isr, Product.class);
-            updatedProduct.setId(productId);
-
-            boolean success = productService.updateProduct(updatedProduct);
-            if (success) {
-                ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Product updated successfully.\"}", "application/json");
-            } else {
-                ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Product not found.\"}", "application/json");
-            }
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to update product.\"}", "application/json");
-        }
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(new FeedbackService().getAllFeedback()), "application/json");
     }
 
     private void handleDeleteProduct(HttpExchange exchange, String productId) throws IOException {
-        try {
-            boolean success = productService.deleteProduct(productId);
-            if (success) {
-                ResponseUtil.sendResponse(exchange, 204, "", "application/json");
-            } else {
-                ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Product not found.\"}", "application/json");
-            }
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to delete product.\"}", "application/json");
-        }
+        boolean success = productService.deleteProduct(productId);
+        ResponseUtil.sendResponse(exchange, success ? 204 : 404, "", "application/json");
     }
 
     private void handleUpdateUserRole(HttpExchange exchange, String userId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
             Map<String, String> body = gson.fromJson(isr, Map.class);
             String newRole = body.get("role");
-
-            // CRITICAL SECURITY: Prevent self-demotion
-            String callerId = exchange.getRequestHeaders().getFirst("X-User-ID");
-            if (userId.equals(callerId) && "customer".equals(newRole)) {
-                ResponseUtil.sendResponse(exchange, 403,
-                        "{\"message\": \"Cannot demote your own active admin account.\"}", "application/json");
-                return;
-            }
-
             boolean success = userService.updateUserRole(userId, newRole);
-            if (success) {
-                ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Role updated successfully.\"}", "application/json");
-            } else {
-                ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"User not found.\"}", "application/json");
-            }
-        } catch (Exception e) {
-            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Failed to update role.\"}", "application/json");
+            ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");
         }
     }
 }

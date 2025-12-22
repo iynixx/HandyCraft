@@ -7,75 +7,88 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/categories.css">
 
     <script defer src="js/auth.js"></script>
 
     <script>
-        // --- Remaining client-side scripts (Search and Cart) ---
-
         document.addEventListener('DOMContentLoaded', () => {
-            // NOTE: Authentication header update is handled automatically by auth.js on load.
-
-            // Search function listener
+            // Search Form Logic
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
                 searchForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     const query = document.getElementById('search-input').value;
                     if (query.trim()) {
-                        // Redirect to products page with search query
                         window.location.href = `products.html?search=${encodeURIComponent(query)}`;
                     }
                 });
             }
+            renderCategories();
         });
 
-        // Define a function for viewCart to prevent errors when clicking the cart icon.
+        const categories = [
+            { name: "Accessory", path: "Accessory", desc: "Handmade hairpins, clips, and wearable accents." },
+            { name: "Bag", path: "Bag", desc: "Stylish and durable crochet bags for daily use." },
+            { name: "Bag & Purse Set", path: "Bag & Purse Set", desc: "Matching sets for a complete handcrafted look." },
+            { name: "Collectible", path: "Collectible", desc: "Unique limited edition handmade items." },
+            { name: "Concert Accessory", path: "Concert Accessory", desc: "Custom lightstick sleeves and fan-made gear." },
+            { name: "Crochet Decoration", path: "Crochet Decoration", desc: "Whimsical accents for your home and desk." },
+            { name: "Crochet Flower", path: "Crochet Flower", desc: "Everlasting blooms that never wither." },
+            { name: "Crochet Set", path: "Crochet Set", desc: "Coordinated sets perfect for gifting." },
+            { name: "Crochet Toy", path: "Crochet Toy", desc: "Adorable amigurumi plushies and characters." },
+            { name: "Crochet Toy & Utility", path: "Crochet Toy & Utility", desc: "Functional items with a cute toy twist." },
+            { name: "Hat", path: "Hat", desc: "Cozy beanies and stylish sun hats." },
+            { name: "Home Accessory", path: "Home Accessory", desc: "Coasters, mats, and daily essentials." },
+            { name: "Jewelry", path: "Jewelry", desc: "Delicate crochet earrings and necklaces." },
+            { name: "Keychain", path: "Keychain", desc: "Miniature crafts to carry with you everywhere." },
+            { name: "Pet Accessory", path: "Pet Accessory", desc: "Handmade collars and toys for your furry friends." },
+            { name: "Pouch", path: "Pouch", desc: "Small organizers for coins, makeup, or tech." },
+            { name: "Purse", path: "Purse", desc: "Elegant small purses for special occasions." },
+            { name: "Stationery", path: "Stationery", desc: "Handmade bookmarks and pen cozies." }
+        ];
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            let html = '';
+
+            categories.forEach(cat => {
+                html += `
+                    <div class="cat-card">
+                        <div class="cat-info">
+                            <h3>${cat.name}</h3>
+                            <p>${cat.desc}</p>
+                            <a href="products.html?category=${encodeURIComponent(cat.path)}" class="button primary">Explore Collection</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Special "View All" Card
+            html += `
+                <div class="cat-card all-products-card">
+                    <div class="cat-info">
+                        <h3>Full Collection</h3>
+                        <p>Browse everything Handy Craft has to offer.</p>
+                        <a href="products.html?category=all" class="button primary">View All Items</a>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
         function viewCart() {
-            alert("Redirecting to Products page to view cart details.");
             window.location.href = "products.html";
         }
-
-        // NOTE: Keeping the inline styles as requested
     </script>
-
-    <style>
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-        .category-card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px var(--color-shadow);
-            text-align: center;
-        }
-        .category-card h3 {
-            color: var(--color-primary);
-            margin-bottom: 10px;
-        }
-        .logo-link-with-text {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-        .site-title {
-            color: var(--color-text);
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-    </style>
 </head>
 <body>
+
 <header class="main-header">
     <nav class="container">
         <div class="logo">
             <a href="index.html" class="logo-link-with-text">
-                <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                <img src="images/logo.png" alt="Handy Craft Logo" height="40">
                 <span class="site-title">Handy Craft</span>
             </a>
         </div>
@@ -87,109 +100,52 @@
             <li class="search-container">
                 <form id="search-form" class="search-form">
                     <input type="text" id="search-input" placeholder="Search products..." required>
-                    <button type="submit" class="search-button">🔍</button>
+                    <button type="submit" class="search-button">Search</button>
                 </form>
             </li>
 
             <li><a href="#" onclick="event.preventDefault(); viewCart();">
-                <span role="img" aria-label="shopping cart">🛒</span> View Cart
+                <span role="img" aria-label="shopping cart"> </span> View Cart
             </a></li>
 
             <li id="auth-links-container" class="auth-links-container">
-                <ul id="auth-links" class="nav-links">
-                </ul>
+                <ul id="auth-links" class="nav-links"></ul>
             </li>
         </ul>
     </nav>
 </header>
 
-
-<main class="container page-content">
-    <h1>Explore Our Handmade Collections</h1>
-    <p>Browse our unique items by category. Click any link below to view the filtered list of products.</p>
-
-
-    <section class="category-grid">
-        <div class="category-card">
-            <h3>Crochet Bags</h3>
-            <p>Spacious shoulder bags, mini purses, and casual sling bags for all occasions.</p>
-            <a href="products.html?category=Bag" class="button secondary">Shop Bags</a>
+<main class="categories-page">
+    <header class="category-hero">
+        <div class="container">
+            <h1>Handmade Collections</h1>
+            <p>Thoughtfully crafted items, made one stitch at a time.</p>
         </div>
+    </header>
 
-        <div class="category-card">
-            <h3>Crochet Toys & Plushies</h3>
-            <p>Adorable Amigurumi, character-based crochet toys, and decorative keychains.</p>
-            <a href="products.html?category=Crochet Toy" class="button secondary">Shop Toys & Plushies</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Crochet Decoration</h3>
-            <p>Unique items like desk accents, novelty decorations, and whimsical pieces for any room.</p>
-            <a href="products.html?category=Crochet Decoration" class="button secondary">Shop Decoration</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Home Accessories</h3>
-            <p>Practical and charming handmade items for daily use, including cup coasters and mats.</p>
-            <a href="products.html?category=Home Accessory" class="button secondary">Shop Home</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Wearable Accessories</h3>
-            <p>Hats, hair accessories, and fashionable items for a handmade touch to your style.</p>
-            <a href="products.html?category=Accessory" class="button secondary">Shop Accessories</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Concert & Utility</h3>
-            <p>Custom light stick sleeves and other specialized handmade functional items.</p>
-            <a href="products.html?category=Concert Accessory" class="button secondary">Shop Utility</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Crochet Sets</h3>
-            <p>Matching items, couples sets, or themed collections perfect for gifting.</p>
-            <a href="products.html?category=Crochet Set" class="button secondary">Shop Sets</a>
-        </div>
-
-        <div class="category-card">
-            <h3>Crochet Toy & Utility</h3>
-            <p>Items designed to be both decorative and functional, like themed dust collectors.</p>
-            <a href="products.html?category=Crochet Toy & Utility" class="button secondary">Shop Toy & Utility</a>
-        </div>
-
-        <div class="category-card">
-            <h3>All Products</h3>
-            <p>View the complete collection of everything we offer in one place.</p>
-            <a href="products.html?category=all" class="button primary">View All</a>
-        </div>
-
-    </section>
+    <div class="container">
+        <section class="categories-grid" id="categories-container">
+        </section>
+    </div>
 </main>
-
 
 <footer class="main-footer">
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
         <div class="policy-buttons">
-            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
-            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy')" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service')" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
 
-<div id="policyModal" class="modal">
+<div id="policyModal" class="modal" style="display:none;">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle"></h2>
-            <span class="close-button" onclick="closePolicyModal()">&times;</span>
-        </div>
-        <div class="modal-body" id="modalContent">
-            Loading...
-        </div>
+        <span class="close" onclick="closePolicyModal()">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <div id="modalContent"></div>
     </div>
 </div>
-
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 :root {
     --color-primary: #FFC0CB;
-    --color-accent: #D67D8C;     /* Rose Gold Accent */
-    --color-charcoal: #333333;   /* Charcoal text/headers */
+    --color-accent: #D67D8C;
+    --color-charcoal: #333333;
     --color-secondary: #E7DADA;
     --color-background: #FAF9F6;
     --color-white: #FFFFFF;
@@ -36,8 +36,9 @@ html {
     display: flex;
     justify-content: center;
     margin: 0 auto 40px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid var(--color-border);
     max-width: 800px;
+    position: relative;
 }
 
 .tab-button {
@@ -50,6 +51,7 @@ html {
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    text-decoration: none !important;
 }
 
 .tab-button:hover {
@@ -58,17 +60,22 @@ html {
 
 .tab-button.active {
     color: var(--color-charcoal);
+    text-decoration: none !important;
 }
 
+/* --- THE FIX FOR THE DOUBLE LINE --- */
 .tab-button.active::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 20%;
-    width: 60%;
-    height: 3px;
-    background: var(--color-accent);
+    /* Pushes the line down to exactly cover the container's border */
+    bottom: -2px;
+    left: 15%;
+    width: 70%;
+    /* Slightly thicker than the container border to ensure full coverage */
+    height: 4px;
     border-radius: 10px;
+    /* Keeps the dark line on top */
+    z-index: 1;
 }
 
 /* --- Jump Links Styling --- */
@@ -104,9 +111,8 @@ html {
     transform: translateY(-5px);
 }
 
-/* Specific styling for the Mission/Vision/Values individual boxes */
 .section-box {
-    scroll-margin-top: 100px; /* Ensures space above the box after jumping */
+    scroll-margin-top: 100px;
 }
 
 .content-box h2 {
@@ -124,9 +130,16 @@ html {
 }
 
 .values-list li {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     position: relative;
-    padding-left: 25px;
+    padding-left: 5px;
+}
+
+.values-list li strong {
+    color: var(--color-accent);
+    display: block;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
 }
 
 .content-box p, .content-box li {

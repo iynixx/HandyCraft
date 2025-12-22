@@ -1,610 +1,371 @@
 // --- Configuration ---
 const API_BASE_URL = 'http://localhost:8000/api';
 const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
-//const API_PRODUCTS_URL = `${API_BASE_URL}/products`;
-
-// --- FEATURE 1: Simple Product Search ---
-function setupProductSearch() {
-    const searchInput = document.getElementById('product-search');
-    if (!searchInput) return;
-
-    searchInput.addEventListener('input', function(e) {
-        const searchValue = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#product-list-admin tbody tr');
-
-        rows.forEach(row => {
-            const productName = row.cells[2].textContent.toLowerCase();
-            const category = row.cells[3].textContent.toLowerCase();
-
-            if (productName.includes(searchValue) || category.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-}
-
-// --- FEATURE 2: Category Filter Dropdown ---
-function setupCategoryFilter() {
-    const filterSelect = document.getElementById('category-filter');
-    if (!filterSelect) return;
-
-    filterSelect.addEventListener('change', function(e) {
-        const selectedCategory = e.target.value;
-        const rows = document.querySelectorAll('#product-list-admin tbody tr');
-
-        rows.forEach(row => {
-            const category = row.cells[3].textContent;
-
-            if (selectedCategory === '' || category === selectedCategory) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-}
-
-function populateCategoryFilter() {
-    const filterSelect = document.getElementById('category-filter');
-    if (!filterSelect) return;
-
-    const rows = document.querySelectorAll('#product-list-admin tbody tr');
-    const categories = new Set();
-
-    rows.forEach(row => {
-        const category = row.cells[3].textContent;
-        if (category !== 'N/A') {
-            categories.add(category);
-        }
-    });
-    filterSelect.innerHTML = '<option value="">All Categories</option>';
-    categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        filterSelect.appendChild(option);
-    });
-}
-
-// --- FEATURE 3: Low Stock Warning ---
-function addLowStockWarnings() {
-    const rows = document.querySelectorAll('#product-list-admin tbody tr');
-
-    rows.forEach(row => {
-        const inventoryCell = row.cells[5];
-        const inventory = parseInt(inventoryCell.textContent);
-
-        if (inventory < 10) {
-            inventoryCell.style.color = 'red';
-            inventoryCell.style.fontWeight = 'bold';
-        } else if (inventory < 30) {
-            inventoryCell.style.color = 'orange';
-        }
-    });
-}
-
-// --- FEATURE 4: Confirmation Dialog ---
-function confirmDelete(productId) {
-    const confirmed = confirm(
-        `Delete Product?\n\n` +
-        `Product ID: ${productId}\n` +
-        `This action cannot be undone.\n\n` +
-        `Click OK to confirm deletion.`
-    );
-
-    if (confirmed) {
-        deleteProduct(productId);
-    }
-}
-
-// --- FEATURE 5: Messages ---
-function showMessage(message, type = 'info') {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `admin-message ${type}`;
-    messageDiv.textContent = message;
-    document.body.appendChild(messageDiv);
-    setTimeout(() => {
-        messageDiv.remove();
-    }, 3000);
-}
-
-// --- FEATURE 6: Sorting ---
-function makeSortable() {
-    const headers = document.querySelectorAll('#product-list-admin th');
-
-    headers.forEach((header, index) => {
-        if (index === 0 || index === headers.length - 1) return;
-        header.style.cursor = 'pointer';
-        header.title = 'Click to sort';
-        header.addEventListener('click', () => {
-            sortTable(index);
-        });
-    });
-}
-
-function sortTable(columnIndex) {
-    const table = document.querySelector('#product-list-admin tbody');
-    const rows = Array.from(table.querySelectorAll('tr'));
-    const isAscending = table.dataset.sortDir !== 'asc';
-    table.dataset.sortDir = isAscending ? 'asc' : 'desc';
-
-    rows.sort((a, b) => {
-        const aValue = a.cells[columnIndex].textContent;
-        const bValue = b.cells[columnIndex].textContent;
-        const aNum = parseFloat(aValue);
-        const bNum = parseFloat(bValue);
-
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-            return isAscending ? aNum - bNum : bNum - aNum;
-        }
-        return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-    });
-    rows.forEach(row => table.appendChild(row));
-}
-
-// --- FEATURE 7: Export CSV ---
-function exportProductsToCSV() {
-    const rows = document.querySelectorAll('#product-list-admin tbody tr');
-    let csv = 'ID,Name,Category,Price,Inventory\n';
-
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const data = [
-            cells[1].textContent,
-            cells[2].textContent,
-            cells[3].textContent,
-            cells[4].textContent,
-            cells[5].textContent
-        ];
-        csv += data.join(',') + '\n';
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'products.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-    showMessage('Products exported successfully!', 'success');
-}
-
-// --- FEATURE 8: Customer Search ---
-function setupCustomerSearch() {
-    const searchInput = document.getElementById('customer-search');
-    if (!searchInput) return;
-
-    searchInput.addEventListener('input', function(e) {
-        const searchValue = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#customer-list-admin tbody tr');
-
-        rows.forEach(row => {
-            const username = row.cells[1].textContent.toLowerCase();
-            const email = row.cells[2].textContent.toLowerCase();
-
-            if (username.includes(searchValue) || email.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-}
-
-function showLoading(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 20px;">
-                <span class="spinner">⏳</span> Loading data, please wait...
-            </div>
-        `;
-    }
-}
 
 // --- Global State ---
 let adminProductsCache = [];
+let adminUsersCache = [];
 
-// --- 0. SECURITY HELPERS ---
+// --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
     const userId = localStorage.getItem('userId');
     const headers = { 'X-User-ID': userId };
-    if (contentType) {
-        headers['Content-Type'] = contentType;
-    }
+    if (contentType) headers['Content-Type'] = contentType;
     return headers;
 }
 
 function checkAdminAccessAndGetHeaders(contentType = 'application/json') {
     const userRole = localStorage.getItem('userRole');
     const userId = localStorage.getItem('userId');
-    if (userRole !== 'admin' || !userId) {
-        throw new Error("Admin access required.");
-    }
+    if (userRole !== 'admin' || !userId) throw new Error("Admin access required.");
     return getAuthHeaders(contentType);
 }
 
-// --- 1. Dashboard Statistics ---
-async function fetchDashboardStats() {
-    try {
-        const headers = checkAdminAccessAndGetHeaders('application/json');
-        const response = await fetch(`${API_ADMIN_BASE_URL}/stats`, {
-            method: 'GET',
-            headers: headers
-        });
-        if (!response.ok) throw new Error("Failed stats");
-        const stats = await response.json();
-        document.getElementById('stat-products').textContent = stats.totalProducts || 0;
-        document.getElementById('stat-orders').textContent = stats.pendingOrders || 0;
-        document.getElementById('stat-users').textContent = stats.registeredUsers || 0;
-    } catch (error) {
-        console.error(error);
+function syncHeaderUsername() {
+    const username = localStorage.getItem('username');
+    const display = document.getElementById('admin-username');
+    if (username && display) {
+        display.textContent = username;
     }
 }
 
-// --- 2. Product Management ---
+// --- 1. DASHBOARD OVERVIEW ---
+async function fetchDashboardStats() {
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/stats`, { headers });
+        const stats = await response.json();
+
+        // FALLBACK: Since stats API might return 0, we manually fetch lists for accuracy
+        let productCount = stats.totalProducts || 0;
+
+        // Fetch users specifically to get the real count (e.g., your 11 users)
+        const userRes = await fetch(`${API_ADMIN_BASE_URL}/users`, { headers });
+        const users = await userRes.json();
+        const userCount = users.length;
+
+        // If products are also 0 in stats, check the products endpoint
+        if (productCount === 0) {
+            const prodRes = await fetch(`${API_ADMIN_BASE_URL}/products`, { headers });
+            const prods = await prodRes.json();
+            productCount = prods.length;
+        }
+
+        // Update UI
+        if (document.getElementById('stat-products')) {
+            document.getElementById('stat-products').textContent = productCount;
+        }
+        if (document.getElementById('stat-orders')) {
+            document.getElementById('stat-orders').textContent = stats.pendingOrders || 0;
+        }
+        if (document.getElementById('stat-users')) {
+            document.getElementById('stat-users').textContent = userCount;
+        }
+    } catch (e) {
+        console.error("Dashboard stats error:", e);
+    }
+}
+
+// --- 2. CUSTOMER MANAGEMENT ---
+async function listCustomersForAdmin() {
+    const container = document.getElementById('customer-list-admin');
+    if (!container) return;
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/users`, { method: 'GET', headers });
+        const users = await response.json();
+        adminUsersCache = users;
+        renderCustomerTable(users);
+    } catch (e) {
+        container.innerHTML = `<p style="color:red;">Failed to load customers.</p>`;
+    }
+}
+
+function renderCustomerTable(users) {
+    const container = document.getElementById('customer-list-admin');
+    const currentAdminUsername = localStorage.getItem('username'); // David Lee
+    const currentAdminId = localStorage.getItem('userId');
+
+    let html = `<table class="admin-data-table">
+        <thead>
+            <tr>
+                <th>USER ID</th>
+                <th>USERNAME</th>
+                <th>EMAIL</th>
+                <th>ROLE</th>
+                <th>ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    users.forEach(user => {
+        // Track ID across different possible property names (_id is common in JSON databases)
+        const userId = user.id || user._id || user.userId || 'N/A';
+
+        // "Self" Detection: Compare ID or Username (David Lee)
+        const isSelf = (userId !== 'N/A' && String(userId) === String(currentAdminId)) ||
+            (user.username === currentAdminUsername);
+
+        const displayId = (userId !== 'N/A' && userId.length > 8)
+            ? `${userId.substring(0, 8)}...`
+            : userId;
+
+        let actionButton = '';
+        if (isSelf) {
+            actionButton = `<span class="self-label" style="background: #eee; padding: 6px 14px; border-radius: 20px; font-weight: bold; color: #555; font-size: 0.8rem;">YOU (Self)</span>`;
+        } else if (user.role?.toLowerCase() === 'admin') {
+            actionButton = `<button class="action-btn demote" onclick="handleUpdateUserRole('${userId}', 'user')">Demote to Customer</button>`;
+        } else {
+            actionButton = `<button class="action-btn promote" onclick="handleUpdateUserRole('${userId}', 'admin')">Promote to Admin</button>`;
+        }
+
+        html += `<tr>
+            <td style="color: #888; font-family: monospace; font-size: 0.85rem;">${displayId}</td>
+            <td style="font-weight: ${isSelf ? 'bold' : '500'};">
+                ${user.username} ${isSelf ? '<span style="color: #D67D8C; font-size: 0.8rem; margin-left: 5px;">(You)</span>' : ''}
+            </td>
+            <td>${user.email || 'N/A'}</td>
+            <td style="text-transform: uppercase; font-size: 0.85rem;">${user.role}</td>
+            <td>${actionButton}</td>
+        </tr>`;
+    });
+    container.innerHTML = html + `</tbody></table>`;
+}
+
+async function handleUpdateUserRole(userId, newRole) {
+    if (!confirm(`Are you sure you want to change this user to ${newRole}?`)) return;
+    try {
+        const headers = checkAdminAccessAndGetHeaders('application/json');
+        const response = await fetch(`${API_ADMIN_BASE_URL}/role/${userId}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ role: newRole })
+        });
+        if (response.ok) { alert("Role updated!"); listCustomersForAdmin(); }
+    } catch (e) { alert("Update failed."); }
+}
+
+// --- 3. PRODUCT MANAGEMENT ---
+async function listProductsForAdmin() {
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/products`, { headers });
+        const products = await response.json();
+        adminProductsCache = products;
+        renderProductTable(products);
+        populateCategoryFilter(products);
+    } catch (e) { console.error("Error loading products:", e); }
+}
+
 function renderProductTable(products) {
     const container = document.getElementById('product-list-admin');
     if (!container) return;
 
     let html = `
-         <div class="table-controls" style="margin-bottom: 15px;">
-            <input type="text" id="product-search" placeholder="Search products..." 
-                   style="padding: 8px; margin-right: 10px; width: 250px;">
-            <select id="category-filter" style="padding: 8px; margin-right: 10px;">
-                <option value="">All Categories</option>
-            </select>
-            <button onclick="exportProductsToCSV()" class="button secondary" style="padding: 8px 15px;">Export CSV</button>
-            <p id="product-count" style="display: inline; margin-left: 15px; color: #666;">Showing ${products.length} products</p>
+        <div class="table-controls">
+            <input type="text" id="product-search" placeholder="Search products..." oninput="filterProducts()">
+            <select id="category-filter" onchange="filterProducts()"><option value="">All Categories</option></select>
+            <button onclick="exportProductsToCSV()" class="button secondary">Export CSV</button>
+            <span id="product-count-display">Showing ${products.length} products</span>
         </div>
         <table class="admin-data-table">
             <thead>
-                <tr><th>Thumbnail</th><th>ID</th><th>Name</th><th>Category</th><th>Price (RM)</th><th>Inventory</th><th>Actions</th></tr>
+                <tr>
+                    <th>IMAGE</th>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>CATEGORY</th>
+                    <th>PRICE (RM)</th>
+                    <th>INVENTORY</th>
+                    <th>ACTIONS</th>
+                </tr>
             </thead>
-            <tbody>
-    `;
+            <tbody>`;
 
     products.forEach(p => {
-        const productId = p['Product ID'];
-        const displayId = productId ? String(productId).substring(0, 8) + '...' : 'N/A';
-        const imageFileName = p['File Name'] || 'placeholder.jpg';
-        const imagePath = `http://localhost:8000/images/products/${imageFileName}`;
-        const name = p['Product Name'] || 'N/A';
-        const priceValue = parseFloat(p['Price (RM)']);
-        const formattedPrice = isNaN(priceValue) ? 'N/A' : priceValue.toFixed(2);
-        const category = p.Category || 'N/A';
-        const inventoryMap = p.Inventory;
-        const totalInventory = inventoryMap ? Object.values(inventoryMap).reduce((sum, count) => sum + count, 0) : 0;
+        const productId = p['Product ID'] || p.id || 'N/A';
+        const currentFileName = p['File Name'] || p.imageUrl || 'placeholder.jpg';
+        const totalInventory = p.Inventory ? (typeof p.Inventory === 'object' ? Object.values(p.Inventory)[0] : p.Inventory) : 0;
+        const displayId = (typeof productId === 'string' && productId.length > 8) ? `${productId.substring(0, 8)}...` : productId;
 
-        html += `
-            <tr>
-                <td><div class="product-thumb"><img src="${imagePath}" alt="${name}"></div></td>
-                <td>${displayId}</td>
-                <td>${name}</td>
-                <td>${category}</td>
-                <td>${formattedPrice}</td>
-                <td>${totalInventory}</td>
-                <td>
-                    <button class="button small secondary edit-product-btn" data-id="${productId}">Edit</button>
+        html += `<tr>
+            <td><img src="http://localhost:8000/images/products/${currentFileName}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px;"></td>
+            <td style="color: #666; font-size: 0.85rem; font-family: monospace;">${displayId}</td>
+            <td style="font-weight: 600;">${p['Product Name'] || p.name}</td>
+            <td>${p.Category || p.category || 'N/A'}</td>
+            <td>${parseFloat(p['Price (RM)'] || p.price || 0).toFixed(2)}</td>
+            <td class="${totalInventory < 5 ? 'low-stock' : ''}">${totalInventory}</td>
+            <td>
+                <div style="display: flex; gap: 8px;">
+                    <button class="button small secondary" onclick="showProductModal('${productId}')">Edit</button>
                     <button class="button small danger" onclick="confirmDelete('${productId}')">Delete</button>
-                </td>
-            </tr>
-        `;
+                </div>
+            </td>
+        </tr>`;
     });
-
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-
-    setupProductSearch();
-    populateCategoryFilter();
-    setupCategoryFilter();
-    addLowStockWarnings();
-    makeSortable();
-
-    document.querySelectorAll('.edit-product-btn').forEach(btn => {
-        btn.addEventListener('click', () => showProductModal(btn.dataset.id));
-    });
+    container.innerHTML = html + `</tbody></table>`;
 }
 
-async function listProductsForAdmin() {
+// --- 4. FEEDBACK MANAGEMENT ---
+async function listFeedbackForAdmin() {
+    const container = document.getElementById('feedback-list-admin');
+    if (!container) return;
     try {
-        showLoading('product-list-admin');
-        const headers = checkAdminAccessAndGetHeaders('application/json');
-        const response = await fetch(`${API_ADMIN_BASE_URL}/products`, {
-            method: 'GET',
-            headers: headers
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/feedback`, { headers });
+        const feedbacks = await response.json();
+        let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th></tr></thead><tbody>`;
+        feedbacks.forEach(fb => {
+            let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
+            html += `<tr>
+                <td style="color: #666;">${fb.productId || fb.product_id || 'N/A'}</td>
+                <td style="font-weight: 500;">${fb.username || 'Guest'}</td>
+                <td><span style="background-color: #f0fdf4; color: ${ratingColor}; border: 1px solid ${ratingColor}44; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${fb.rating}/5</span></td>
+                <td style="color: #555;">${fb.comment || fb.message || ''}</td>
+            </tr>`;
         });
-        if (!response.ok) throw new Error("Failed load");
-        const products = await response.json();
-        adminProductsCache = products;
-        renderProductTable(products);
-    } catch (error) {
-        console.error(error);
-        showMessage('Failed to load products', 'error');
-    }
+        container.innerHTML = html + `</tbody></table>`;
+    } catch (e) { container.innerHTML = `<p style="color:red;">Failed to load feedback.</p>`; }
 }
 
-function populateProductForm(product, form) {
-    form.elements['product-name'].value = product['Product Name'] || '';
-    form.elements['product-category'].value = product.Category || '';
-    form.elements['product-price'].value = product['Price (RM)'] || '';
-    form.elements['product-description'].value = product.Description || '';
-    if (product.Inventory) {
-        const totalInventory = Object.values(product.Inventory).reduce((sum, count) => sum + count, 0);
-        if (form.elements['product-inventory']) form.elements['product-inventory'].value = totalInventory;
-    }
-}
-
+// --- 5. MODAL & HELPER LOGIC ---
 async function showProductModal(productId = null) {
     const modal = document.getElementById('product-modal');
     const form = document.getElementById('product-form');
-    const title = document.getElementById('product-modal-title');
-    const fileInput = document.getElementById('product-file-name');
-
-    if (!modal || !form || !title) return;
+    if(!modal || !form) return;
     form.reset();
-    form.dataset.productId = '';
-
+    document.getElementById('image-preview').innerHTML = '';
     if (productId) {
-        title.textContent = 'Edit Product';
-        form.dataset.productId = productId;
-        if (fileInput) fileInput.removeAttribute('required');
-        const product = adminProductsCache.find(p => String(p['Product ID']) === String(productId));
-        if (product) {
-            populateProductForm(product, form);
-            modal.classList.add('active');
+        document.getElementById('product-modal-title').textContent = 'Edit Product';
+        document.getElementById('product-id-hidden').value = productId;
+        const p = adminProductsCache.find(item => String(item['Product ID'] || item.id) === String(productId));
+        if (p) {
+            form.elements['product-name'].value = p['Product Name'] || p.name || '';
+            form.elements['product-category'].value = p.Category || p.category || '';
+            form.elements['product-price'].value = p['Price (RM)'] || p.price || '';
+            form.elements['product-description'].value = p.Description || p.description || '';
+            form.elements['product-inventory'].value = p.Inventory ? (typeof p.Inventory === 'object' ? Object.values(p.Inventory)[0] : p.Inventory) : 0;
+            const fileName = p['File Name'] || p.imageUrl || 'placeholder.jpg';
+            document.getElementById('product-image-hidden').value = fileName;
+            document.getElementById('image-preview').innerHTML = `<img src="http://localhost:8000/images/products/${fileName}" style="max-width: 100px; border-radius: 8px;">`;
         }
     } else {
-        title.textContent = 'Add New Product';
-        if (fileInput) fileInput.setAttribute('required', 'required');
-        modal.classList.add('active');
+        document.getElementById('product-modal-title').textContent = 'Add New Product';
+        document.getElementById('product-id-hidden').value = '';
+        document.getElementById('product-image-hidden').value = 'placeholder.jpg';
     }
-}
-
-function closeProductModal() {
-    document.getElementById('product-modal').classList.remove('active');
+    modal.classList.add('active');
 }
 
 async function handleProductSubmit(event) {
     event.preventDefault();
-    const form = event.target;
-    const productId = form.dataset.productId;
-    const isEditing = !!productId;
-    const imageFile = form.elements['file'] ? form.elements['file'].files[0] : null;
-
-    if (!isEditing && !imageFile) { alert("Image file is required."); return; }
-
-    const formData = new FormData();
-    if (imageFile) formData.append('file', imageFile);
-    if (isEditing) formData.append("Product ID", productId);
-
-    formData.append("Product Name", form.elements['product-name'].value.trim());
-    formData.append("Category", form.elements['product-category'].value.trim());
-    formData.append("Price (RM)", parseFloat(form.elements['product-price'].value));
-    formData.append("Description", form.elements['product-description'].value.trim());
-    formData.append("Inventory", JSON.stringify({ "Default": parseInt(form.elements['product-inventory'].value) || 0 }));
-
-    const method = isEditing ? 'PUT' : 'POST';
-    const endpoint = isEditing ? `${API_ADMIN_BASE_URL}/products/${productId}` : `${API_ADMIN_BASE_URL}/products`;
-
+    const productId = document.getElementById('product-id-hidden').value;
+    const newData = {
+        "Product Name": document.getElementById('product-name').value.trim(),
+        "Category": document.getElementById('product-category').value.trim(),
+        "Price (RM)": parseFloat(document.getElementById('product-price').value),
+        "Description": document.getElementById('product-description').value.trim(),
+        "File Name": document.getElementById('product-image-hidden').value,
+        "Inventory": { "Default": parseInt(document.getElementById('product-inventory').value) || 0 }
+    };
     try {
-        const headers = checkAdminAccessAndGetHeaders(null);
-        const response = await fetch(endpoint, { method: method, headers: headers, body: formData });
-        if (response.ok || response.status === 201) {
-            alert("Product saved!");
-            closeProductModal();
-            listProductsForAdmin();
-        } else {
-            throw new Error("Save failed");
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function deleteProduct(productId) {
-    try {
-        const headers = checkAdminAccessAndGetHeaders('application/json');
-        const response = await fetch(`${API_ADMIN_BASE_URL}/products/${productId}`, {
-            method: 'DELETE',
-            headers: headers
+        const method = productId ? 'PUT' : 'POST';
+        const response = await fetch(productId ? `${API_ADMIN_BASE_URL}/products/${productId}` : `${API_ADMIN_BASE_URL}/products`, {
+            method,
+            headers: checkAdminAccessAndGetHeaders('application/json'),
+            body: JSON.stringify(newData)
         });
-        if (response.status === 204) {
-            showMessage('Product deleted successfully!', 'success');
-            listProductsForAdmin();
-        }
-    } catch (error) {
-        showMessage('Failed to delete product', 'error');
-    }
+        if (response.ok) { alert("Success!"); closeProductModal(); listProductsForAdmin(); }
+    } catch (e) { alert("Save failed."); }
 }
 
-// --- 3. Customer Management (Role Assignment) ---
+function filterCustomers() {
+    const term = document.getElementById('customer-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#customer-list-admin tbody tr');
+    rows.forEach(row => row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none');
+}
 
-function renderCustomerTable(users) {
-    const container = document.getElementById('customer-list-admin');
-    if (!container) return;
-
-    let html = `
-        <div class="table-controls" style="margin-bottom: 15px;">
-            <input type="text" id="customer-search" placeholder="Search customers..." 
-                   style="padding: 8px; width: 250px;">
-        </div>
-        
-        <table class="admin-data-table">
-            <thead>
-                <tr><th>User ID</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr>
-            </thead>
-            <tbody>
-    `;
-
-    users.forEach(u => {
-        const displayUserId = u.userId ? u.userId.substring(0, 8) + '...' : 'N/A';
-        const isSelf = u.userId === localStorage.getItem('userId');
-        const actionButton = isSelf
-            ? `<span class="tag self-tag">YOU (Self)</span>`
-            : u.role === 'customer'
-                ? `<button class="button small secondary promote-btn" data-id="${u.userId}">Promote to Admin</button>`
-                : `<button class="button small demote-btn" data-id="${u.userId}">Demote to Customer</button>`;
-
-        html += `
-            <tr>
-                <td>${displayUserId}</td>
-                <td>${u.username || 'N/A'}</td>
-                <td>${u.email || 'N/A'}</td>
-                <td id="role-${u.userId}">${(u.role || 'N/A').toUpperCase()}</td>
-                <td>${actionButton}</td>
-            </tr>
-        `;
-    });
-
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-
-    setupCustomerSearch();
-
-    document.querySelectorAll('.promote-btn').forEach(btn => {
-        btn.addEventListener('click', () => updateRole(btn.dataset.id, 'admin'));
-    });
-    document.querySelectorAll('.demote-btn').forEach(btn => {
-        btn.addEventListener('click', () => updateRole(btn.dataset.id, 'customer'));
+function filterProducts() {
+    const term = document.getElementById('product-search').value.toLowerCase();
+    const cat = document.getElementById('category-filter').value;
+    const rows = document.querySelectorAll('.admin-data-table tbody tr');
+    rows.forEach(row => {
+        const matchesTerm = row.innerText.toLowerCase().includes(term);
+        const matchesCat = !cat || row.cells[3].innerText === cat;
+        row.style.display = matchesTerm && matchesCat ? '' : 'none';
     });
 }
 
-async function listCustomersForAdmin() {
+function populateCategoryFilter(products) {
+    const filter = document.getElementById('category-filter');
+    if (!filter) return;
+    const cats = [...new Set(products.map(p => p.Category || p.category))].filter(Boolean);
+    filter.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function exportProductsToCSV() {
+    let csv = "ID,Name,Category,Price,Stock\n";
+    adminProductsCache.forEach(p => {
+        const stock = p.Inventory ? (typeof p.Inventory === 'object' ? Object.values(p.Inventory)[0] : p.Inventory) : 0;
+        csv += `"${p.id || p['Product ID']}","${p.name || p['Product Name']}","${p.category || p.Category}",${p.price || p['Price (RM)']},${stock}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'products.csv'; a.click();
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Delete this product?')) return;
     try {
-        showLoading('customer-list-admin');
-        const headers = checkAdminAccessAndGetHeaders('application/json');
-
-        const response = await fetch(`${API_ADMIN_BASE_URL}/users`, {
-            method: 'GET',
-            headers: headers
-        });
-
-        if (!response.ok) throw new Error("Failed to load users");
-
-        const users = await response.json();
-        renderCustomerTable(users);
-
-    } catch (error) {
-        console.error(error);
-        showMessage('Failed to load users', 'error');
-        document.getElementById('customer-list-admin').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-    }
+        const res = await fetch(`${API_ADMIN_BASE_URL}/products/${id}`, { method: 'DELETE', headers: checkAdminAccessAndGetHeaders() });
+        if (res.ok) listProductsForAdmin();
+    } catch (e) { alert('Delete failed'); }
 }
 
-async function updateRole(userId, newRole) {
-    const action = newRole === 'admin' ? 'Promote' : 'Demote';
-    if (confirm(`Are you sure you want to ${action} this user?`)) {
-        try {
-            const headers = checkAdminAccessAndGetHeaders('application/json');
+// --- 6. NAVIGATION LOGIC ---
+function showSection(targetId) {
+    const sections = document.querySelectorAll('.dashboard-section');
+    const navLinks = document.querySelectorAll('.admin-nav a');
+    sections.forEach(s => s.classList.remove('active'));
+    navLinks.forEach(l => l.classList.remove('active-nav'));
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) targetSection.classList.add('active');
+    const activeLink = document.querySelector(`.admin-nav a[href="#${targetId}"]`);
+    if (activeLink) activeLink.classList.add('active-nav');
 
-            if (userId === localStorage.getItem('userId') && newRole === 'customer') {
-                alert("Operation Canceled: You cannot demote yourself.");
-                return;
-            }
-
-            const response = await fetch(`${API_ADMIN_BASE_URL}/role/${userId}`, {
-                method: 'PUT',
-                headers: headers,
-                body: JSON.stringify({ role: newRole })
-            });
-
-            if (response.ok) {
-                alert(`Role updated successfully!`);
-                listCustomersForAdmin();
-            } else {
-                const errorBody = await response.json();
-                throw new Error(errorBody.message || `Failed to update role.`);
-            }
-
-        } catch (error) {
-            console.error(error);
-            alert(`Update role failed: ${error.message}`);
-        }
-    }
+    if (targetId === 'products') listProductsForAdmin();
+    else if (targetId === 'customers') listCustomersForAdmin();
+    else if (targetId === 'dashboard') fetchDashboardStats();
+    else if (targetId === 'feedback') listFeedbackForAdmin();
 }
 
-// 4. Fetch and display feedback in table format
-async function listFeedbackForAdmin() {
-    try {
-        showLoading('feedback-list-admin');
-        const headers = checkAdminAccessAndGetHeaders('application/json');
-        const response = await fetch(`${API_ADMIN_BASE_URL}/feedback`, { headers });
+// --- INITIALIZATION ---
+window.listCustomersForAdmin = listCustomersForAdmin;
+window.listProductsForAdmin = listProductsForAdmin;
+window.listFeedbackForAdmin = listFeedbackForAdmin;
+window.fetchDashboardStats = fetchDashboardStats;
+window.showProductModal = showProductModal;
+window.handleUpdateUserRole = handleUpdateUserRole;
+window.filterCustomers = filterCustomers;
+window.filterProducts = filterProducts;
+window.exportProductsToCSV = exportProductsToCSV;
+window.confirmDelete = deleteProduct;
+window.closeProductModal = () => document.getElementById('product-modal').classList.remove('active');
 
-        if (!response.ok) throw new Error("Failed to load feedback");
-        const feedbackList = await response.json();
-
-        renderFeedbackTable(feedbackList);
-    } catch (error) {
-        showMessage('Error loading feedback', 'error');
-    }
-}
-
-function renderFeedbackTable(feedbackList) {
-    const container = document.getElementById('feedback-list-admin');
-    if (!container) return;
-
-    let html = `
-        <table class="admin-data-table">
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>User</th>
-                    <th>Rating</th>
-                    <th>Comment</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    feedbackList.forEach(fb => {
-        html += `
-            <tr>
-                <td>${fb.productId}</td>
-                <td>${fb.username}</td>
-                <td><span class="tag admin-tag">${fb.rating}/5</span></td>
-                <td>${fb.comment}</td>
-            </tr>
-        `;
-    });
-
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-}
-
-// --- 5. Main Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    fetchDashboardStats();
-
+    syncHeaderUsername();
+    const form = document.getElementById('product-form');
+    if (form) form.addEventListener('submit', handleProductSubmit);
     const navLinks = document.querySelectorAll('.admin-nav a');
     navLinks.forEach(link => {
-        link.addEventListener('click', (event) => {
-            const targetId = event.currentTarget.getAttribute('href').substring(1);
-            switch (targetId) {
-                case 'products': listProductsForAdmin(); break;
-                case 'customers': listCustomersForAdmin(); break;
-            }
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const id = link.getAttribute('href').substring(1);
+            window.location.hash = id;
+            showSection(id);
         });
     });
-
-    const addProductBtn = document.getElementById('add-product-btn');
-    if (addProductBtn) addProductBtn.addEventListener('click', () => showProductModal());
-
-    const productForm = document.getElementById('product-form');
-    if (productForm) productForm.addEventListener('submit', handleProductSubmit);
-
-    const closeBtn = document.querySelector('#product-modal .close-btn');
-    if (closeBtn) closeBtn.addEventListener('click', closeProductModal);
-
-    const initialHash = window.location.hash.substring(1);
-    if (initialHash === 'products') listProductsForAdmin();
-    if (initialHash === 'customers') listCustomersForAdmin();
+    const initialId = window.location.hash.substring(1) || 'dashboard';
+    showSection(initialId);
 });
-
-window.showProductModal = showProductModal;
-window.closeProductModal = closeProductModal;
-window.exportProductsToCSV = exportProductsToCSV;
-window.confirmDelete = confirmDelete;
-window.showMessage = showMessage;
