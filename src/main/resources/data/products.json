@@ -7,7 +7,7 @@
     "Description": "Bright and cheerful crochet sunflower with a cherry accent, perfect for home decor or as a gift.",
     "File Name": "sunflower_cherry.jpg",
     "Inventory": {
-      "Default": 8.0
+      "Default": 8
     }
   },
   {
@@ -140,8 +140,7 @@
     "File Name": "cutedolls.jpg",
     "Inventory": {
       "Doll 1": 6,
-      "Doll 2": 7,
-      "Doll 3": 8
+      "Doll 2": 7
     }
   },
   {

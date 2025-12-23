@@ -1,10 +1,10 @@
 // --- Configuration ---
 const API_PRODUCTS_URL = 'http://localhost:8000/api/products';
-// const CART_STORAGE_KEY = 'handyCraftCart'; // <<< REMOVED: This constant is now sourced globally from js/auth.js
+
+let allProductsData = [];
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Start the process: fetch data and set up filters/rendering
     fetchProducts();
     console.log("Product and Cart logic initialized.");
 });
@@ -14,35 +14,20 @@ function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     if (!isLoggedIn) {
         alert("You must be signed in to access your cart or add items. Please sign in first.");
-        // Redirect is handled here, returning true signifies redirection happened
         window.location.href = 'signin.html';
         return true;
     }
-    // Return false signifies the user is logged in
     return false;
-}
-
-// --- Helper Functions ---
-function truncateText(text, limit = 55) {
-    if (!text) return "";
-    return text.length > limit ? text.substring(0, limit) + "..." : text;
 }
 
 // --- API Fetching, Filtering, and Rendering ---
 function fetchProducts() {
     fetch(API_PRODUCTS_URL)
-        .then(response => {
-            if (!response.ok) {
-                // Throw an error with specific status details
-                throw new Error(`Failed to fetch products. Server status: ${response.status} ${response.statusText}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(products => {
             if (Array.isArray(products) && products.length > 0) {
-
-                // Normalize backend fields into frontend-friendly names
-                const normalizedProducts = products.map(p => ({
+                // Map and save data globally
+                allProductsData = products.map(p => ({
                     id: p['Product ID'],
                     category: p.Category,
                     name: p['Product Name'],
@@ -53,237 +38,208 @@ function fetchProducts() {
                 }));
 
                 const params = new URLSearchParams(window.location.search);
-                // categoryFilter is used for filtering when coming from categories.html or dropdown
                 const categoryFilter = params.get('category');
-                // searchQuery is used for filtering when coming from the search bar
                 const searchQuery = params.get('search');
 
-                let filteredProducts = normalizedProducts;
+                let filteredProducts = allProductsData;
                 let pageTitle = 'All Handmade Crochet Collections';
 
-                // Category filtering
                 if (categoryFilter && categoryFilter !== 'all') {
-                    // Normalize filter value (e.g., 'crochet toy' -> 'crochettoy')
                     const normalizedFilter = categoryFilter.toLowerCase().replace(/\s/g, '');
-
-                    filteredProducts = normalizedProducts.filter(product =>
+                    filteredProducts = allProductsData.filter(product =>
                         product.category &&
                         product.category.toLowerCase().replace(/\s/g, '').includes(normalizedFilter)
                     );
-
-                    // Determine the title based on the filter
-                    const categoryName = filteredProducts.length > 0 ?
-                        filteredProducts[0].category :
-                        categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1);
-
-                    pageTitle = `${categoryName} Collection`;
-
+                    pageTitle = (filteredProducts.length > 0 ? filteredProducts[0].category : categoryFilter) + " Collection";
                 } else if (searchQuery) {
-                    // Search filtering
                     const lowerQuery = searchQuery.toLowerCase();
-                    filteredProducts = normalizedProducts.filter(product =>
+                    filteredProducts = allProductsData.filter(product =>
                         (product.name && product.name.toLowerCase().includes(lowerQuery)) ||
                         (product.description && product.description.toLowerCase().includes(lowerQuery))
                     );
-
                     pageTitle = `Search Results for: "${searchQuery}"`;
                 }
 
                 updatePageTitle(pageTitle);
-                populateCategoryFilter(normalizedProducts, categoryFilter);
+                populateCategoryFilter(allProductsData, categoryFilter);
 
                 if (filteredProducts.length > 0) {
                     renderProducts(filteredProducts);
                 } else {
-                    document.getElementById('product-grid').innerHTML =
-                        '<p>No products found in this selection.</p>';
+                    document.getElementById('product-grid').innerHTML = '<p>No products found in this selection.</p>';
                 }
-
-            } else {
-                document.getElementById('product-grid').innerHTML =
-                    '<p>No products found at this time.</p>';
             }
         })
         .catch(error => {
             console.error("Error loading products:", error);
-            // Display a user-friendly error message on the page
-            document.getElementById('product-grid').innerHTML =
-                `<p class="error-message">Could not connect to the server or failed to retrieve products. Details: ${error.message}</p>`;
+            document.getElementById('product-grid').innerHTML = `<p class="error-message">Could not connect to the server.</p>`;
         });
 }
 
-// --- Update Page Title ---
 function updatePageTitle(title) {
     const pageTitleElement = document.querySelector('.page-title');
     if (pageTitleElement) pageTitleElement.textContent = title;
 }
 
-// --- Category Filter ---
 function populateCategoryFilter(products, currentFilter) {
     const filterDropdown = document.getElementById('category-filter');
     if (!filterDropdown) return;
-
-    // Get unique categories and sort them
     const categories = [...new Set(products.map(p => p.category))].sort();
-
     filterDropdown.innerHTML = '<option value="all">All Products</option>';
-
     categories.forEach(category => {
         if (category) {
             const option = document.createElement('option');
-            // Create a slug for the URL parameter (e.g., "Crochet Toy" -> "crochettoy")
             const slug = category.toLowerCase().replace(/\s/g, '');
-
             option.value = slug;
             option.textContent = category;
-
-            // Select the option if it matches the current URL filter
-            if (currentFilter && slug === currentFilter.toLowerCase()) {
-                option.selected = true;
-            }
-
+            if (currentFilter && slug === currentFilter.toLowerCase()) option.selected = true;
             filterDropdown.appendChild(option);
         }
     });
-
-    // Add event listener to redirect when the filter changes
-    filterDropdown.addEventListener('change', (event) => {
-        const selectedValue = event.target.value;
-        // Redirect to products.html with the new category filter
-        window.location.href = `products.html?category=${selectedValue}`;
+    filterDropdown.addEventListener('change', (e) => {
+        window.location.href = `products.html?category=${e.target.value}`;
     });
 }
 
-// --- Render Product Cards (Updated with New Design) ---
-// --- Render Products ---
 function renderProducts(products) {
     const gridContainer = document.getElementById('product-grid');
     gridContainer.innerHTML = '';
 
     products.forEach(product => {
-        const safePrice = product.price != null ? product.price : 0;
+        const safePrice = product.price || 0;
         const formattedPrice = parseFloat(safePrice).toFixed(2);
+        const finalImage = product.imageUrl ? `images/products/${product.imageUrl}` : "images/placeholder.jpg";
 
-        const finalImage = product.imageUrl
-            ? `images/products/${product.imageUrl}` // Ensure path doesn't start with slash if running locally
-            : "images/placeholder.jpg";
+        // --- 1. Calculate Total Stock Across All Variants ---
+        const inventory = product.inventory || {};
+        const variantKeys = Object.keys(inventory);
+
+        // Sum up the quantities of all variants (e.g., Light Brown + Dark Brown)
+        const totalStock = Object.values(inventory).reduce((sum, val) => {
+            const qty = (typeof val === 'number') ? val : (val?.quantity || parseInt(val) || 0);
+            return sum + qty;
+        }, 0);
+
+        const isSoldOut = totalStock <= 0;
+
+        // --- 2. Build Variant Selector HTML ---
+        let variantHtml = '';
+        if (!isSoldOut) {
+            if (variantKeys.length > 1 || (variantKeys.length === 1 && variantKeys[0] !== 'Default')) {
+                const options = variantKeys.map(v => `<option value="${v}">${v}</option>`).join('');
+                variantHtml = `<select class="variant-select-mini" id="variant-${product.id}" style="margin-bottom: 10px; width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">${options}</select>`;
+            } else {
+                variantHtml = `<input type="hidden" id="variant-${product.id}" value="Default">`;
+            }
+        }
 
         const productCard = document.createElement('div');
-        productCard.className = 'product-card';
+        productCard.className = `product-card ${isSoldOut ? 'sold-out' : ''}`;
 
-        // START OF CLICKABLE LINK LOGIC
+        // --- 3. Build the Card HTML ---
         productCard.innerHTML = `
+        <div class="image-container-relative">
             <a href="product-detail.html?id=${product.id}" class="product-link">
                 <div class="product-image-wrapper">
-                    <img src="${finalImage}" alt="${product.name}" class="product-image"/>
+                    <img src="${finalImage}" alt="${product.name}" class="product-image" style="display: block; width: 100%;"/>
                 </div>
             </a>
+            ${isSoldOut ? `<div class="sold-out-badge">Sold Out</div>` : ''}
+        </div>
 
-            <span class="category-tag">${product.category || "New"}</span>
+        <span class="category-tag" style="margin-top: 12px; display: inline-block;">${product.category || "New"}</span>
+        <h3 class="product-name" style="margin-top: 5px; margin-bottom: 5px;">${product.name}</h3>
+    
+        <p class="product-description-mini" style="font-size: 0.85rem; color: #666; margin-bottom: 10px; 
+              display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+              overflow: hidden; text-overflow: ellipsis; height: 2.6rem; line-height: 1.3rem;">
+            ${product.description || "Handmade with care."}
+        </p>
 
-            <a href="product-detail.html?id=${product.id}" class="product-link">
-                <h3 class="product-name">${product.name}</h3>
-            </a>
+        <p class="product-price" style="font-weight: bold; margin-bottom: 10px; font-size: 1.1rem;">
+        RM ${formattedPrice}
+        </p>
 
-            <p class="product-description">
-                ${product.description}
-            </p>
+        ${variantHtml}
 
-            <p class="product-price">RM ${formattedPrice}</p>
-
-            <button 
-                class="button primary add-to-cart"
-                data-product-id="${product.id}"
-                data-product-name="${product.name}"
-                data-product-price="${safePrice}">
-                Add to Cart
-            </button>
-        `;
-        // END OF CLICKABLE LINK LOGIC
-
+        ${!isSoldOut ? `
+            <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 15px; justify-content: center;">
+                <button onclick="updateQtyDisplay('${product.id}', -1)" class="button secondary" style="padding: 2px 12px; background:#f0f0f0; color:black; border:1px solid #ccc; width: 35px;">-</button>
+                <input type="text" id="qty-${product.id}" value="1" readonly style="width: 45px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-weight: bold; outline: none;">       
+                <button onclick="updateQtyDisplay('${product.id}', 1)" class="button secondary" style="padding: 2px 12px; background:#f0f0f0; color:black; border:1px solid #ccc; width: 35px;">+</button>
+            </div>
+            <button class="button primary" onclick="handleMainAddToCart('${product.id}', '${product.name}', ${safePrice})">Add to Cart</button>
+        ` : `
+            <div style="height: 40px; margin-top: 15px;">
+                <button class="button" disabled style="background: #e0e0e0; color: #888; cursor: not-allowed; width: 100%; border: none;">Out of Stock</button>
+            </div>
+        `}
+    `;
         gridContainer.appendChild(productCard);
     });
-
-    attachAddToCartListeners();
 }
 
 // --- Cart Logic ---
-function attachAddToCartListeners() {
-    const buttons = document.querySelectorAll('.add-to-cart');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Check login status before proceeding
-            if (checkLoginStatus()) return;
-
-            const productId = btn.dataset.productId;
-            const productName = btn.dataset.productName;
-            const productPrice = parseFloat(btn.dataset.productPrice);
-
-            addToCart(productId, productName, productPrice);
-        });
-    });
-}
-
-function addToCart(productId, productName, productPrice) {
-    // Retrieve cart or initialize as empty array
-    // NOTE: CART_STORAGE_KEY is now available globally from auth.js
+function addToCart(productId, productName, productPrice, variant = "Default", quantity = 1, stock = 99) {
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+    const existingItem = cart.find(item => item.id === productId && item.variant === variant);
 
-    // Check if item already exists in cart
-    const existingItem = cart.find(item => item.id === productId);
+    const currentInCart = existingItem ? existingItem.quantity : 0;
+    if (currentInCart + quantity > stock) {
+        alert(`⚠️ You already have ${currentInCart} in your cart. Total cannot exceed the available stock (${stock}).`);
+        return;
+    }
 
     if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity += quantity;
     } else {
-        // Add new item to cart
         cart.push({
-            id: productId,
-            name: productName,
-            price: productPrice,
-            quantity: 1
+            id: productId, name: productName, price: productPrice,
+            quantity: quantity, variant: variant, remainingStock: stock
         });
     }
 
-    // Save updated cart back to local storage
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-
-    showCartConfirmation(productName);
+    const variantDisplay = variant !== "Default" ? ` (${variant})` : "";
+    alert(`Added ${quantity} x ${productName}${variantDisplay} to cart!`);
 }
 
-function showCartConfirmation(productName) {
-    alert(`"${productName}" added to your cart.`);
-}
+window.updateQtyDisplay = function(id, delta) {
+    const input = document.getElementById(`qty-${id}`);
+    const variant = document.getElementById(`variant-${id}`)?.value || "Default";
+    const product = allProductsData.find(p => p.id.toString() === id.toString());
 
-/**
- * Global function linked to the header button: onclick="viewCart()"
- * NOTE: This function is defined globally using 'window.viewCart' so the HTML can find it.
- */
+    if (product && product.inventory) {
+        const currentStock = product.inventory[variant] || 0;
+        let newVal = parseInt(input.value) + delta;
+        if (newVal < 1) newVal = 1;
+        if (newVal > currentStock) {
+            alert(`Sorry, only ${currentStock} units available!`);
+            newVal = currentStock;
+        }
+        input.value = newVal;
+    }
+};
+
+window.handleMainAddToCart = function(id, name, price) {
+    if (checkLoginStatus()) return;
+    const variant = document.getElementById(`variant-${id}`)?.value || "Default";
+    const qtyInput = document.getElementById(`qty-${id}`);
+    const requestedQty = parseInt(qtyInput.value);
+    const product = allProductsData.find(p => p.id.toString() === id.toString());
+    const stockAvailable = product.inventory[variant] || 0;
+
+    if (requestedQty > stockAvailable) {
+        alert(`⚠️ Only ${stockAvailable} units available for this selection.`);
+        qtyInput.value = stockAvailable;
+        return;
+    }
+
+    addToCart(id, name, price, variant, requestedQty, stockAvailable);
+    qtyInput.value = 1;
+};
+
 window.viewCart = function() {
-    // LOGIN CHECK
-    if (checkLoginStatus()) {
-        return;
-    }
-
-    const cartString = localStorage.getItem(CART_STORAGE_KEY);
-    let cart = cartString ? JSON.parse(cartString) : [];
-
-    if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
-
-    // Create a readable summary of cart contents
-    let cartDetails = "🛒 Your Shopping Cart:\n\n";
-    let subtotal = 0;
-
-    cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        cartDetails += `- ${item.name}: Qty ${item.quantity} x RM ${item.price.toFixed(2)} = RM ${itemTotal.toFixed(2)}\n`;
-        subtotal += itemTotal;
-    });
-
-    cartDetails += `\n------------------------\n`;
-    cartDetails += `Subtotal: RM ${subtotal.toFixed(2)}`;
-
-    alert(cartDetails);
-}
+    if (checkLoginStatus()) return;
+    window.location.href = "cart.html";
+};

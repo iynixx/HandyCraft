@@ -19,18 +19,13 @@
                 searchForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     const query = document.getElementById('search-input').value;
-                    if (query.trim()) {
-                        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+                    if (query && query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
                     }
                 });
             }
         });
 
-        // Ensure viewCart is globally accessible (required by the HTML onclick)
-        function viewCart() {
-            console.log("View Cart function triggered.");
-            alert("View Cart button clicked. Cart modal/page logic needs to be implemented in products.js.");
-        }
     </script>
 </head>
 <body>
@@ -51,13 +46,21 @@
             <li class="search-container">
                 <form id="search-form" class="search-form">
                     <input type="text" id="search-input" placeholder="Search products..." required>
-                    <button type="submit" class="search-button">Search</button>
+                    <button type="submit" class="search-button"
+                            style="display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="16" height="16"
+                             fill="currentColor"
+                             viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
                 </form>
+            <li>
+                <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                    <span role="img" aria-label="shopping cart"></span> View Cart
+                </a>
             </li>
-
-            <li><a href="#" onclick="event.preventDefault(); viewCart();">
-                <span role="img" aria-label="shopping cart"> </span> View Cart
-            </a></li>
 
 
             <li id="auth-links-container" class="auth-links-container">

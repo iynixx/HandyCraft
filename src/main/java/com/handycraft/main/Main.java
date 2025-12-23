@@ -1,6 +1,5 @@
 package com.handycraft.main;
 
-
 import com.sun.net.httpserver.HttpServer;
 import com.handycraft.handlers.AuthHandler;
 import com.handycraft.handlers.ProductHandler;
@@ -8,6 +7,7 @@ import com.handycraft.handlers.StaticFileHandler;
 import com.handycraft.handlers.CartHandler;
 import com.handycraft.handlers.AdminHandler;
 import com.handycraft.handlers.FeedbackHandler;
+import com.handycraft.handlers.OrderHandler;
 // import com.handycraft.utils.HashUtil; // <-- REMOVED: No longer needed here
 import com.handycraft.handlers.PasswordResetHandler;
 
@@ -35,6 +35,8 @@ public class Main {
 
             // 3. Password Reset Handler
             server.createContext("/api/password-reset", new PasswordResetHandler());
+
+            server.createContext("/api/orders", new OrderHandler());
 
             // Server Configuration
             server.setExecutor(Executors.newFixedThreadPool(10));

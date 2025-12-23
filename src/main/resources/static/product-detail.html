@@ -11,14 +11,21 @@
 <header class="main-header">
     <nav class="container">
         <a href="index.html" class="logo-link-with-text">
-            <img src="images/logo.png" alt="Handy Craft Logo">
+            <img src="images/logo.png" alt="Handy Craft Logo" height="40">
             <span class="site-title">Handy Craft</span>
         </a>
-        <button class="button" onclick="viewCart()">Cart 🛒</button>
+        <ul class="nav-links">
+            <li>
+                <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                    <span role="img" aria-label="shopping cart"></span> View Cart
+                </a>
+            </li>
+        </ul>
     </nav>
 </header>
 
 <main class="container product-detail-main">
+    <div id="back-button-container"></div>
     <div id="product-detail-container" class="product-detail-layout">
         <p>Loading product details...</p>
     </div>
@@ -57,5 +64,5 @@
     </div>
 </footer>
 
-<script src="js/products.js"></script> <script src="js/product-detail.js"></script> </body>
+<script src="js/auth.js"></script><script src="js/products.js"></script> <script src="js/product-detail.js"></script> </body>
 </html>

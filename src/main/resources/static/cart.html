@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Shopping Cart - Handy Craft</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .cart-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .cart-table th { border-bottom: 2px solid #D67D8C; padding: 15px; text-align: left; color: #555; }
+        .cart-table td { padding: 20px 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .cart-item-info { display: flex; flex-direction: column; gap: 5px; }
+        .cart-summary-box { background: #f9f9f9; padding: 25px; border-radius: 15px; margin-top: 30px; text-align: right; }
+        .qty-btn { width: 32px; height: 32px; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 4px; font-weight: bold; }
+        .qty-btn:hover { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+<header id="main-header"></header>
+
+<main class="container">
+    <h1 class="page-title" style="margin-top: 40px; color: #333;">Shopping Cart</h1>
+
+    <div id="cart-content">
+        <table class="cart-table">
+            <thead>
+            <tr>
+                <th style="width: 40%;">Product</th>
+                <th style="width: 15%;">Unit Price</th>
+                <th style="width: 20%;">Quantity</th>
+                <th style="width: 15%;">Total Price</th>
+                <th style="width: 10%;">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="cart-items-body">
+            </tbody>
+        </table>
+
+        <div class="cart-summary-box">
+            <h3 style="margin-bottom: 20px;">Subtotal: <span id="cart-subtotal" style="color: #D67D8C; font-size: 1.5rem;">RM 0.00</span></h3>
+            <div style="display: flex; justify-content: flex-end; gap: 15px;">
+                <button onclick="window.location.href='products.html'" class="button secondary" style="background: #fff; color: #555; border: 1px solid #ccc;">Continue Shopping</button>
+
+                <button onclick="clearCart()" class="button secondary" style="background: #fff; color: #D67D8C; border: 1px solid #D67D8C;">Clear Cart</button>
+
+                <button onclick="window.location.href='checkout.html'" class="button primary">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/auth.js"></script>
+<script src="js/cart-page.js"></script>
+</body>
+</html>

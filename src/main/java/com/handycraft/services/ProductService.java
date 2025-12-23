@@ -156,4 +156,49 @@ public class ProductService {
             fileLock.unlock();
         }
     }
+
+    /**
+     * Reduces the inventory for a specific product variant.
+     */
+    public void reduceStock(String productId, String variant, int quantity) throws IOException {
+        fileLock.lock();
+        try {
+            boolean stockUpdated = false;
+            for (Product p : this.products) {
+                if (p.getId().equals(productId)) {
+                    Map<String, Integer> inventory = p.getInventory();
+
+                    // Dynamically update the specific variant key
+                    if (inventory != null && inventory.containsKey(variant)) {
+                        int currentStock = inventory.get(variant);
+                        inventory.put(variant, Math.max(0, currentStock - quantity));
+                        stockUpdated = true;
+                    }
+                    break;
+                }
+            }
+
+            if (stockUpdated) {
+                saveProductsToFile(); // Persist changes to products.json
+            }
+        } finally {
+            fileLock.unlock();
+        }
+    }
+
+    /**
+     * Checks if a specific variant of a product has enough stock.
+     */
+    public boolean isStockAvailable(String productId, String variant, int requestedQuantity) {
+        for (Product p : this.products) {
+            if (p.getId().equals(productId)) {
+                Map<String, Integer> inventory = p.getInventory();
+                // Instead of hardcoding "Default", we use the variant passed from the frontend
+                if (inventory != null && inventory.containsKey(variant)) {
+                    return inventory.get(variant) >= requestedQuantity;
+                }
+            }
+        }
+        return false;
+    }
 }
