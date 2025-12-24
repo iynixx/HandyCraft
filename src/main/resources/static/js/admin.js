@@ -110,7 +110,7 @@ function renderCustomerTable(users) {
             ? `${userId.substring(0, 8)}...`
             : userId;
 
-        let actionButton = '';
+        let actionButton;
         if (isSelf) {
             actionButton = `<span class="self-label" style="background: #eee; padding: 6px 14px; border-radius: 20px; font-weight: bold; color: #555; font-size: 0.8rem;">YOU (Self)</span>`;
         } else if (user.role?.toLowerCase() === 'admin') {
@@ -189,7 +189,7 @@ function renderProductTable(products) {
         const displayId = (typeof productId === 'string' && productId.length > 8) ? `${productId.substring(0, 8)}...` : productId;
 
         html += `<tr>
-            <td><img src="http://localhost:8000/images/products/${currentFileName}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px;"></td>
+            <td><img src="http://localhost:8000/images/products/${currentFileName}" alt="${p['Product Name'] || p.name || 'Product Image'}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px;"></td>
             <td style="color: #666; font-size: 0.85rem; font-family: monospace;">${displayId}</td>
             <td style="font-weight: 600;">${p['Product Name'] || p.name}</td>
             <td>${p.Category || p.category || 'N/A'}</td>
@@ -228,6 +228,20 @@ async function listFeedbackForAdmin() {
     } catch (e) { container.innerHTML = `<p style="color:red;">Failed to load feedback.</p>`; }
 }
 
+function filterFeedbackByIdOrUser() {
+    const searchTerm = document.getElementById('feedback-id-user-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#feedback-list-admin tbody tr');
+
+    rows.forEach(row => {
+        // Cell 0 is PRODUCT ID, Cell 1 is USER (based on your listFeedbackForAdmin html string)
+        const productId = row.cells[0].innerText.toLowerCase();
+        const username = row.cells[1].innerText.toLowerCase();
+
+        const matchesSearch = productId.includes(searchTerm) || username.includes(searchTerm);
+        row.style.display = matchesSearch ? '' : 'none';
+    });
+}
+
 // --- 5. MODAL & HELPER LOGIC ---
 async function showProductModal(productId = null) {
     const modal = document.getElementById('product-modal');
@@ -247,7 +261,7 @@ async function showProductModal(productId = null) {
             form.elements['product-inventory'].value = p.Inventory ? (typeof p.Inventory === 'object' ? Object.values(p.Inventory)[0] : p.Inventory) : 0;
             const fileName = p['File Name'] || p.imageUrl || 'placeholder.jpg';
             document.getElementById('product-image-hidden').value = fileName;
-            document.getElementById('image-preview').innerHTML = `<img src="http://localhost:8000/images/products/${fileName}" style="max-width: 100px; border-radius: 8px;">`;
+            document.getElementById('image-preview').innerHTML = `<img src="http://localhost:8000/images/products/${fileName}" alt="${p['Product Name'] || p.name || 'Product Image'}" style="max-width: 100px; border-radius: 8px;">`;
         }
     } else {
         document.getElementById('product-modal-title').textContent = 'Add New Product';
@@ -275,7 +289,7 @@ async function handleProductSubmit(event) {
             headers: checkAdminAccessAndGetHeaders('application/json'),
             body: JSON.stringify(newData)
         });
-        if (response.ok) { alert("Success!"); closeProductModal(); listProductsForAdmin(); }
+        if (response.ok) { alert("Success!"); closeProductModal(); await listProductsForAdmin(); }
     } catch (e) { alert("Save failed."); }
 }
 
@@ -319,12 +333,12 @@ async function deleteProduct(id) {
     if (!confirm('Delete this product?')) return;
     try {
         const res = await fetch(`${API_ADMIN_BASE_URL}/products/${id}`, { method: 'DELETE', headers: checkAdminAccessAndGetHeaders() });
-        if (res.ok) listProductsForAdmin();
+        if (res.ok) await listProductsForAdmin();
     } catch (e) { alert('Delete failed'); }
 }
 
 // --- 6. NAVIGATION LOGIC ---
-function showSection(targetId) {
+async function showSection(targetId) {
     const sections = document.querySelectorAll('.dashboard-section');
     const navLinks = document.querySelectorAll('.admin-nav a');
     sections.forEach(s => s.classList.remove('active'));
@@ -334,10 +348,10 @@ function showSection(targetId) {
     const activeLink = document.querySelector(`.admin-nav a[href="#${targetId}"]`);
     if (activeLink) activeLink.classList.add('active-nav');
 
-    if (targetId === 'products') listProductsForAdmin();
-    else if (targetId === 'customers') listCustomersForAdmin();
-    else if (targetId === 'dashboard') fetchDashboardStats();
-    else if (targetId === 'feedback') listFeedbackForAdmin();
+    if (targetId === 'products') await listProductsForAdmin();
+    else if (targetId === 'customers') await listCustomersForAdmin();
+    else if (targetId === 'dashboard') await fetchDashboardStats();
+    else if (targetId === 'feedback') await listFeedbackForAdmin();
 }
 
 // --- INITIALIZATION ---
@@ -349,11 +363,12 @@ window.showProductModal = showProductModal;
 window.handleUpdateUserRole = handleUpdateUserRole;
 window.filterCustomers = filterCustomers;
 window.filterProducts = filterProducts;
+window.filterFeedbackByIdOrUser = filterFeedbackByIdOrUser;
 window.exportProductsToCSV = exportProductsToCSV;
 window.confirmDelete = deleteProduct;
 window.closeProductModal = () => document.getElementById('product-modal').classList.remove('active');
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     syncHeaderUsername();
     const form = document.getElementById('product-form');
     if (form) form.addEventListener('submit', handleProductSubmit);
@@ -367,5 +382,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     const initialId = window.location.hash.substring(1) || 'dashboard';
-    showSection(initialId);
+    await showSection(initialId);
 });

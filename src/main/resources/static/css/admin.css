@@ -444,6 +444,28 @@
     gap: 12px;
 }
 
+#feedback .section-title {
+    margin-bottom: 25px;
+    display: block;
+}
+
+#feedback-id-user-search {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-bottom: 3px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#feedback-id-user-search:focus {
+    border-color: #D67D8C;
+    box-shadow: 0 0 5px rgba(214, 125, 140, 0.2);
+}
+
 /* --- FOOTER --- */
 .admin-footer {
     background-color: var(--color-footer-pink);

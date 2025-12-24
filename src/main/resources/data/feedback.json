@@ -1,1 +1,11 @@
-[]
+[
+    {"productId":"3","username":"Emily","rating":4,"comment":"Nice look!"},
+    {"productId":"3","username":"Jerry","rating":3,"comment":"Good quality"},
+    {"productId":"1","username":"Jerry","rating":5,"comment":"I like it!!!"},
+    {"productId":"2","username":"Jerry","rating":4,"comment":"Well handcraft"},
+    {"productId":"3","username":"Dino","rating":5,"comment":"Love this handcraft"},
+    {"productId":"1","username":"Emily","rating":4,"comment":"Good design"},
+    {"productId":"6","username":"Emily","rating":3,"comment":"Ok useful handcraft"},
+    {"productId":"6","username":"Jerry","rating":5,"comment":"Very good!!!"},
+    {"productId":"1","username":"Dino","rating":3,"comment":"Quality still ok"}
+]
