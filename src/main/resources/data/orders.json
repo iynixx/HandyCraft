@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "orderId": "ORD-2025-001",
+    "userId": "xinqi_usm",
+    "customerName": "Xin Qi",
+    "address": "4, Halaman Bukit Gambir, Sunway Bukit Gambier, 11700 Gelugor, Pulau Pinang",
+    "phone": "012-3456789",
+    "items": [
+      { "id": "1", "name": "Mushroom Crochet", "price": 25.00, "quantity": 2, "variant": "Red" }
+    ],
+    "totalAmount": 50.00,
+    "orderDate": "2025-12-20 10:30",
+    "status": "Completed"
+  },
+  {
+    "orderId": "ORD-2025-002",
+    "userId": "tekun_resident",
+    "customerName": "Ahmad Razak",
+    "address": "12, Lorong Universiti, Taman Universiti, 11700 Gelugor, Pulau Pinang",
+    "phone": "017-9876543",
+    "items": [
+      { "id": "3", "name": "Bear Purse", "price": 40.00, "quantity": 1, "variant": "Light Brown" }
+    ],
+    "totalAmount": 40.00,
+    "orderDate": "2025-12-21 14:15",
+    "status": "Pending"
+  },
+  {
+    "orderId": "ORD-2025-003",
+    "userId": "crochet_lover",
+    "customerName": "Lim Siew Mei",
+    "address": "88, Jalan Bukit Gambir, Centrio Avenue, 11700 Gelugor, Pulau Pinang",
+    "phone": "016-1122334",
+    "items": [
+      { "id": "5", "name": "Totoro Dusty Ball", "price": 40.00, "quantity": 2, "variant": "Default" },
+      { "id": "4", "name": "Sunflower Cherry", "price": 25.00, "quantity": 1, "variant": "Default" }
+    ],
+    "totalAmount": 105.00,
+    "orderDate": "2025-12-22 09:45",
+    "status": "Processing"
+  },
+  {
+    "orderId": "ORD-2025-004",
+    "userId": "artsy_tan",
+    "customerName": "Tan Wei Lun",
+    "address": "15, Halaman Bukit Gambir 2, Sunway Bukit Gambier, 11700 Gelugor, Pulau Pinang",
+    "phone": "011-5566778",
+    "items": [
+      { "id": "2", "name": "Couples Set", "price": 35.00, "quantity": 1, "variant": "Blue/Pink" }
+    ],
+    "totalAmount": 35.00,
+    "orderDate": "2025-12-23 18:20",
+    "status": "Shipped"
+  },
+  {
+    "orderId": "ORD-2025-005",
+    "userId": "usm_student99",
+    "customerName": "Siti Aminah",
+    "address": "10-3-2, Vista Gambier, Jalan Bukit Gambir, 11700 Gelugor, Pulau Pinang",
+    "phone": "019-4433221",
+    "items": [
+      { "id": "1", "name": "Mushroom Crochet", "price": 25.00, "quantity": 4, "variant": "Yellow" }
+    ],
+    "totalAmount": 100.00,
+    "orderDate": "2025-12-24 11:00",
+    "status": "Pending"
+  }
+]
