@@ -1,7 +1,7 @@
 package com.handycraft.handlers;
 
 import com.google.gson.Gson;
-import com.handycraft.models.Feedback;
+//import com.handycraft.models.Feedback;
 import com.handycraft.services.FeedbackService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -10,6 +10,8 @@ import com.handycraft.services.UserService;
 import com.handycraft.utils.ResponseUtil;
 import com.handycraft.models.Product;
 import com.handycraft.models.User;
+import com.handycraft.models.Order;
+import com.handycraft.services.OrderService;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -74,6 +76,9 @@ public class AdminHandler implements HttpHandler {
             else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/feedback")) {
                 handleGetAllFeedback(exchange);
             }
+            else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/orders")) {
+                handleGetOrders(exchange);
+            }
             else if (method.equalsIgnoreCase("POST") && path.equals(ADMIN_BASE + "/products")) {
                 handleSaveProduct(exchange, null);
             }
@@ -89,18 +94,24 @@ public class AdminHandler implements HttpHandler {
                 String id = path.substring((ADMIN_BASE + "/role/").length());
                 handleUpdateUserRole(exchange, id);
             }
+            else if (method.equalsIgnoreCase("PUT") && path.equals(ADMIN_BASE + "/orders/status")) {
+                handleUpdateOrderStatus(exchange);
+            }
             else {
                 ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Not Found\"}", "application/json");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Internal Error\"}", "application/json");
         }
     }
 
     private void handleSaveProduct(HttpExchange exchange, String productId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Map<String, Object> data = gson.fromJson(isr, Map.class);
+            //Map<String, Object> data = gson.fromJson(isr, Map.class);
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, Object>>(){}.getType();
+            Map<String, Object> data = gson.fromJson(isr, type);
             if (data == null) throw new Exception("Empty request body");
 
             Product product = new Product();
@@ -122,7 +133,10 @@ public class AdminHandler implements HttpHandler {
             }
 
             if (data.containsKey("Inventory")) {
-                product.setInventory((Map<String, Integer>) data.get("Inventory"));
+                //product.setInventory((Map<String, Integer>) data.get("Inventory"));
+                @SuppressWarnings("unchecked")
+                Map<String, Integer> inventory = (Map<String, Integer>) data.get("Inventory");
+                product.setInventory(inventory);
             }
 
             boolean success = (productId == null)
@@ -132,11 +146,29 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, success ? 200 : 400,
                     "{\"message\": \"" + (success ? "Success" : "Failed to save") + "\"}", "application/json");
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error processing data\"}", "application/json");
         }
     }
+    private final OrderService orderService = new OrderService();
+    private void handleGetOrders(HttpExchange exchange) throws IOException {
+        List<Order> orders = orderService.getAllOrders();
+        // This uses your existing ResponseUtil to send the JSON back to the browser
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(orders), "application/json");
+    }
+    private void handleUpdateOrderStatus(HttpExchange exchange) throws IOException {
+        try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
+            //Map<String, String> body = gson.fromJson(isr, Map.class);
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, Object>>(){}.getType();
+            Map<String, String> body = gson.fromJson(isr, type);
+            String orderId = body.get("orderId");
+            String status = body.get("status");
 
+            boolean success = orderService.updateOrderStatus(orderId, status);
+            ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");
+        }
+    }
     private void handleGetStats(HttpExchange exchange) throws IOException {
         Map<String, Integer> stats = new HashMap<>();
         stats.put("totalProducts", productService.loadAllProducts().size());
@@ -164,7 +196,9 @@ public class AdminHandler implements HttpHandler {
 
     private void handleUpdateUserRole(HttpExchange exchange, String userId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Map<String, String> body = gson.fromJson(isr, Map.class);
+            //Map<String, String> body = gson.fromJson(isr, Map.class);
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
+            Map<String, String> body = gson.fromJson(isr, type);
             String newRole = body.get("role");
             boolean success = userService.updateUserRole(userId, newRole);
             ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");

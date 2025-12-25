@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class OrderService {
     private static final String ORDER_DATA_FILE = "src/main/resources/data/orders.json";
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private List<Order> orders;
+    private final List<Order> orders;
     private final ReentrantLock fileLock = new ReentrantLock();
 
     // Step A: Add ProductService dependency so we can update stock
@@ -74,6 +74,25 @@ public class OrderService {
             this.orders.add(newOrder);
             saveOrdersToFile();
 
+        } finally {
+            fileLock.unlock();
+        }
+    }
+    public boolean updateOrderStatus(String orderId, String newStatus) {
+        fileLock.lock();
+        try {
+            for (Order order : orders) {
+                if (order.getOrderId().equals(orderId)) {
+                    order.setStatus(newStatus);
+                    saveOrdersToFile(); // This writes the change back to orders.json
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            //e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
+            return false;
         } finally {
             fileLock.unlock();
         }

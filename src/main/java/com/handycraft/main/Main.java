@@ -47,7 +47,8 @@ public class Main {
 
         } catch (Exception e) {
             System.err.println("FATAL ERROR: Could not start the HTTP Server.");
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
         }
     }
 }

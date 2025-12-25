@@ -5,6 +5,7 @@ const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
 // --- Global State ---
 let adminProductsCache = [];
 let adminUsersCache = [];
+let adminOrdersCache = [];
 
 // --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
@@ -214,6 +215,12 @@ async function listFeedbackForAdmin() {
         const headers = checkAdminAccessAndGetHeaders();
         const response = await fetch(`${API_ADMIN_BASE_URL}/feedback`, { headers });
         const feedbacks = await response.json();
+        //update section title with count
+        const titleElement = document.querySelector('#feedback .section-title');
+        if (titleElement) {
+            titleElement.innerText = `Feedback Management (${feedbacks.length} Reviews)`;
+        }
+
         let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th></tr></thead><tbody>`;
         feedbacks.forEach(fb => {
             let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
@@ -240,6 +247,262 @@ function filterFeedbackByIdOrUser() {
         const matchesSearch = productId.includes(searchTerm) || username.includes(searchTerm);
         row.style.display = matchesSearch ? '' : 'none';
     });
+}
+
+async function listOrdersForAdmin() {
+    const container = document.getElementById('order-list-admin');
+    if (!container) return;
+    try {
+        // Point to the Java API instead of '/order.json'
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/orders`, { headers });
+
+        if (!response.ok) //throw new Error("Server error");
+        {
+            console.error("Server returned an error status:", response.status);
+            container.innerHTML = `<p style="color:red;">Failed to load orders from Java Server.</p>`;
+            return;
+        }
+
+        const orders = await response.json();
+        adminOrdersCache = orders;
+        renderOrderStats(orders);
+        renderOrderTable(orders);
+    } catch (e) {
+        console.error("Error loading orders:", e);
+        // This is the message you see in your screenshot
+        container.innerHTML = `<p style="color:red;">Failed to load orders from Java Server.</p>`;
+    }
+}
+
+function renderOrderStats(orders) {
+    const statsContainer = document.getElementById('order-stats');
+    if (!statsContainer) return;
+
+    const stats = {
+        total: orders.length,
+        pending: orders.filter(o => o.status === 'Pending').length,
+        processing: orders.filter(o => o.status === 'Processing').length,
+        shipped: orders.filter(o => o.status === 'Shipped').length,
+        completed: orders.filter(o => o.status === 'Completed').length
+    };
+
+    statsContainer.innerHTML = `
+        <div class="order-stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value">${stats.total}</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-label">Pending</div>
+                <div class="stat-value">${stats.pending}</div>
+            </div>
+            <div class="stat-card processing">
+                <div class="stat-label">Processing</div>
+                <div class="stat-value">${stats.processing}</div>
+            </div>
+            <div class="stat-card shipped">
+                <div class="stat-label">Shipped</div>
+                <div class="stat-value">${stats.shipped}</div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value">${stats.completed}</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderOrderTable(orders) {
+    const container = document.getElementById('order-list-admin');
+    if (!container) return;
+
+    let html = `
+        <div class="table-controls">
+            <input type="text" id="order-search" placeholder="Search by Order ID, Customer Name, or Phone..." oninput="filterOrders()">
+            <select id="order-status-filter" onchange="filterOrders()">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button onclick="exportOrdersToCSV()" class="button secondary">Export CSV</button>
+            <span id="order-count-display">Showing ${orders.length} orders</span>
+        </div>
+        <table class="admin-data-table">
+            <thead>
+                <tr>
+                    <th>ORDER ID</th>
+                    <th>CUSTOMER</th>
+                    <th>PHONE</th>
+                    <th>DATE</th>
+                    <th>ITEMS</th>
+                    <th>TOTAL (RM)</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    orders.forEach(order => {
+        const statusClass = order.status.toLowerCase();
+
+        html += `<tr>
+            <td style="font-family: monospace; color: #666; font-size: 0.85rem;">${order.orderId}</td>
+            <td style="font-weight: 600;">${order.customerName}</td>
+            <td>${order.phone}</td>
+            <td style="font-size: 0.9rem;">${order.orderDate}</td>
+            <td style="text-align: center;">${order.items.length}</td>
+            <td style="font-weight: 600;">RM ${order.totalAmount.toFixed(2)}</td>
+            <td>
+                <span class="status-badge ${statusClass}">
+                    ${order.status}
+                </span>
+            </td>
+            <td>
+                <button class="button small secondary" onclick="showOrderModal('${order.orderId}')">View Details</button>
+            </td>
+        </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+function filterOrders() {
+    const searchTerm = document.getElementById('order-search').value.toLowerCase();
+    const statusFilter = document.getElementById('order-status-filter').value;
+    const rows = document.querySelectorAll('#order-list-admin tbody tr');
+
+    let visibleCount = 0;
+    rows.forEach(row => {
+        const orderId = row.cells[0].innerText.toLowerCase();
+        const customerName = row.cells[1].innerText.toLowerCase();
+        const phone = row.cells[2].innerText.toLowerCase();
+        const statusCell = row.cells[6].innerText.trim();
+
+        const matchesSearch = orderId.includes(searchTerm) ||
+            customerName.includes(searchTerm) ||
+            phone.includes(searchTerm);
+        const matchesStatus = !statusFilter || statusCell.includes(statusFilter);
+
+        if (matchesSearch && matchesStatus) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    document.getElementById('order-count-display').textContent = `Showing ${visibleCount} orders`;
+}
+
+function showOrderModal(orderId) {
+    const order = adminOrdersCache.find(o => o.orderId === orderId);
+    if (!order) return;
+
+    const modal = document.getElementById('order-modal');
+    if (!modal) return;
+
+    document.getElementById('order-modal-id').textContent = order.orderId;
+    document.getElementById('order-modal-customer').textContent = order.customerName;
+    document.getElementById('order-modal-phone').textContent = order.phone;
+    document.getElementById('order-modal-address').textContent = order.address;
+    document.getElementById('order-modal-date').textContent = order.orderDate;
+
+    // Render items
+    let itemsHtml = '';
+    order.items.forEach(item => {
+        itemsHtml += `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-variant">Variant: ${item.variant}</div>
+                    <div class="order-item-quantity">Quantity: ${item.quantity}</div>
+                </div>
+                <div class="order-item-price">
+                    <div style="font-weight: 600;">RM ${(item.price * item.quantity).toFixed(2)}</div>
+                    <div style="font-size: 0.85rem; color: #666;">RM ${item.price.toFixed(2)} each</div>
+                </div>
+            </div>
+        `;
+    });
+    document.getElementById('order-modal-items').innerHTML = itemsHtml;
+    document.getElementById('order-modal-total').textContent = `RM ${order.totalAmount.toFixed(2)}`;
+
+    // Status buttons
+    document.getElementById('order-status-buttons').innerHTML = `
+        <button class="status-btn ${order.status === 'Pending' ? 'active' : ''}" 
+                onclick="updateOrderStatus('${orderId}', 'Pending')">Pending</button>
+        <button class="status-btn ${order.status === 'Processing' ? 'active' : ''}" 
+                onclick="updateOrderStatus('${orderId}', 'Processing')">Processing</button>
+        <button class="status-btn ${order.status === 'Shipped' ? 'active' : ''}" 
+                onclick="updateOrderStatus('${orderId}', 'Shipped')">Shipped</button>
+        <button class="status-btn ${order.status === 'Completed' ? 'active' : ''}" 
+                onclick="updateOrderStatus('${orderId}', 'Completed')">Completed</button>
+    `;
+
+    modal.classList.add('active');
+}
+
+async function updateOrderStatus(orderId, newStatus) {
+    try {
+        // 1. Get headers (Ensures Content-Type is application/json)
+        const headers = checkAdminAccessAndGetHeaders('application/json');
+        const buttons = document.querySelectorAll('.status-btn');
+        buttons.forEach(btn => btn.disabled = true);
+        // 2. Send the PUT request to the Java backend
+        const response = await fetch(`${API_ADMIN_BASE_URL}/orders/status`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({
+                orderId: orderId, // This must match body.get("orderId") in Java
+                status: newStatus  // This must match body.get("status") in Java
+            })
+        });
+
+        if (response.ok) {
+            // Immediate Feedback
+            console.log(`Success: Order ${orderId} is now ${newStatus}`);
+
+            // Refresh the background table
+            await listOrdersForAdmin();
+
+            // Close modal and notify user
+            closeOrderModal();
+            alert(`Order status updated to ${newStatus}`);
+        } else {
+            const errorData = await response.json();
+            alert("Server Error: " + (errorData.message || "Could not update status."));
+        }
+    } catch (e) {
+        console.error("Update error:", e);
+        alert("Network error. Please check if your Java server is running.");
+    } finally {
+        // Re-enable buttons
+        const buttons = document.querySelectorAll('.status-btn');
+        buttons.forEach(btn => btn.disabled = false);
+    }
+}
+
+function exportOrdersToCSV() {
+    let csv = "Order ID,Customer,Phone,Date,Items,Total,Status\n";
+    adminOrdersCache.forEach(order => {
+        const itemsList = order.items.map(i => `${i.name} (${i.quantity})`).join('; ');
+        csv += `"${order.orderId}","${order.customerName}","${order.phone}","${order.orderDate}","${itemsList}",${order.totalAmount},"${order.status}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'orders.csv';
+    a.click();
+}
+
+function closeOrderModal() {
+    const modal = document.getElementById('order-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 // --- 5. MODAL & HELPER LOGIC ---
@@ -352,6 +615,7 @@ async function showSection(targetId) {
     else if (targetId === 'customers') await listCustomersForAdmin();
     else if (targetId === 'dashboard') await fetchDashboardStats();
     else if (targetId === 'feedback') await listFeedbackForAdmin();
+    else if (targetId === 'orders') await listOrdersForAdmin();
 }
 
 // --- INITIALIZATION ---
@@ -367,6 +631,12 @@ window.filterFeedbackByIdOrUser = filterFeedbackByIdOrUser;
 window.exportProductsToCSV = exportProductsToCSV;
 window.confirmDelete = deleteProduct;
 window.closeProductModal = () => document.getElementById('product-modal').classList.remove('active');
+window.listOrdersForAdmin = listOrdersForAdmin;
+window.filterOrders = filterOrders;
+window.showOrderModal = showOrderModal;
+window.updateOrderStatus = updateOrderStatus;
+window.exportOrdersToCSV = exportOrdersToCSV;
+window.closeOrderModal = closeOrderModal;
 
 document.addEventListener('DOMContentLoaded', async () => {
     syncHeaderUsername();
