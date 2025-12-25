@@ -200,6 +200,16 @@ public class AdminHandler implements HttpHandler {
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
             Map<String, String> body = gson.fromJson(isr, type);
             String newRole = body.get("role");
+            //find the user being targeted for a role change
+            User targetUser = userService.findUserById(userId);
+            //check if the target user is David Lee
+            if (targetUser != null && "David Lee".equals(targetUser.getUsername())) {
+                // Block the update and send 403 Forbidden
+                ResponseUtil.sendResponse(exchange, 403,
+                        "{\"message\": \"Access Denied: The Super Admin role cannot be modified.\"}",
+                        "application/json");
+                return; // Stop execution here
+            }
             boolean success = userService.updateUserRole(userId, newRole);
             ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");
         }

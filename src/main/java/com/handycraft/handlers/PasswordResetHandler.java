@@ -5,12 +5,12 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.handycraft.services.UserService;
 import com.handycraft.utils.ResponseUtil;
-import com.handycraft.utils.HashUtil;
+//import com.handycraft.utils.HashUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.HashMap;
+//import java.util.HashMap;
 
 public class PasswordResetHandler implements HttpHandler {
     private final Gson gson = new Gson();
@@ -46,7 +46,8 @@ public class PasswordResetHandler implements HttpHandler {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.err.println("Critical Error in PasswordResetHandler: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500,
                     "{\"message\": \"Internal Server Error\"}", "application/json");
         }
@@ -54,7 +55,9 @@ public class PasswordResetHandler implements HttpHandler {
 
     private void handleGetQuestions(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Map<String, String> request = gson.fromJson(isr, Map.class);
+            //Map<String, String> request = gson.fromJson(isr, Map.class);
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
+            Map<String, String> request = gson.fromJson(isr, type);
             String email = request.get("email");
 
             if (email == null || email.isEmpty()) {
@@ -62,7 +65,15 @@ public class PasswordResetHandler implements HttpHandler {
                         "{\"message\": \"Email is required\"}", "application/json");
                 return;
             }
-
+            // Verify if the email belongs to David Lee
+            com.handycraft.models.User user = userService.findUserByEmail(email);
+            if (user != null && "David Lee".equals(user.getUsername())) {
+                // Block reset for Super Admin and send 403 Forbidden
+                ResponseUtil.sendResponse(exchange, 403,
+                        "{\"message\": \"Access Denied: Super Admin recovery must be handled manually.\"}",
+                        "application/json");
+                return;
+            }
             // Checks if user exists and has security answers
             if(!userService.hasSecurityAnswers(email)){
                 ResponseUtil.sendResponse(exchange, 404,
@@ -85,7 +96,9 @@ public class PasswordResetHandler implements HttpHandler {
 
     private void handleResetPassword(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            Map<String, String> request = gson.fromJson(isr, Map.class);
+            //Map<String, String> request = gson.fromJson(isr, Map.class);
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
+            Map<String, String> request = gson.fromJson(isr, type);
 
             String email = request.get("email");
             String answer1 = request.get("answer1");

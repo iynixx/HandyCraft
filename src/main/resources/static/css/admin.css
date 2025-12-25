@@ -393,6 +393,7 @@
     border-radius: 20px;
     width: 95%;
     max-width: 500px;
+    max-height: 87vh;
     box-shadow: 0 15px 50px rgba(0,0,0,0.2);
     position: relative;
     overflow: hidden;
@@ -455,15 +456,15 @@
     border-top: 1px solid #F5F5F5;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 15px;
 }
 
 #feedback .section-header {
-    margin-bottom: 30px;
+    margin-bottom: 60px;
 }
 
 #feedback .table-controls {
-    margin-top: 10px;    /* Adds extra space above the search bar */
+    margin-top: 25px;    /* Adds extra space above the search bar */
     margin-bottom: 20px; /* Space between search bar and the table */
 }
 
@@ -805,6 +806,21 @@
     max-width: 400px;
     width: 100%
 }
+/* Target the Customer Management table specifically */
+#customer-list-admin .admin-data-table th,
+#customer-list-admin .admin-data-table td {
+    text-align: center;      /* Centers all text and buttons */
+    vertical-align: middle;
+    padding: 15px 10px;
+}
+
+/* Increase the width of the first column for full User IDs */
+#customer-list-admin .admin-data-table th:nth-child(1),
+#customer-list-admin .admin-data-table td:nth-child(1) {
+    width: 280px;            /* Increased width to fit full UUIDs */
+    font-family: monospace;  /* Keeps IDs tidy */
+    color: #888;
+}
 
 /* Reduce gap specifically for Feedback Management */
 #feedback .section-header {
@@ -812,7 +828,7 @@
 }
 
 #feedback .table-controls {
-    margin-top: 0;
+    margin-top: 10px;
     margin-bottom: 3px;
 }
 

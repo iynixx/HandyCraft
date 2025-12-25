@@ -106,24 +106,29 @@ function renderCustomerTable(users) {
         // "Self" Detection: Compare ID or Username (David Lee)
         const isSelf = (userId !== 'N/A' && String(userId) === String(currentAdminId)) ||
             (user.username === currentAdminUsername);
-
-        const displayId = (userId !== 'N/A' && userId.length > 8)
-            ? `${userId.substring(0, 8)}...`
-            : userId;
+        // NEW: Define the Super Admin (David)
+        const isDavid = (user.username === 'David Lee');
+        const displayId = userId;
 
         let actionButton;
-        if (isSelf) {
+        if (isDavid) {
+            // David is always the Super Admin and cannot be demoted by anyone
+            actionButton = `<span class="self-label" style="background: #D67D8C; color: white; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem;">SUPER ADMIN</span>`;
+        }
+        else if (isSelf) {
             actionButton = `<span class="self-label" style="background: #eee; padding: 6px 14px; border-radius: 20px; font-weight: bold; color: #555; font-size: 0.8rem;">YOU (Self)</span>`;
         } else if (user.role?.toLowerCase() === 'admin') {
-            actionButton = `<button class="action-btn demote" onclick="handleUpdateUserRole('${userId}', 'user')">Demote to Customer</button>`;
+            actionButton = `<button class="action-btn demote" onclick="handleUpdateUserRole('${userId}', 'customer')">Demote to Customer</button>`;
         } else {
             actionButton = `<button class="action-btn promote" onclick="handleUpdateUserRole('${userId}', 'admin')">Promote to Admin</button>`;
         }
 
         html += `<tr>
             <td style="color: #888; font-family: monospace; font-size: 0.85rem;">${displayId}</td>
-            <td style="font-weight: ${isSelf ? 'bold' : '500'};">
-                ${user.username} ${isSelf ? '<span style="color: #D67D8C; font-size: 0.8rem; margin-left: 5px;">(You)</span>' : ''}
+            <td style="font-weight: ${(isSelf || isDavid) ? 'bold' : '500'};">
+                ${user.username} 
+                ${isDavid ? '<span style="color: #D67D8C; font-size: 0.8rem; margin-left: 5px;">(Super)</span>' : ''}
+                ${isSelf && !isDavid ? '<span style="color: #D67D8C; font-size: 0.8rem; margin-left: 5px;">(You)</span>' : ''}
             </td>
             <td>${user.email || 'N/A'}</td>
             <td style="text-transform: uppercase; font-size: 0.85rem;">${user.role}</td>
@@ -221,14 +226,22 @@ async function listFeedbackForAdmin() {
             titleElement.innerText = `Feedback Management (${feedbacks.length} Reviews)`;
         }
 
-        let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th></tr></thead><tbody>`;
+        let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th><th style="text-align: center;">ACTIONS</th></tr></thead><tbody>`;
         feedbacks.forEach(fb => {
             let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
+            //ensure have a valid ID for deletion
+            const feedbackId = fb.id || fb._id;
             html += `<tr>
                 <td style="color: #666;">${fb.productId || fb.product_id || 'N/A'}</td>
                 <td style="font-weight: 500;">${fb.username || 'Guest'}</td>
                 <td><span style="background-color: #f0fdf4; color: ${ratingColor}; border: 1px solid ${ratingColor}44; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${fb.rating}/5</span></td>
                 <td style="color: #555;">${fb.comment || fb.message || ''}</td>
+                <td style="text-align: center;">
+                    <button class="action-btn demote" onclick="handleDeleteFeedback('${feedbackId}')" 
+                    style="background: #D67D8C; color: white; border: none; padding: 6px 12px;">
+                Delete
+            </button>
+        </td>
             </tr>`;
         });
         container.innerHTML = html + `</tbody></table>`;
@@ -247,6 +260,28 @@ function filterFeedbackByIdOrUser() {
         const matchesSearch = productId.includes(searchTerm) || username.includes(searchTerm);
         row.style.display = matchesSearch ? '' : 'none';
     });
+}
+
+async function handleDeleteFeedback(feedbackId) {
+    if (!confirm("Are you sure you want to delete this inappropriate comment?")) return;
+
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/feedback/${feedbackId}`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (response.ok) {
+            alert("Comment removed successfully.");
+            await listFeedbackForAdmin(); // Refresh the table
+        } else {
+            alert("Failed to delete feedback. It may have already been removed.");
+        }
+    } catch (e) {
+        console.error("Delete Error:", e);
+        alert("Network error. Please check your server.");
+    }
 }
 
 async function listOrdersForAdmin() {
@@ -637,6 +672,7 @@ window.showOrderModal = showOrderModal;
 window.updateOrderStatus = updateOrderStatus;
 window.exportOrdersToCSV = exportOrdersToCSV;
 window.closeOrderModal = closeOrderModal;
+window.handleDeleteFeedback = handleDeleteFeedback;
 
 document.addEventListener('DOMContentLoaded', async () => {
     syncHeaderUsername();
