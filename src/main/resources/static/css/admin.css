@@ -492,10 +492,16 @@
 }
 
 /* Balanced Feedback Table Columns */
-#feedback-list-admin th:nth-child(1) { width: 20%; } /* ID */
+#feedback-list-admin th:nth-child(1) { width: 15%; } /* ID */
 #feedback-list-admin th:nth-child(2) { width: 25%; } /* User */
-#feedback-list-admin th:nth-child(3) { width: 20%; } /* Rating */
-#feedback-list-admin th:nth-child(4) { width: 50%; } /* Comment */
+#feedback-list-admin th:nth-child(3) { width: 15%; } /* Rating */
+#feedback-list-admin th:nth-child(4) { width: 35%; } /* Comment */
+
+#feedback-list-admin th:last-child,
+#feedback-list-admin td:last-child {
+    padding-right: 30px; /* Internal spacing for the last column */
+    text-align: right;   /* Often looks better aligned right when near an edge */
+}
 
 #feedback-list-admin td {
     padding: 18px 10px; /* Adds vertical space to rows */

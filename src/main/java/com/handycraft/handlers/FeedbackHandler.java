@@ -29,7 +29,7 @@ public class FeedbackHandler implements HttpHandler {
         }
         try {
             if ("GET".equals(method)) {
-                // Check if it's the Admin list (no query) or User list (query)
+                //admin can access to all feedback
                 if (path.contains("/admin/feedback")) {
                     List<Feedback> allFeedback = service.getAllFeedback();
                     ResponseUtil.sendResponse(exchange, 200, gson.toJson(allFeedback), "application/json");
@@ -46,6 +46,7 @@ public class FeedbackHandler implements HttpHandler {
             else if ("DELETE".equals(method)) {
                 String[] pathParts = path.split("/");
                 String feedbackId = pathParts[pathParts.length - 1];
+                //handler calls the service to handle the data deletion
                 boolean success = service.deleteFeedback(feedbackId);
                 int statusCode = success ? 200 : 404;
                 String msg = success ? "deleted" : "not found";
@@ -72,23 +73,6 @@ private void handleGetProductFeedback(HttpExchange exchange) throws IOException 
     responseData.put("average", average);
     ResponseUtil.sendResponse(exchange, 200, gson.toJson(responseData), "application/json");
 }
-public boolean deleteFeedback(String id) {
-    List<Feedback> allFeedback = getAllFeedback(); // Load your existing data
-    // Assuming your Feedback model has a getId() method
-    boolean removed = allFeedback.removeIf(fb -> fb.getId().equals(id));
-
-    if (removed) {
-        saveAllFeedback(allFeedback); // This method must write the List back to your .json file
-        return true;
-    }
-    return false;
-}
-
-public List<Feedback> getAllFeedback() {
-    // Your existing logic to load the entire feedback.json file
-    return loadAllFeedback();
-}
-
 }
         /*if ("GET".equals(method)) {
             String productId = exchange.getRequestURI().getQuery().split("=")[1];

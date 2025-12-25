@@ -17,10 +17,38 @@ public class FeedbackService {
         try {
             List<Feedback> all = getAllFeedback();
             all.add(fb);
-            try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            /*try (FileWriter writer = new FileWriter(FILE_PATH)) {
                 gson.toJson(all, writer);
-            }
+            }*/
+            saveAllFeedback(all);
         } finally { lock.unlock(); }
+    }
+    // --- NEW: Delete Logic ---
+    public boolean deleteFeedback(String id) {
+        lock.lock();
+        try {
+            List<Feedback> all = getAllFeedback();
+            // Ensure your Feedback model has a getId() method
+            boolean removed = all.removeIf(fb -> fb.getId().equals(id));
+
+            if (removed) {
+                saveAllFeedback(all);
+                return true;
+            }
+            return false;
+        } catch (IOException e) {
+            System.err.println("Error saving file after delete: " + e.getMessage());
+            return false;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    // --- NEW: Helper to Save JSON ---
+    private void saveAllFeedback(List<Feedback> list) throws IOException {
+        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            gson.toJson(list, writer);
+        }
     }
 
     public List<Feedback> getFeedbackByProduct(String productId) {

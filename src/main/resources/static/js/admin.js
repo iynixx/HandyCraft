@@ -227,6 +227,7 @@ async function listFeedbackForAdmin() {
         }
 
         let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th><th style="text-align: center;">ACTIONS</th></tr></thead><tbody>`;
+        // Add these width styles to your <th> tags in listFeedbackForAdmin
         feedbacks.forEach(fb => {
             let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
             //ensure have a valid ID for deletion

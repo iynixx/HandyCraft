@@ -1,6 +1,7 @@
 package com.handycraft.models;
 
 public class Feedback {
+    private String id;
     private String productId;
     private String username;
     private int rating; // This will store the 1-5 value
@@ -9,6 +10,8 @@ public class Feedback {
     public Feedback() {}
 
     // Getters and Setters
+    public String getId() { return id;}
+    public void setId(String id) { this.id = id; }
     public String getProductId() { return productId; }
     public void setProductId(String productId) { this.productId = productId; }
     public String getUsername() { return username; }
