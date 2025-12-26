@@ -6,6 +6,7 @@ const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
 let adminProductsCache = [];
 let adminUsersCache = [];
 let adminOrdersCache = [];
+let salesChartInstance = null; //track the chart
 
 // --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
@@ -147,7 +148,7 @@ async function handleUpdateUserRole(userId, newRole) {
             headers,
             body: JSON.stringify({ role: newRole })
         });
-        if (response.ok) { alert("Role updated!"); listCustomersForAdmin(); }
+        if (response.ok) { alert("Role updated!"); await listCustomersForAdmin(); }
     } catch (e) { alert("Update failed."); }
 }
 
@@ -541,6 +542,360 @@ function closeOrderModal() {
     if (modal) modal.classList.remove('active');
 }
 
+async function renderSalesReport() {
+    const container = document.getElementById('sales-reports');
+    if (!container) return;
+
+    // 1. Critical Fix: Ensure orders are loaded with await
+    if (adminOrdersCache.length === 0) {
+        await listOrdersForAdmin();
+    }
+
+    // 2. Filter for "Sold" (Shipped + Completed) and specifically "Completed" for the list
+    const soldOrders = adminOrdersCache.filter(o =>
+        o.status === 'Shipped' || o.status === 'Completed'
+    );
+
+    // 3. Calculate Summary Metrics using the new soldOrders
+    const totalRevenue = soldOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalOrders = soldOrders.length;
+
+    // 4. Calculate Top Selling Products
+    const productStats = {};
+    soldOrders.forEach(order => {
+        order.items.forEach(item => {
+            if (!productStats[item.name]) {
+                productStats[item.name] = { count: 0, revenue: 0 };
+            }
+            productStats[item.name].count += item.quantity;
+            productStats[item.name].revenue += (item.price * item.quantity);
+        });
+    });
+
+    const topProducts = Object.entries(productStats)
+        .map(([name, data]) => ({ name, ...data }))
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5);
+
+    // 5. Build the UI
+    container.innerHTML = `
+        <div class="section-header">
+            <h2>Sales Report</h2>
+            <div style="display: flex; gap: 10px;">
+                <select id="time-period" onchange="changePeriod()" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;">
+                    <option value="daily">Daily View</option>
+                    <option value="weekly">Weekly View</option>
+                    <option value="monthly">Monthly View</option>
+                </select>
+                <button onclick="exportSalesReportToCSV()" class="button secondary">Export CSV</button>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+            <div class="report-card">
+                <div class="report-label">Total Revenue</div>
+                <div class="report-value" style="color: #D67D8C;">RM ${totalRevenue.toFixed(2)}</div>
+            </div>
+            <div class="report-card">
+                <div class="report-label">Total Orders</div>
+                <div class="report-value">${totalOrders}</div>
+            </div>
+            <div class="report-card">
+                <div class="report-label">Average Order</div>
+                <div class="report-value">RM ${totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : '0.00'}</div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #FADADD; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 id="chart-title" style="margin-bottom: 15px; font-weight: 700;">Daily Sales Trend</h3>
+            <canvas id="salesChart" style="max-height: 300px;"></canvas>
+        </div>
+        
+        <div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #FADADD; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="margin-bottom: 20px; color: #333; font-weight: 700;">Top 5 Best Selling Products</h3>
+            <table class="admin-data-table centered-table">
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>PRODUCT NAME</th>
+                        <th>UNITS SOLD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${topProducts.map((p, index) => `
+                        <tr>
+                            <td style="font-weight: bold; color: #D67D8C;">#${index + 1}</td>
+                            <td>${p.name}</td>
+                            <td>${p.count}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #FADADD; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="margin-bottom: 20px; color: #333; font-weight: 700;">Shipped & Completed Orders List</h3>
+            <table class="admin-data-table">
+                <thead>
+                    <tr>
+                        <th>DATE</th>
+                        <th>ORDER ID</th>
+                        <th>CUSTOMER NAME</th>
+                        <th>TOTAL (RM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${soldOrders.map(o => `
+                        <tr>
+                            <td style="color: #666;">${o.orderDate}</td>
+                            <td style="font-family: monospace; font-weight: bold;">${o.orderId}</td>
+                            <td style="font-weight: 600; color: #131313;">${o.customerName}</td>
+                            <td style="font-weight: 800;">RM ${o.totalAmount.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="sales-detail-table" style="margin-top: 30px;"></div>
+    `;
+    // 6. Initialize the chart with soldOrders (to track units sold)
+    changePeriod();
+}
+//daily
+function groupByDay(orders) {
+    const grouped = {};
+    orders.forEach(order => {
+        const date = order.orderDate.split(' ')[0]; // "2025-12-20"
+        if (!grouped[date]) {
+            grouped[date] = { orders: 0, revenue: 0, products: {} };
+        }
+        grouped[date].orders += 1;
+        grouped[date].revenue += order.totalAmount;
+
+        order.items.forEach(item => {
+            if (!grouped[date].products[item.name]) {
+                grouped[date].products[item.name] = 0;
+            }
+            grouped[date].products[item.name] += item.quantity;
+        });
+    });
+    return grouped;
+}
+//weekly
+function groupByWeek(orders) {
+    const grouped = {};
+    orders.forEach(order => {
+        const date = new Date(order.orderDate);
+        const year = date.getFullYear();
+        const weekNum = getWeekNumber(date);
+        const weekLabel = `${year}-W${weekNum}`;
+
+        if (!grouped[weekLabel]) {
+            grouped[weekLabel] = { orders: 0, revenue: 0, products: {} };
+        }
+        grouped[weekLabel].orders += 1;
+        grouped[weekLabel].revenue += order.totalAmount;
+
+        order.items.forEach(item => {
+            if (!grouped[weekLabel].products[item.name]) {
+                grouped[weekLabel].products[item.name] = 0;
+            }
+            grouped[weekLabel].products[item.name] += item.quantity;
+        });
+    });
+    return grouped;
+}
+//monthly
+function groupByMonth(orders) {
+    const grouped = {};
+    orders.forEach(order => {
+        const month = order.orderDate.substring(0, 7); // "2025-12"
+        if (!grouped[month]) {
+            grouped[month] = { orders: 0, revenue: 0, products: {} };
+        }
+        grouped[month].orders += 1;
+        grouped[month].revenue += order.totalAmount;
+
+        order.items.forEach(item => {
+            if (!grouped[month].products[item.name]) {
+                grouped[month].products[item.name] = 0;
+            }
+            grouped[month].products[item.name] += item.quantity;
+        });
+    });
+    return grouped;
+}
+function getWeekNumber(date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+function changePeriod() {
+    const period = document.getElementById('time-period').value;
+    const soldOrders = adminOrdersCache.filter(o =>
+        o.status === 'Shipped' || o.status === 'Completed'
+    );
+
+    let salesData;
+    let chartTitle;
+    let tableTitle;
+
+    if (period === 'daily') {
+        salesData = groupByDay(soldOrders);
+        chartTitle = 'Daily Sales Trend';
+        tableTitle = 'Sales by Day';
+    } else if (period === 'weekly') {
+        salesData = groupByWeek(soldOrders);
+        chartTitle = 'Weekly Sales Trend';
+        tableTitle = 'Sales by Week';
+    } else if (period === 'monthly') {
+        salesData = groupByMonth(soldOrders);
+        chartTitle = 'Monthly Sales Trend';
+        tableTitle = 'Sales by Month';
+    }
+
+    document.getElementById('chart-title').textContent = chartTitle;
+    updateSalesChart(salesData);
+    updateSalesTable(salesData, tableTitle);
+}
+
+function updateSalesChart(salesData) {
+    const canvas = document.getElementById('salesChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    //remove old
+    if (salesChartInstance) {
+        salesChartInstance.destroy();
+    }
+
+    const labels = Object.keys(salesData).sort();
+    const revenues = labels.map(label => salesData[label].revenue);
+
+    salesChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenue (RM)',
+                data: revenues,
+                backgroundColor: '#D67D8C',
+                borderColor: '#D67D8C',
+                borderWidth: 1,
+                barThickness: 40,
+                maxBarThickness: 50
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom', // CHANGE: Moves legend below the graph
+                    labels: {
+                        padding: 20, // Adds space between the chart and the legend
+                        boxWidth: 40,
+                        usePointStyle: false
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            return 'Revenue: RM ' + context.parsed.y.toFixed(2);
+                        },
+                        afterLabel: function(context) {
+                            const index = context.dataIndex;
+                            const period = labels[index];
+                            const data = salesData[period];
+                            return 'Orders: ' + data.orders;
+                        },
+                        afterBody: function(context) {
+                            const index = context[0].dataIndex;
+                            const period = labels[index];
+                            const products = salesData[period].products;
+
+                            let productList = ['\nProducts Sold:'];
+                            for (let productName in products) {
+                                productList.push(`- ${productName}: ${products[productName]} units`);
+                            }
+                            return productList.join('\n');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'RM ' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+//update table
+function updateSalesTable(salesData, title) {
+    const container = document.getElementById('sales-detail-table');
+    if (!container) return;
+
+    const sortedData = Object.entries(salesData).sort((a, b) => b[0].localeCompare(a[0]));
+
+    container.innerHTML = `
+        <div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #FADADD; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 style="margin-bottom: 20px; color: #333; font-weight: 700;">${title}</h3>
+            <table class="admin-data-table centered-table">
+                <thead>
+                    <tr>
+                        <th>PERIOD</th>
+                        <th>ORDERS</th>
+                        <th>REVENUE (RM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${sortedData.map(([period, data]) => `
+                        <tr>
+                            <td style="font-weight: 600; color: #666;">${period}</td>
+                            <td>${data.orders}</td>
+                            <td style="font-weight: 800; color: #333;">RM ${data.revenue.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+// Function to export only the successful sales data
+function exportSalesReportToCSV() {
+    const soldOrders = adminOrdersCache.filter(o =>
+        o.status === 'Shipped' || o.status === 'Completed'
+    );
+
+    let csv = "Date,Order ID,Customer,Items,Total (RM),Status\n";
+
+    soldOrders.forEach(order => {
+        const itemCount = order.items.length;
+        csv += `"${order.orderDate}","${order.orderId}","${order.customerName}",${itemCount},${order.totalAmount},"${order.status}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Sales_Report_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+}
+
 // --- 5. MODAL & HELPER LOGIC ---
 async function showProductModal(productId = null) {
     const modal = document.getElementById('product-modal');
@@ -652,6 +1007,7 @@ async function showSection(targetId) {
     else if (targetId === 'dashboard') await fetchDashboardStats();
     else if (targetId === 'feedback') await listFeedbackForAdmin();
     else if (targetId === 'orders') await listOrdersForAdmin();
+    else if (targetId === 'sales-reports') await renderSalesReport();
 }
 
 // --- INITIALIZATION ---
@@ -674,6 +1030,8 @@ window.updateOrderStatus = updateOrderStatus;
 window.exportOrdersToCSV = exportOrdersToCSV;
 window.closeOrderModal = closeOrderModal;
 window.handleDeleteFeedback = handleDeleteFeedback;
+window.renderSalesReport = renderSalesReport;
+window.exportSalesReportToCSV = exportSalesReportToCSV;
 
 document.addEventListener('DOMContentLoaded', async () => {
     syncHeaderUsername();

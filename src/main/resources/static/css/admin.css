@@ -838,6 +838,50 @@
     margin-bottom: 3px;
 }
 
+/* Styling to match Order Management */
+.report-card {
+    background: #FFF5F6; /* Light pink background */
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #FADADD;
+    text-align: center;
+    transition: all 0.3s ease; /* Smooth transition effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft shadow */
+}
+
+.report-card:hover {
+    transform: translateY(-5px); /* Lift up on hover */
+    box-shadow: 0 8px 15px rgba(214, 125, 140, 0.2); /* Pink glow shadow */
+    border-color: #D67D8C; /* Darker pink border */
+}
+
+.report-label {
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.report-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #333;
+}
+
+/* New class for centered tables */
+.centered-table th,
+.centered-table td {
+    text-align: center !important;
+    vertical-align: middle;
+}
+
+/* Ensure the RM values and Order counts are also centered */
+.centered-table td {
+    padding: 15px;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .order-stats-grid {
