@@ -40,6 +40,7 @@
                 <li><a href="#customers">Customer Management</a></li>
                 <li><a href="#sales-reports">Sales Reports</a></li>
                 <li><a href="#feedback">Feedback Management</a></li>
+                <li><a href="#activity-log">Activity Log</a></li>
             </ul>
         </nav>
     </aside>
@@ -170,6 +171,8 @@
                 <p>Loading feedback...</p>
             </div>
         </section>
+        <section id="activity-log" class="dashboard-section">
+        </section>
     </main>
 </div>
 
@@ -215,6 +218,18 @@
                 <button type="button" class="button secondary" onclick="closeProductModal()">Cancel</button>
             </div>
         </form>
+    </div>
+</div>
+
+<div id="session-modal" class="modal">
+    <div class="modal-content" style="text-align: center; padding: 30px; border-radius: 12px; max-width: 400px;">
+        <h2 style="color: #D67D8C; margin-bottom: 15px;">Session Expiring</h2>
+        <p>Your session will expire in <span id="session-countdown" style="font-weight: bold; font-size: 1.2rem;">10</span> seconds.</p>
+        <p style="margin-bottom: 20px;">Do you want to stay logged in?</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="extendSession()" class="button primary">Stay Logged In</button>
+            <button onclick="window.handleLogout()" class="button secondary">Logout Now</button>
+        </div>
     </div>
 </div>
 

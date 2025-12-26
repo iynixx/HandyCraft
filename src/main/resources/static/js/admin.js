@@ -7,6 +7,12 @@ let adminProductsCache = [];
 let adminUsersCache = [];
 let adminOrdersCache = [];
 let salesChartInstance = null; //track the chart
+let activityLogs = [];
+let logoutTimer;
+let warningTimer;
+let countdownInterval;
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 Minutes
+const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
 
 // --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
@@ -29,6 +35,248 @@ function syncHeaderUsername() {
     if (username && display) {
         display.textContent = username;
     }
+}
+async function logActivity(action, details) {
+    const username = localStorage.getItem('username') || 'Unknown Admin';
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const log = {
+        id: Date.now(),
+        //username: localStorage.getItem('username') || 'Unknown Admin',
+        username: username,
+        action: action,
+        details: details,
+        timestamp: timestamp
+        //timestamp: new Date().toISOString().replace('T', ' ').split('.')[0]
+    };
+    try{
+        const headers = checkAdminAccessAndGetHeaders();
+        // Send to Java backend instead of localStorage
+        await fetch(`${API_ADMIN_BASE_URL}/logs`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(log)
+        });
+    } catch (e) {
+        console.error('Failed to sync log:', e);
+    }
+}
+function resetSessionTimer() {
+    clearTimeout(logoutTimer);
+    clearTimeout(warningTimer);
+    clearInterval(countdownInterval);
+
+    const modal = document.getElementById('session-modal');
+    if (modal) modal.classList.remove('active');
+
+    // Set timer for the 10-second warning
+    warningTimer = setTimeout(showSessionWarning, SESSION_TIMEOUT - WARNING_TIME);
+    // Set timer for the actual logout
+    logoutTimer = setTimeout(() => window.handleLogout(), SESSION_TIMEOUT);
+}
+
+function showSessionWarning() {
+    const modal = document.getElementById('session-modal');
+    const countdownDisplay = document.getElementById('session-countdown');
+    if (!modal) return;
+
+    modal.classList.add('active');
+    let timeLeft = 10;
+    countdownDisplay.textContent = timeLeft;
+
+    countdownInterval = setInterval(() => {
+        timeLeft--;
+        countdownDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) clearInterval(countdownInterval);
+    }, 1000);
+}
+
+function extendSession() {
+    resetSessionTimer();
+    console.log("Session extended by admin.");
+}
+
+// Initialize session tracking on page load and user activity
+document.addEventListener('DOMContentLoaded', () => {
+    resetSessionTimer();
+    // Reset timer on any of these user interactions
+    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
+        document.addEventListener(evt, resetSessionTimer, true);
+    });
+});
+
+/*function logActivity(action, details) {
+    const username = localStorage.getItem('username') || 'Unknown Admin';
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+    const log = {
+        id: Date.now(),
+        username: username,
+        action: action,
+        details: details,
+        timestamp: timestamp
+    };
+    activityLogs.unshift(log);
+    saveLogsToStorage();
+    console.log('Activity logged:', log);
+}*/
+
+/*function saveLogsToStorage() {
+    try {
+        localStorage.setItem('adminActivityLogs', JSON.stringify(activityLogs));
+    } catch (e) {
+        console.error('Failed to save logs:', e);
+    }
+}*/
+/*function loadLogsFromStorage() {
+    try {
+        const saved = localStorage.getItem('adminActivityLogs');
+        if (saved) {
+            activityLogs = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Failed to load logs:', e);
+        activityLogs = [];
+    }
+}*/
+async function renderActivityLog() {
+    const container = document.getElementById('activity-log');
+    if (!container) return;
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/logs`, { headers });
+
+        if (!response.ok) throw new Error("Failed to fetch logs from server.");
+
+        // This updates the global activityLogs variable with data from Java
+        activityLogs = await response.json();
+    } catch (e) {
+        console.error("Activity Log Error:", e);
+        container.innerHTML = `<p style="color:red; text-align:center; padding:20px;">
+            Error: Could not load activity logs from the backend. 
+            Please check if your Java server is running.</p>`;
+        return; // Stop rendering if the fetch fails
+    }
+    container.innerHTML = `
+        <div class="section-header">
+            <h2>Activity Log</h2>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="log-search" placeholder="Search by admin name or action..." 
+                       oninput="filterActivityLogs()" 
+                       style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; width: 300px;">
+                <button onclick="clearActivityLogs()" class="button" style="background: #dc3545; color: white;">Clear All Logs</button>
+                <button onclick="exportLogsToCSV()" class="button secondary">Export CSV</button>
+            </div>
+        </div>
+        
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;">
+            <div style="background: #FFF5F6; padding: 20px; border-radius: 8px; border: 1px solid #FADADD; text-align: center;">
+                <div style="color: #D67D8C; font-size: 0.9rem;">Total Activities</div>
+                <div style="font-size: 2rem; font-weight: bold;">${activityLogs.length}</div>
+            </div>
+            <div style="background: #FFF5F6; padding: 20px; border-radius: 8px; border: 1px solid #FADADD; text-align: center;">
+                <div style="color: #D67D8C; font-size: 0.9rem;">Today</div>
+                <div style="font-size: 2rem; font-weight: bold;">${getTodayLogsCount()}</div>
+            </div>
+            <div style="background: #FFF5F6; padding: 20px; border-radius: 8px; border: 1px solid #FADADD; text-align: center;">
+                <div style="color: #D67D8C; font-size: 0.9rem;">Active Admins</div>
+                <div style="font-size: 2rem; font-weight: bold;">${getUniqueAdminCount()}</div>
+            </div>
+            <div style="background: #FFF5F6; padding: 20px; border-radius: 8px; border: 1px solid #FADADD; text-align: center;">
+                <div style="color: #D67D8C; font-size: 0.9rem;">Last Activity</div>
+                <div style="font-size: 1rem; font-weight: bold;">${getLastActivityTime()}</div>
+            </div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+            <table class="admin-data-table" id="activity-log-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${activityLogs.length === 0 ?
+        '<tr><td colspan="4" style="text-align: center; color: #999;">No activities recorded yet</td></tr>' :
+        activityLogs.map(log => `
+                            <tr>
+                                <td style="font-family: monospace; font-size: 0.85rem; color: #666;">${log.timestamp}</td>
+                                <td style="font-weight: 600;">${log.username}</td>
+                                <td><span class="action-badge ${getActionClass(log.action)}">${log.action}</span></td>
+                                <td style="color: #555;">${log.details}</td>
+                            </tr>
+                        `).join('')
+    }
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+function getTodayLogsCount() {
+    const today = new Date().toISOString().split('T')[0];
+    return activityLogs.filter(log => log.timestamp.startsWith(today)).length;
+}
+function getUniqueAdminCount() {
+    const admins = new Set(activityLogs.map(log => log.username));
+    return admins.size;
+}
+function getLastActivityTime() {
+    if (activityLogs.length === 0) return 'N/A';
+    const lastLog = activityLogs[0];
+    return lastLog.timestamp.split(' ')[1]; //only show the time
+}
+function getActionClass(action) {
+    if (action.includes('Promoted') || action.includes('Added')) return 'action-success';
+    if (action.includes('Demoted') || action.includes('Deleted')) return 'action-danger';
+    if (action.includes('Updated') || action.includes('Modified')) return 'action-warning';
+    return 'action-info';
+}
+//filter activity log
+function filterActivityLogs() {
+    const searchTerm = document.getElementById('log-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#activity-log-table tbody tr');
+
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+//clear all logs
+function clearActivityLogs() {
+    if (!confirm('Are you sure you want to clear all activity logs? This cannot be undone.')) return;
+
+    activityLogs = [];
+    saveLogsToStorage();
+    renderActivityLog();
+    alert('All activity logs have been cleared.');
+}
+function exportLogsToCSV() {
+    let csv = "Timestamp,Admin,Action,Details\n";
+    activityLogs.forEach(log => {
+        csv += `"${log.timestamp}","${log.username}","${log.action}","${log.details}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Activity_Log_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
 }
 
 // --- 1. DASHBOARD OVERVIEW ---
@@ -143,13 +391,31 @@ async function handleUpdateUserRole(userId, newRole) {
     if (!confirm(`Are you sure you want to change this user to ${newRole}?`)) return;
     try {
         const headers = checkAdminAccessAndGetHeaders('application/json');
+        const user = adminUsersCache.find(u => {
+            const id = u.id || u._id || u.userId;
+            return String(id) === String(userId);
+        });
+        const targetUsername = user ? user.username : userId;
         const response = await fetch(`${API_ADMIN_BASE_URL}/role/${userId}`, {
             method: 'PUT',
             headers,
             body: JSON.stringify({ role: newRole })
         });
-        if (response.ok) { alert("Role updated!"); await listCustomersForAdmin(); }
-    } catch (e) { alert("Update failed."); }
+        if (response.ok)
+        {
+            const action = newRole === 'admin' ? 'Promoted User' : 'Demoted User';
+            logActivity(action, `Changed ${targetUsername} to ${newRole}`);
+            alert("Role updated!");
+            await listCustomersForAdmin();
+        }else {
+            const errorText = await response.text();
+            console.error("Server response:", errorText);
+            alert("Update failed: " + errorText);
+        }
+    } catch (e) {
+        console.error("Error:", e);
+        alert("Update failed: " + e.message);
+    }
 }
 
 // --- 3. PRODUCT MANAGEMENT ---
@@ -275,6 +541,8 @@ async function handleDeleteFeedback(feedbackId) {
         });
 
         if (response.ok) {
+            //record activity
+            logActivity('Deleted Feedback', `Removed feedback ID: ${feedbackId}`);
             alert("Comment removed successfully.");
             await listFeedbackForAdmin(); // Refresh the table
         } else {
@@ -501,8 +769,8 @@ async function updateOrderStatus(orderId, newStatus) {
 
         if (response.ok) {
             // Immediate Feedback
-            console.log(`Success: Order ${orderId} is now ${newStatus}`);
-
+            //console.log(`Success: Order ${orderId} is now ${newStatus}`);
+            logActivity('Updated Order Status', `Changed order ${orderId} to ${newStatus}`);
             // Refresh the background table
             await listOrdersForAdmin();
 
@@ -928,6 +1196,7 @@ async function showProductModal(productId = null) {
 async function handleProductSubmit(event) {
     event.preventDefault();
     const productId = document.getElementById('product-id-hidden').value;
+    const productName = document.getElementById('product-name').value.trim();
     const newData = {
         "Product Name": document.getElementById('product-name').value.trim(),
         "Category": document.getElementById('product-category').value.trim(),
@@ -943,7 +1212,14 @@ async function handleProductSubmit(event) {
             headers: checkAdminAccessAndGetHeaders('application/json'),
             body: JSON.stringify(newData)
         });
-        if (response.ok) { alert("Success!"); closeProductModal(); await listProductsForAdmin(); }
+        if (response.ok)
+        {
+            const action = productId ? 'Modified Product' : 'Added Product';
+            logActivity(action, `${action}: ${productName}`);
+            alert("Success!");
+            closeProductModal();
+            await listProductsForAdmin();
+        }
     } catch (e) { alert("Save failed."); }
 }
 
@@ -986,8 +1262,18 @@ function exportProductsToCSV() {
 async function deleteProduct(id) {
     if (!confirm('Delete this product?')) return;
     try {
-        const res = await fetch(`${API_ADMIN_BASE_URL}/products/${id}`, { method: 'DELETE', headers: checkAdminAccessAndGetHeaders() });
-        if (res.ok) await listProductsForAdmin();
+        const product = adminProductsCache.find(p => (p['Product ID'] || p.id) === id);
+        const productName = product ? (product['Product Name'] || product.name) : id;
+        const res = await fetch(`${API_ADMIN_BASE_URL}/products/${id}`,
+            { method: 'DELETE',
+                headers: checkAdminAccessAndGetHeaders()
+            });
+        if (res.ok)
+        {
+            //record the activity
+            logActivity('Deleted Product', `Removed product: ${productName}`);
+            await listProductsForAdmin();
+        }
     } catch (e) { alert('Delete failed'); }
 }
 
@@ -1008,6 +1294,7 @@ async function showSection(targetId) {
     else if (targetId === 'feedback') await listFeedbackForAdmin();
     else if (targetId === 'orders') await listOrdersForAdmin();
     else if (targetId === 'sales-reports') await renderSalesReport();
+    else if (targetId === 'activity-log') await renderActivityLog();
 }
 
 // --- INITIALIZATION ---
@@ -1032,6 +1319,11 @@ window.closeOrderModal = closeOrderModal;
 window.handleDeleteFeedback = handleDeleteFeedback;
 window.renderSalesReport = renderSalesReport;
 window.exportSalesReportToCSV = exportSalesReportToCSV;
+window.renderActivityLog = renderActivityLog;
+window.filterActivityLogs = filterActivityLogs;
+window.clearActivityLogs = clearActivityLogs;
+window.exportLogsToCSV = exportLogsToCSV;
+window.logActivity = logActivity;
 
 document.addEventListener('DOMContentLoaded', async () => {
     syncHeaderUsername();

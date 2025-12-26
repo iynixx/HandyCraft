@@ -11,6 +11,8 @@ import com.handycraft.utils.ResponseUtil;
 import com.handycraft.models.Product;
 import com.handycraft.models.User;
 import com.handycraft.models.Order;
+import com.handycraft.services.ActivityLogService;
+//import com.handycraft.models.ActivityLog;
 import com.handycraft.services.OrderService;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ public class AdminHandler implements HttpHandler {
 
     private final UserService userService = UserService.getInstance();
     private final ProductService productService = new ProductService();
+    private final ActivityLogService activityLogService = new ActivityLogService();
     private final Gson gson = new Gson();
 
     private boolean checkAdminAccess(HttpExchange exchange) {
@@ -63,6 +66,7 @@ public class AdminHandler implements HttpHandler {
             return;
         }
 
+
         try {
             if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/stats")) {
                 handleGetStats(exchange);
@@ -78,6 +82,12 @@ public class AdminHandler implements HttpHandler {
             }
             else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/orders")) {
                 handleGetOrders(exchange);
+            }
+            else if (method.equalsIgnoreCase("POST") && path.equals(ADMIN_BASE + "/logs")) {
+                handleSaveLog(exchange);
+            }
+            else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/logs")) {
+                handleGetLogs(exchange);
             }
             else if (method.equalsIgnoreCase("POST") && path.equals(ADMIN_BASE + "/products")) {
                 handleSaveProduct(exchange, null);
@@ -156,6 +166,31 @@ public class AdminHandler implements HttpHandler {
         List<Order> orders = orderService.getAllOrders();
         // This uses your existing ResponseUtil to send the JSON back to the browser
         ResponseUtil.sendResponse(exchange, 200, gson.toJson(orders), "application/json");
+    }
+    private void handleSaveLog(HttpExchange exchange) throws IOException {
+        try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
+            java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
+            Map<String, String> data = gson.fromJson(isr, type);
+
+            if (data == null) throw new Exception("Empty log body");
+
+            com.handycraft.models.ActivityLog log = new com.handycraft.models.ActivityLog();
+            log.setUsername(data.get("username"));
+            log.setAction(data.get("action"));
+            log.setDetails(data.get("details"));
+            log.setTimestamp(data.get("timestamp"));
+
+            activityLogService.addLog(log);
+            ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Log saved\"}", "application/json");
+        } catch (Exception e) {
+            System.err.println("Error saving log: " + e.getMessage());
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error saving log\"}", "application/json");
+        }
+    }
+
+    private void handleGetLogs(HttpExchange exchange) throws IOException {
+        List<com.handycraft.models.ActivityLog> logs = activityLogService.getAllLogs();
+        ResponseUtil.sendResponse(exchange, 200, gson.toJson(logs), "application/json");
     }
     private void handleUpdateOrderStatus(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {

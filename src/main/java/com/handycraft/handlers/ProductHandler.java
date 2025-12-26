@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.handycraft.services.ProductService;
+//import com.handycraft.services.FeedbackService;
 import com.handycraft.utils.ResponseUtil;
 import com.handycraft.models.Product;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class ProductHandler implements HttpHandler {
                 ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error saving file after delete: " + e.getMessage());
                 ResponseUtil.sendResponse(exchange, 500,
                         "{\"message\": \"Internal Server Error: Could not load products.\"}",
                         "application/json");

@@ -794,6 +794,14 @@
     outline: none;
 }
 
+#session-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000; /* Ensure it stays above other modals */
+}
+
 #order-count-display {
     color: #6b7280;
     font-size: 0.9rem;
@@ -880,6 +888,72 @@
 /* Ensure the RM values and Order counts are also centered */
 .centered-table td {
     padding: 15px;
+}
+
+.action-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.action-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.action-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+}
+
+.action-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbbf24;
+}
+
+.action-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+}
+
+#activity-log-table th,
+#activity-log-table td {
+    text-align: center;
+}
+
+/* fix the time column in table*/
+#activity-log-table th:first-child,
+#activity-log-table td:first-child {
+    width: 180px;
+}
+
+/* Admin name*/
+#activity-log-table th:nth-child(2),
+#activity-log-table td:nth-child(2) {
+    width: 150px;
+}
+
+/* column action */
+#activity-log-table th:nth-child(3),
+#activity-log-table td:nth-child(3) {
+    width: 200px;
+}
+
+/* Details*/
+#activity-log-table th:nth-child(4),
+#activity-log-table td:nth-child(4) {
+    width: auto;
+}
+
+#activity-log-table tbody tr:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s;
 }
 
 /* Responsive */

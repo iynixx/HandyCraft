@@ -167,7 +167,7 @@ window.viewCart = function() {
 // --- Feedback and Rating System ---
 async function updateAverageDisplay(productId) {
     try {
-        const res = await fetch(`http://localhost:8000/api/feedback?id=${productId}`);
+        const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
         const data = await res.json();
         const avgDisplay = document.getElementById('avg-rating-value');
         if (avgDisplay) avgDisplay.textContent = (data.average || 0).toFixed(1);
@@ -176,7 +176,7 @@ async function updateAverageDisplay(productId) {
 
 async function loadFeedback(productId) {
     try {
-        const res = await fetch(`http://localhost:8000/api/feedback?id=${productId}`);
+        const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
         const data = await res.json();
         const reviews = data.reviews || [];
         const container = document.getElementById('reviews-list');
