@@ -103,6 +103,13 @@ public class AuthHandler implements HttpHandler {
             return;
         }
 
+        // === CHECK IF EMAIL EXISTS ===
+        if (userService.findUserByEmail(email) != null) {
+            ResponseUtil.sendResponse(exchange, 409,
+                    "{\"message\": \"Email already registered.\"}", "application/json");
+            return;
+        }
+
         // === 4. PASSWORD VALIDATION ===
         // Length: 8-15 characters
         if (password.length() < 8 || password.length() > 15) {

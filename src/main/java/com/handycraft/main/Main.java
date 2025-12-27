@@ -7,6 +7,7 @@ import com.handycraft.handlers.StaticFileHandler;
 import com.handycraft.handlers.CartHandler;
 import com.handycraft.handlers.AdminHandler;
 import com.handycraft.handlers.FeedbackHandler;
+import com.handycraft.handlers.ProfileHandler;
 import com.handycraft.handlers.OrderHandler;
 // import com.handycraft.utils.HashUtil; // <-- REMOVED: No longer needed here
 import com.handycraft.handlers.PasswordResetHandler;
@@ -32,6 +33,7 @@ public class Main {
             server.createContext("/api/checkout", new CartHandler());
             server.createContext("/api/admin", new AdminHandler());
             server.createContext("/api/feedback", new FeedbackHandler());
+            server.createContext("/api/profile", new ProfileHandler());
 
             // 3. Password Reset Handler
             server.createContext("/api/password-reset", new PasswordResetHandler());

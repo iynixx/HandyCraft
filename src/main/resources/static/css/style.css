@@ -153,6 +153,37 @@ nav {
     padding: 10px 0;
 }
 
+/* Keep everything in one row */
+.nav-links {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+}
+
+.profile-btn {
+    border: 1px solid #D67D8C !important;
+    color: #D67D8C !important;
+    background: transparent !important;
+    border-radius: 25px !important;
+    padding: 6px 14px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+    background: #D67D8C !important;
+    color: white !important;
+}
+
+.nav-link-text {
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
 /* --- Logo and Text Alignment --- */
 .logo-link-with-text {
     display: flex;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <title>My Profile - Handy Craft</title>
+</head>
+<body>
+<header class="main-header">
+    <nav class="container">
+        <div class="logo">
+            <a href="index.html" class="logo-link-with-text">
+                <img src="images/logo.png" alt="Handy Craft Logo">
+                <span class="site-title">Handy Craft</span>
+            </a>
+        </div>
+        <div id="auth-links-container">
+            <ul id="auth-links" class="nav-links"></ul>
+        </div>
+    </nav>
+</header>
+
+<main class="container" style="padding: 40px 0;">
+    <h1 style="margin-bottom: 30px;">My Profile</h1>
+
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start;">
+
+        <section class="content-box">
+            <h2 style="color: #D67D8C;">Account Info</h2>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+            <p style="margin-bottom: 10px;"><strong>Username:</strong> <br> <span id="prof-username">Loading...</span></p>
+            <p style="margin-bottom: 10px;"><strong>Email:</strong> <br> <span id="prof-email">Loading...</span></p>
+            <p><strong>Status:</strong> <br> <span id="prof-role" style="text-transform: capitalize; color: #666;"></span></p>
+        </section>
+
+        <section class="content-box">
+            <h2 style="color: #D67D8C;">Order History</h2>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+            <div id="order-history-list">
+                <p>Fetching your past orders...</p>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script src="js/auth.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

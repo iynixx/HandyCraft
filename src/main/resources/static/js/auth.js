@@ -31,9 +31,13 @@ function redirectToDashboard(role) {
  * Updates the header navigation based on login status.
  */
 function updateAuthHeader() {
-    const container = document.getElementById(AUTH_LINKS_CONTAINER_ID);
+    const container = document.getElementById('auth-links-container');
     const loggedIn = localStorage.getItem('userLoggedIn') === 'true';
     const username = localStorage.getItem('username');
+
+    // Detect current page
+    const path = window.location.pathname;
+    const isProfilePage = path.includes('profile.html');
 
     if (!container) return;
 
@@ -50,11 +54,19 @@ function updateAuthHeader() {
     let htmlContent = '';
 
     if (loggedIn && username) {
+        if (isProfilePage) {
+            htmlContent = `
+                <li><a href="index.html" class="nav-link-text">Back to Home</a></li>
+                <li><a href="profile.html" class="button secondary profile-btn">My Profile</a></li>
+            `;
+        } else {
+            htmlContent = `
+                <li class="user-greeting">Hello, <strong>${username}</strong></li>
+                <li><a href="profile.html" class="button secondary profile-btn">My Profile</a></li>
+                <li><button id="logout-button" class="button primary">Log Out</button></li>
+            `;
+        }
         // Logged In: Keep Log Out as a button
-        htmlContent = `
-            <li class="user-greeting">Hello, <strong>${username}</strong>!</li>
-            <li><button id="logout-button" class="button primary">Log Out</button></li>
-        `;
     } else {
         // Logged Out: Sign In and Sign Up.
         htmlContent = `
@@ -66,7 +78,7 @@ function updateAuthHeader() {
     // Set the content on the inner UL
     authLinksList.innerHTML = htmlContent;
 
-    // Re-bind the logout handler if the button was just added
+    // Logout binding
     if (loggedIn) {
         const logoutButton = document.getElementById('logout-button');
         if (logoutButton) {
@@ -193,13 +205,17 @@ function handleSignUp(event) {
                 window.location.href = 'signin.html';
                 return Promise.resolve({});
             }
+            // Handle Duplicate Email
+            if (response.status === 409) {
+                throw new Error('This email is already registered. Please use a different one or sign in.');
+            }
             return response.json().then(err => {
                 throw new Error(err.message || 'Registration failed due to a server error.');
             });
         })
         .catch(error => {
             console.error('Registration Error:', error);
-            alert(`Registration failed: ${error.message}`);
+            alert(`${error.message}`);
         });
 }
 
