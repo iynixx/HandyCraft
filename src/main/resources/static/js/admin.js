@@ -11,9 +11,11 @@ let activityLogs = [];
 let logoutTimer;
 let warningTimer;
 let countdownInterval;
-const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
-const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
-
+//const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
+//const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
+// TEMPORARY TESTING VALUES
+const SESSION_TIMEOUT = 20000; // 20 seconds total
+const WARNING_TIME = 10000;    // Show warning at 10 seconds remaining
 /**
  * @typedef {Object} Order
  * @property {string} orderId
@@ -119,10 +121,6 @@ function extendSession() {
 // Initialize session tracking on page load and user activity
 document.addEventListener('DOMContentLoaded', () => {
     resetSessionTimer();
-    // Reset timer on any of these user interactions
-    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
-        document.addEventListener(evt, resetSessionTimer, true);
-    });
 });
 
 /*function logActivity(action, details) {
