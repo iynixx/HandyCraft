@@ -11,11 +11,9 @@ let activityLogs = [];
 let logoutTimer;
 let warningTimer;
 let countdownInterval;
-//const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
-//const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
-// TEMPORARY TESTING VALUES
-const SESSION_TIMEOUT = 20000; // 20 seconds total
-const WARNING_TIME = 10000;    // Show warning at 10 seconds remaining
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
+const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
+
 /**
  * @typedef {Object} Order
  * @property {string} orderId
