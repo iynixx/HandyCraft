@@ -107,6 +107,10 @@ public class AdminHandler implements HttpHandler {
             else if (method.equalsIgnoreCase("PUT") && path.equals(ADMIN_BASE + "/orders/status")) {
                 handleUpdateOrderStatus(exchange);
             }
+            // Inside AdminHandler.java handle() method
+            else if (method.equalsIgnoreCase("DELETE") && path.equals(ADMIN_BASE + "/logs")) {
+                handleClearLogs(exchange);
+            }
             else {
                 ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Not Found\"}", "application/json");
             }
@@ -227,6 +231,15 @@ public class AdminHandler implements HttpHandler {
     private void handleDeleteProduct(HttpExchange exchange, String productId) throws IOException {
         boolean success = productService.deleteProduct(productId);
         ResponseUtil.sendResponse(exchange, success ? 204 : 404, "", "application/json");
+    }
+    private void handleClearLogs(HttpExchange exchange) throws IOException {
+        try {
+            // This is the call that makes the "unused" warning disappear
+            activityLogService.clearAllLogs();
+            ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Logs cleared successfully\"}", "application/json");
+        } catch (Exception e) {
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error clearing logs\"}", "application/json");
+        }
     }
 
     private void handleUpdateUserRole(HttpExchange exchange, String userId) throws IOException {

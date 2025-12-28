@@ -11,8 +11,22 @@ let activityLogs = [];
 let logoutTimer;
 let warningTimer;
 let countdownInterval;
-const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 Minutes
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
 const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
+
+/**
+ * @typedef {Object} Order
+ * @property {string} orderId
+ * @property {string} orderDate
+ * @property {string} customerName
+ * @property {number} totalAmount
+ * @property {string} status
+ */
+/**
+ * @typedef {Object} Stats
+ * @property {number} totalProducts
+ * @property {number} pendingOrders
+ */
 
 // --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
@@ -159,7 +173,11 @@ async function renderActivityLog() {
         const headers = checkAdminAccessAndGetHeaders();
         const response = await fetch(`${API_ADMIN_BASE_URL}/logs`, { headers });
 
-        if (!response.ok) throw new Error("Failed to fetch logs from server.");
+        if (!response.ok) {
+            console.error("Failed to fetch logs from server.");
+            container.innerHTML = `<p style="color:red;">Error: Backend returned ${response.status}</p>`;
+            return; // This exits the function gracefully
+        }
 
         // This updates the global activityLogs variable with data from Java
         activityLogs = await response.json();
@@ -228,7 +246,11 @@ async function renderActivityLog() {
     `;
 }
 function getTodayLogsCount() {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    // Create a local YYYY-MM-DD string that matches your log format
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    // This will now correctly match "2025-12-29" in your logs
     return activityLogs.filter(log => log.timestamp.startsWith(today)).length;
 }
 function getUniqueAdminCount() {
@@ -257,13 +279,25 @@ function filterActivityLogs() {
     });
 }
 //clear all logs
-function clearActivityLogs() {
-    if (!confirm('Are you sure you want to clear all activity logs? This cannot be undone.')) return;
+async function clearActivityLogs() {
+    if (!confirm('Are you sure you want to clear all activity logs?')) return;
 
-    activityLogs = [];
-    saveLogsToStorage();
-    renderActivityLog();
-    alert('All activity logs have been cleared.');
+    try {
+        const headers = checkAdminAccessAndGetHeaders();
+        const response = await fetch(`${API_ADMIN_BASE_URL}/logs`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (response.ok) {
+            alert('All activity logs have been cleared.');
+            await renderActivityLog(); // Re-fetch the empty list from Java
+        } else {
+            alert('Server failed to clear logs.');
+        }
+    } catch (e) {
+        console.error('Error:', e);
+    }
 }
 function exportLogsToCSV() {
     let csv = "Timestamp,Admin,Action,Details\n";
@@ -404,7 +438,7 @@ async function handleUpdateUserRole(userId, newRole) {
         if (response.ok)
         {
             const action = newRole === 'admin' ? 'Promoted User' : 'Demoted User';
-            logActivity(action, `Changed ${targetUsername} to ${newRole}`);
+            await logActivity(action, `Changed ${targetUsername} to ${newRole}`);
             alert("Role updated!");
             await listCustomersForAdmin();
         }else {
@@ -542,7 +576,7 @@ async function handleDeleteFeedback(feedbackId) {
 
         if (response.ok) {
             //record activity
-            logActivity('Deleted Feedback', `Removed feedback ID: ${feedbackId}`);
+            await logActivity('Deleted Feedback', `Removed feedback ID: ${feedbackId}`);
             alert("Comment removed successfully.");
             await listFeedbackForAdmin(); // Refresh the table
         } else {
@@ -770,7 +804,7 @@ async function updateOrderStatus(orderId, newStatus) {
         if (response.ok) {
             // Immediate Feedback
             //console.log(`Success: Order ${orderId} is now ${newStatus}`);
-            logActivity('Updated Order Status', `Changed order ${orderId} to ${newStatus}`);
+            await logActivity('Updated Order Status', `Changed order ${orderId} to ${newStatus}`);
             // Refresh the background table
             await listOrdersForAdmin();
 
@@ -1215,7 +1249,7 @@ async function handleProductSubmit(event) {
         if (response.ok)
         {
             const action = productId ? 'Modified Product' : 'Added Product';
-            logActivity(action, `${action}: ${productName}`);
+            await logActivity(action, `${action}: ${productName}`);
             alert("Success!");
             closeProductModal();
             await listProductsForAdmin();
@@ -1271,7 +1305,7 @@ async function deleteProduct(id) {
         if (res.ok)
         {
             //record the activity
-            logActivity('Deleted Product', `Removed product: ${productName}`);
+            await logActivity('Deleted Product', `Removed product: ${productName}`);
             await listProductsForAdmin();
         }
     } catch (e) { alert('Delete failed'); }
