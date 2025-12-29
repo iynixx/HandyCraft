@@ -208,11 +208,38 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");
         }
     }
+
     private void handleGetStats(HttpExchange exchange) throws IOException {
         Map<String, Integer> stats = new HashMap<>();
-        stats.put("totalProducts", productService.loadAllProducts().size());
-        stats.put("registeredUsers", userService.getAllUsers().size());
-        stats.put("pendingOrders", 5);
+
+        // Fetch real data from your services
+        List<Order> allOrders = orderService.getAllOrders();
+        List<User> allUsers = userService.getAllUsers();
+        int totalProducts = productService.loadAllProducts().size();
+
+        // 2. Calculate counts for every possible status
+        int pending = 0;
+        int processing = 0;
+        int shipped = 0;
+        int completed = 0;
+
+        for (Order order : allOrders) {
+            String status = order.getStatus();
+            if ("Pending".equalsIgnoreCase(status)) pending++;
+            else if ("Processing".equalsIgnoreCase(status)) processing++;
+            else if ("Shipped".equalsIgnoreCase(status)) shipped++;
+            else if ("Completed".equalsIgnoreCase(status)) completed++;
+        }
+
+        // 3. Populate the response map
+        stats.put("totalProducts", totalProducts);
+        stats.put("registeredUsers", allUsers.size());
+        stats.put("totalOrders", allOrders.size());
+        stats.put("pendingOrders", pending);
+        stats.put("processingOrders", processing);
+        stats.put("shippedOrders", shipped);
+        stats.put("completedOrders", completed);
+
         ResponseUtil.sendResponse(exchange, 200, gson.toJson(stats), "application/json");
     }
 

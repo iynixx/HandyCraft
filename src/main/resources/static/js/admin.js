@@ -336,7 +336,7 @@ async function fetchDashboardStats() {
             document.getElementById('stat-products').textContent = productCount;
         }
         if (document.getElementById('stat-orders')) {
-            document.getElementById('stat-orders').textContent = stats.pendingOrders || 0;
+            document.getElementById('stat-orders').textContent = stats.pendingOrders;
         }
         if (document.getElementById('stat-users')) {
             document.getElementById('stat-users').textContent = userCount;
@@ -610,6 +610,19 @@ async function listOrdersForAdmin() {
     }
 }
 
+function formatAdminDate(dateString) {
+    const date = new Date(dateString);
+    if (isNaN(date)) return dateString; // Fallback if date is invalid
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
 function renderOrderStats(orders) {
     const statsContainer = document.getElementById('order-stats');
     if (!statsContainer) return;
@@ -687,7 +700,7 @@ function renderOrderTable(orders) {
             <td style="font-family: monospace; color: #666; font-size: 0.85rem;">${order.orderId}</td>
             <td style="font-weight: 600;">${order.customerName}</td>
             <td>${order.phone}</td>
-            <td style="font-size: 0.9rem;">${order.orderDate}</td>
+            <td style="font-size: 0.9rem;">${formatAdminDate(order.orderDate)}</td>
             <td style="text-align: center;">${order.items.length}</td>
             <td style="font-weight: 600;">RM ${order.totalAmount.toFixed(2)}</td>
             <td>
