@@ -1,104 +1,206 @@
 [
   {
-    "orderId": "ORD-2025-001",
-    "userId": "xinqi_usm",
-    "customerName": "Xin Qi",
-    "address": "4, Halaman Bukit Gambir, Sunway Bukit Gambier, 11700 Gelugor, Pulau Pinang",
-    "phone": "012-3456789",
+    "orderId": "ORD-1766932614324",
+    "userId": "bob2@gmail.com",
+    "customerName": "Bob",
+    "address": "No. 36, Jalan Tasik Timur, Taman Tasik Indra, 31400, Ipoh, Perak.",
+    "phone": "0123456789",
     "items": [
       {
-        "id": "1",
-        "name": "Mushroom Crochet",
-        "price": 25.0,
-        "quantity": 2.0,
-        "variant": "Red"
-      }
-    ],
-    "totalAmount": 50.0,
-    "orderDate": "2025-12-20 10:30",
-    "status": "Completed"
-  },
-  {
-    "orderId": "ORD-2025-002",
-    "userId": "tekun_resident",
-    "customerName": "Ahmad Razak",
-    "address": "12, Lorong Universiti, Taman Universiti, 11700 Gelugor, Pulau Pinang",
-    "phone": "017-9876543",
-    "items": [
-      {
-        "id": "3",
+        "id": "23",
         "name": "Bear Purse",
         "price": 40.0,
         "quantity": 1.0,
-        "variant": "Light Brown"
-      }
-    ],
-    "totalAmount": 40.0,
-    "orderDate": "2025-12-21 14:15",
-    "status": "Pending"
-  },
-  {
-    "orderId": "ORD-2025-003",
-    "userId": "crochet_lover",
-    "customerName": "Lim Siew Mei",
-    "address": "88, Jalan Bukit Gambir, Centrio Avenue, 11700 Gelugor, Pulau Pinang",
-    "phone": "016-1122334",
-    "items": [
-      {
-        "id": "5",
-        "name": "Totoro Dusty Ball",
-        "price": 40.0,
-        "quantity": 2.0,
-        "variant": "Default"
+        "variant": "Light Brown",
+        "remainingStock": 3.0
       },
       {
-        "id": "4",
-        "name": "Sunflower Cherry",
-        "price": 25.0,
+        "id": "6",
+        "name": "Bunny Bag",
+        "price": 30.0,
         "quantity": 1.0,
-        "variant": "Default"
+        "variant": "Default",
+        "remainingStock": 7.0
       }
     ],
-    "totalAmount": 105.0,
-    "orderDate": "2025-12-22 09:45",
+    "totalAmount": 70.0,
+    "orderDate": "Sun Dec 28 22:36:54 GMT+08:00 2025",
     "status": "Processing"
   },
   {
-    "orderId": "ORD-2025-004",
-    "userId": "artsy_tan",
-    "customerName": "Tan Wei Lun",
-    "address": "15, Halaman Bukit Gambir 2, Sunway Bukit Gambier, 11700 Gelugor, Pulau Pinang",
-    "phone": "011-5566778",
+    "orderId": "ORD-1766932809521",
+    "userId": "rita4@gmail.com",
+    "customerName": "Rita",
+    "address": "284, Jalan Simbang, Taman Perling, 81200, Johor.",
+    "phone": "01163441895",
     "items": [
       {
-        "id": "2",
-        "name": "Couples Set",
-        "price": 35.0,
+        "id": "23",
+        "name": "Bear Purse",
+        "price": 40.0,
         "quantity": 1.0,
-        "variant": "Blue/Pink"
+        "variant": "Light Brown",
+        "remainingStock": 3.0
       }
     ],
-    "totalAmount": 35.0,
-    "orderDate": "2025-12-23 18:20",
-    "status": "Shipped"
+    "totalAmount": 40.0,
+    "orderDate": "Sun Dec 28 22:40:09 GMT+08:00 2025",
+    "status": "Processing"
   },
   {
-    "orderId": "ORD-2025-005",
-    "userId": "usm_student99",
-    "customerName": "Siti Aminah",
-    "address": "10-3-2, Vista Gambier, Jalan Bukit Gambir, 11700 Gelugor, Pulau Pinang",
-    "phone": "019-4433221",
+    "orderId": "ORD-1766932918684",
+    "userId": "eva6@gmail.com",
+    "customerName": "Eva",
+    "address": "28-16-07, Jalan Sungai, Taman Sri Pinang, 10150, George Town, Pulau Pinang.",
+    "phone": "0172265588",
+    "items": [
+      {
+        "id": "4",
+        "name": "Totoro Dusty Ball",
+        "price": 40.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 3.0
+      }
+    ],
+    "totalAmount": 40.0,
+    "orderDate": "Sun Dec 28 22:41:58 GMT+08:00 2025",
+    "status": "Pending"
+  },
+  {
+    "orderId": "ORD-1766933148304",
+    "userId": "rita4@gmail.com",
+    "customerName": "Rita",
+    "address": "210, Jalan Kristal 3/2, Taman Kristal Fasa 2, 08000, Sungai Petani, Kedah.",
+    "phone": "01148311846",
     "items": [
       {
         "id": "1",
-        "name": "Mushroom Crochet",
+        "name": "Sunflower Cherry",
         "price": 25.0,
-        "quantity": 4.0,
-        "variant": "Yellow"
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 8.0
       }
     ],
-    "totalAmount": 100.0,
-    "orderDate": "2025-12-24 11:00",
+    "totalAmount": 25.0,
+    "orderDate": "Sun Dec 28 22:45:48 GMT+08:00 2025",
+    "status": "Processing"
+  },
+  {
+    "orderId": "ORD-1766933289522",
+    "userId": "luckytan8@gmail.com",
+    "customerName": "Lucky Tan",
+    "address": "B-1967, Lorong-Air Putih 80, Jalan Beserah, 25300, Kuantan, Pahang.",
+    "phone": "0161632339",
+    "items": [
+      {
+        "id": "24",
+        "name": "Chicken Purse",
+        "price": 28.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 5.0
+      }
+    ],
+    "totalAmount": 28.0,
+    "orderDate": "Sun Dec 28 22:48:09 GMT+08:00 2025",
+    "status": "Pending"
+  },
+  {
+    "orderId": "ORD-1766933453576",
+    "userId": "peggyteo10@gmail.com",
+    "customerName": "Peggy Teo",
+    "address": "1, Lorong Sukun 28B, Upper Lanang, 96000, Sibu, Sarawak.",
+    "phone": "0131500260",
+    "items": [
+      {
+        "id": "34",
+        "name": "Macaron Purses",
+        "price": 25.0,
+        "quantity": 1.0,
+        "variant": "Blue",
+        "remainingStock": 3.0
+      }
+    ],
+    "totalAmount": 25.0,
+    "orderDate": "Sun Dec 28 22:50:53 GMT+08:00 2025",
+    "status": "Pending"
+  },
+  {
+    "orderId": "ORD-1766933513884",
+    "userId": "bob2@gmail.com",
+    "customerName": "Bob",
+    "address": "No. 36, Jalan Tasik Timur, Taman Tasik Indra, 31400, Ipoh, Perak.",
+    "phone": "0123456789",
+    "items": [
+      {
+        "id": "20",
+        "name": "Penguin",
+        "price": 18.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 8.0
+      }
+    ],
+    "totalAmount": 18.0,
+    "orderDate": "Sun Dec 28 22:51:53 GMT+08:00 2025",
+    "status": "Processing"
+  },
+  {
+    "orderId": "ORD-1766933590423",
+    "userId": "eva6@gmail.com",
+    "customerName": "Eva",
+    "address": "28-16-07, Jalan Sungai, Taman Sri Pinang, 10150, George Town, Pulau Pinang.",
+    "phone": "0172265588",
+    "items": [
+      {
+        "id": "6",
+        "name": "Bunny Bag",
+        "price": 30.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 7.0
+      }
+    ],
+    "totalAmount": 30.0,
+    "orderDate": "Sun Dec 28 22:53:10 GMT+08:00 2025",
+    "status": "Processing"
+  },
+  {
+    "orderId": "ORD-1766933840847",
+    "userId": "luckytan8@gmail.com",
+    "customerName": "Lucky Tan",
+    "address": "B-1967, Lorong-Air Putih 80, Jalan Beserah, 25300, Kuantan, Pahang.",
+    "phone": "0161632339",
+    "items": [
+      {
+        "id": "73",
+        "name": "Taco \u0026 French Fries Keychain",
+        "price": 18.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 9.0
+      },
+      {
+        "id": "66",
+        "name": "Crochet Hairband",
+        "price": 8.0,
+        "quantity": 1.0,
+        "variant": "Grey (glitter)",
+        "remainingStock": 6.0
+      },
+      {
+        "id": "57",
+        "name": "Lunar New Year Pet Collar",
+        "price": 25.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 4.0
+      }
+    ],
+    "totalAmount": 51.0,
+    "orderDate": "Sun Dec 28 22:57:20 GMT+08:00 2025",
     "status": "Pending"
   }
 ]

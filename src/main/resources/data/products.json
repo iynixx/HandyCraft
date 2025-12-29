@@ -7,7 +7,7 @@
     "Description": "Bright and cheerful crochet sunflower with a cherry accent, perfect for home decor or as a gift.",
     "File Name": "sunflower_cherry.jpg",
     "Inventory": {
-      "Default": 8
+      "Default": 7
     }
   },
   {
@@ -40,7 +40,7 @@
     "Description": "An adorable Totoro-inspired crochet dust ball, combining cuteness with practical dusting.",
     "File Name": "totoro_dusty_ball.jpg",
     "Inventory": {
-      "Default": 3
+      "Default": 2
     }
   },
   {
@@ -62,7 +62,7 @@
     "Description": "A cute and roomy bunny-shaped crochet bag, perfect for casual outings or as a gift for bunny lovers.",
     "File Name": "bunny_bag.jpg",
     "Inventory": {
-      "Default": 7
+      "Default": 5
     }
   },
   {
@@ -218,7 +218,7 @@
     "Description": "A cute crochet penguin with classic black-and-white coloring, ideal for winter-themed decor.",
     "File Name": "penguin.jpg",
     "Inventory": {
-      "Default": 8
+      "Default": 7
     }
   },
   {
@@ -251,7 +251,7 @@
     "Description": "Handmade crochet bear-shaped purse with card slots, combining cuteness with functionality.",
     "File Name": "bear_purse.jpg",
     "Inventory": {
-      "Light Brown": 3,
+      "Light Brown": 1,
       "Dark Brown": 4
     }
   },
@@ -263,7 +263,7 @@
     "Description": "Cheerful yellow crochet chicken purse with compartments for coins and cards, a fun everyday accessory.",
     "File Name": "chicken_purse.jpg",
     "Inventory": {
-      "Default": 5
+      "Default": 4
     }
   },
   {
@@ -381,7 +381,7 @@
       "Yellow": 3,
       "Orange": 3,
       "Purple": 3,
-      "Blue": 3,
+      "Blue": 2,
       "Green": 3
     }
   },
@@ -653,7 +653,7 @@
     "Description": "Festive crochet pet collar with Lunar New Year motifs, celebrating the season with your pet in style.",
     "File Name": "Lunar_pet_collar.jpg",
     "Inventory": {
-      "Default": 4
+      "Default": 3
     }
   },
   {
@@ -759,7 +759,7 @@
     "Description": "Stretchable crochet hairband with glitter accents, adding a touch of sparkle and style to your hair.",
     "File Name": "hairband.jpg",
     "Inventory": {
-      "Grey (glitter)": 6,
+      "Grey (glitter)": 5,
       "Pink (glitter)": 6,
       "White (glitter)": 6,
       "Sweet Pink (plain)": 6
@@ -850,7 +850,7 @@
     "Description": "Fun and food-themed crochet keychains featuring a taco and French fries, adding a playful touch to your keys.",
     "File Name": "taco_french_fries.jpg",
     "Inventory": {
-      "Default": 9
+      "Default": 8
     }
   }
 ]
