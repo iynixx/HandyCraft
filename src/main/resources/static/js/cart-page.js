@@ -12,7 +12,7 @@ function renderCart() {
     if (!cart || cart.length === 0) {
         document.getElementById('cart-content').innerHTML = `
             <div style="text-align:center; padding: 60px; background: #fff; border-radius: 15px; border: 1px dashed #ccc;">
-                <p style="font-size: 1.2rem; color: #888;">Your cart is empty 🧺</p>
+                <p style="font-size: 1.2rem; color: #888;">Your cart is empty</p>
                 <a href="products.html" class="button primary" style="display:inline-block; margin-top:20px;">Go Shopping</a>
             </div>`;
         return;

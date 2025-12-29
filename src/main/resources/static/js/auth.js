@@ -11,6 +11,7 @@ function saveSession(data) {
     localStorage.setItem('userLoggedIn', 'true');
     localStorage.setItem('userId', data.userId);
     localStorage.setItem('username', data.username);
+    localStorage.setItem('userEmail', data.email);
     localStorage.setItem('userRole', data.role);
 }
 

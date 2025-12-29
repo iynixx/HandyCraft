@@ -90,7 +90,6 @@ public class OrderService {
             }
             return false;
         } catch (IOException e) {
-            //e.printStackTrace();
             System.err.println("Error: " + e.getMessage());
             return false;
         } finally {
@@ -108,4 +107,30 @@ public class OrderService {
     public List<Order> getAllOrders() {
         return Collections.unmodifiableList(this.orders);
     }
+
+    public List<Order> getOrdersByUserId(String userId) {
+        File dataFile = new File(ORDER_DATA_FILE);
+
+        if (!dataFile.exists() || dataFile.length() == 0) {
+            return new ArrayList<>();
+        }
+
+        try (FileReader reader = new FileReader(dataFile)) {
+            Type listType = new TypeToken<ArrayList<Order>>() {}.getType();
+            List<Order> allOrders = gson.fromJson(reader, listType);
+
+            if (allOrders == null) {
+                return new ArrayList<>();
+            }
+
+            return allOrders.stream()
+                    .filter(order -> userId.equals(order.getUserId()))
+                    .toList();
+
+        } catch (IOException e) {
+            System.err.println("Error reading orders file: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
 }

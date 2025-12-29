@@ -44,10 +44,29 @@ public class OrderHandler implements HttpHandler {
                 ResponseUtil.sendResponse(exchange, 400, "{\"message\": \"" + errorMessage + "\"}", "application/json");
             } catch (Exception e) {
                 // This catches any other unexpected server errors
-                e.printStackTrace();
+                System.err.println("Error: " + e.getMessage());
                 ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"An unexpected server error occurred.\"}", "application/json");
             }
         }
+
+        if (method.equalsIgnoreCase("GET")) {
+            String query = exchange.getRequestURI().getQuery();
+            String userId = null;
+
+            if (query != null && query.contains("userId=")) {
+                userId = query.split("userId=")[1];
+            }
+
+            if (userId == null) {
+                ResponseUtil.sendResponse(exchange, 400,
+                        "{\"message\":\"Missing userId\"}", "application/json");
+                return;
+            }
+
+            String ordersJson = gson.toJson(orderService.getOrdersByUserId(userId));
+            ResponseUtil.sendResponse(exchange, 200, ordersJson, "application/json");
+        }
+
         // 3. Keep this 'else' to handle wrong HTTP methods (like GET or DELETE)
         else {
             ResponseUtil.sendResponse(exchange, 405, "{\"message\": \"Method Not Allowed\"}", "application/json");

@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 public class CartHandler implements HttpHandler {
 
@@ -17,6 +16,7 @@ public class CartHandler implements HttpHandler {
 
     // Data model for an item in the cart (matches client-side structure)
     static class CartItem {
+        String userEmail;
         String id;
         String name;
         double price;
@@ -55,7 +55,7 @@ public class CartHandler implements HttpHandler {
             sendResponse(exchange, 200, response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
             sendResponse(exchange, 500, "Error processing cart data: " + e.getMessage());
         }
     }

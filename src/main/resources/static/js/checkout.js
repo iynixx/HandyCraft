@@ -94,7 +94,7 @@ async function handlePlaceOrder() {
 
     const orderData = {
         // match 'userId' or 'username' from your auth.js logic
-        userId: localStorage.getItem('username') || "Guest",
+        userId: localStorage.getItem('userEmail'),
         customerName: name,
         phone: phone,
         address: address,
