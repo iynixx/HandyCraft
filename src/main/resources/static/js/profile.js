@@ -1,13 +1,29 @@
+/**
+ * profile.js
+ * Handles user profile data and order history fetching.
+ */
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // --- HEADER SYNC ---
+    // Calls the shared function from auth.js to render the Profile Icon and Separator
+    if (typeof updateAuthHeader === 'function') {
+        updateAuthHeader();
+    }
+
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
     const userEmail = localStorage.getItem('userEmail');
 
+    // Security Redirect: If no email is found, the user isn't logged in
     if (!userEmail) {
         window.location.href = 'signin.html';
         return;
     }
 
+    /**
+     * Original Date Formatter
+     * Converts ISO strings to YYYY-MM-DD HH:mm format
+     */
     function formatProfileDate(dateString) {
         const date = new Date(dateString);
         if (isNaN(date)) return dateString; // Fallback if date is invalid
@@ -21,18 +37,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 
-    // 1. Load Personal Info
+    // --- 1. LOAD PERSONAL INFO ---
     try {
         const res = await fetch('http://localhost:8000/api/profile', {
             headers: { 'X-User-ID': userId }
         });
-        const user = await res.json();
-        document.getElementById('prof-username').textContent = user.username;
-        document.getElementById('prof-email').textContent = user.email;
-        document.getElementById('prof-role').textContent = user.role;
-    } catch (e) { console.error("Error loading profile info"); }
 
-    // 2. Load History
+        if (res.ok) {
+            const user = await res.json();
+            document.getElementById('prof-username').textContent = user.username;
+            document.getElementById('prof-email').textContent = user.email;
+            document.getElementById('prof-role').textContent = user.role;
+        }
+    } catch (e) {
+        console.error("Error loading profile info:", e);
+    }
+
+    // --- 2. LOAD ORDER HISTORY ---
     try {
         const res = await fetch(
             `http://localhost:8000/api/orders?userId=${encodeURIComponent(userEmail)}`
@@ -43,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const myOrders = await res.json();
         const container = document.getElementById('order-history-list');
 
-        // EMPTY HISTORY
+        // CASE: EMPTY HISTORY
         if (!myOrders || myOrders.length === 0) {
             container.innerHTML = `
             <div style="text-align: center; padding: 20px;">
@@ -59,7 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // RENDER HISTORY
+        // CASE: RENDER HISTORY
+        // Maintains original inline styling and "View Items" details logic
         container.innerHTML = myOrders.map(order => `
         <div style="background: #fff; border: 1px solid #eee; border-radius: 10px;
                     padding: 15px; margin-bottom: 15px;
@@ -88,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </summary>
                 <ul style="margin-top: 5px; color: #555; list-style-type: none; padding-left: 0;">
                     ${order.items.map(item =>
-                        `<li>
+            `<li>
                             • ${item.name}
                             ${item.variant && item.variant !== "Default" ? ` (${item.variant})` : ""}
                             (${item.quantity}x)
@@ -99,9 +121,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     `).join('');
 
     } catch (e) {
-        console.error("Order history load error", e);
+        console.error("Order history load error:", e);
         document.getElementById('order-history-list').innerHTML =
             "<p style='color: red;'>Unable to load order history. Please try again later.</p>";
     }
-
 });

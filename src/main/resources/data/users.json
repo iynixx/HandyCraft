@@ -246,5 +246,17 @@
     "securityAnswer2Hash": "7242166eeeb7b2261bbd775c12ca9d944518df78be5225f10f52f05b866bf625",
     "securityAnswer3Hash": "5772c6746e42dbc12a235f5b343bbba42dc4a81b0279b0a82c27490535ab85a5",
     "securitySalt": "MXKZvTxaQO3jZQTKoNjCBg\u003d\u003d"
+  },
+  {
+    "userId": "5fa98396-602f-4e7c-91d4-76587575f9d6",
+    "username": "Xinyi",
+    "email": "ismexinyina@gmail.com",
+    "passwordHash": "1d6de030c18be1e95c73191642e4610dca4cd150d647e081defec54ba164a841",
+    "salt": "OxYlCUztfx37n4kttGiw7g\u003d\u003d",
+    "role": "customer",
+    "securityAnswer1Hash": "1824a52a47090661a3d0bc44fd4d734c63954bcc215332d10d5a59ffddba9f68",
+    "securityAnswer2Hash": "1ac3b2d40c5cfa5fa0c1f07743d078a8936cf1586bdb57b0aa9dc0623afe88b2",
+    "securityAnswer3Hash": "0e4251439d059244800793be173f3d2645c27655f26dfe3814ee6716cd0aa48c",
+    "securitySalt": "OIVFpPwEg7rRCIYnbSlZXQ\u003d\u003d"
   }
 ]

@@ -1,0 +1,142 @@
+:root {
+    --color-brand-pink: #C56374;
+    --color-brand-dark: #333333;
+    --color-secondary: #E7DADA;
+    --color-background: #FAF9F6;
+    --color-white: #FFFFFF;
+    --color-border: #E0E0E0;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Layout Reset --- */
+html.auth-page, body.auth-page {
+    background-color: var(--color-secondary) !important;
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-page .page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-secondary);
+}
+
+/* --- Elegant Container Box --- */
+.auth-container {
+    background-color: var(--color-white);
+    padding: 50px 60px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(51, 51, 51, 0.12);
+    width: 100%;
+    max-width: 500px;
+    margin: 60px auto;
+    text-align: center;
+}
+
+/* --- GRADIENT TITLE --- */
+.auth-container h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--color-brand-dark) 20%, #D67D8C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+    letter-spacing: -0.5px;
+    display: inline-block;
+}
+
+/* --- Balanced Info Box (Security Questions) --- */
+.auth-container .info-box {
+    background-color: #F9F9F9;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin: 15px 0 25px 0;
+    border-left: 4px solid var(--color-brand-pink);
+    text-align: left;
+    line-height: 1.5;
+}
+
+.auth-container .info-box p {
+    margin: 0;
+    color: var(--color-brand-dark);
+    font-size: 0.9rem;
+}
+
+/* --- Form Elements --- */
+.auth-container label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    color: #555555;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #FFFFFF;
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--color-brand-dark);
+    transition: var(--transition);
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: var(--color-brand-pink);
+    box-shadow: 0 0 0 4px rgba(197, 99, 116, 0.1);
+}
+
+/* --- REGISTER BUTTON (POLISHED GRADIENT) --- */
+.button.primary.full-width.large-button {
+    background: linear-gradient(to right, #D67D8C, #C56374);
+    color: var(--color-white);
+    padding: 16px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(197, 99, 116, 0.3);
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 15px;
+}
+
+.button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(197, 99, 116, 0.4);
+    filter: brightness(1.05);
+}
+
+/* --- READABLE ACCENT LINKS --- */
+.auth-container .checkbox-group label a,
+.auth-container p a {
+    color: var(--color-brand-pink) !important;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.auth-container .checkbox-group label a:hover,
+.auth-container p a:hover {
+    border-bottom: 2px solid var(--color-brand-pink);
+}
+
+/* Rules / Examples text */
+.form-group small {
+    display: block;
+    text-align: left;
+    color: #777;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}

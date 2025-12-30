@@ -7,55 +7,7 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            padding-top: 50px;
-        }
-        .modal-content {
-            background-color: var(--color-white);
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            max-height: 85vh;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .close-button {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s;
-        }
-        .modal-body {
-            overflow-y: auto;
-            padding-right: 15px;
-            line-height: 1.8;
-        }
-    </style>
+    <link rel="stylesheet" href="css/signup.css">
 
 </head>
 <body class="auth-page">
@@ -64,7 +16,7 @@
         <nav class="container">
             <div class="logo">
                 <a href="index.html" class="logo-link-with-text">
-                    <img src="/images/logo.png" alt="Handy Craft Logo" height="40">
+                    <img src="images/logo.png" alt="Handy Craft Logo" height="40">
                     <span class="site-title">Handy Craft</span>
                 </a>
             </div>
@@ -76,8 +28,7 @@
                     </a>
                 </li>
                 <li id="auth-links-container" class="auth-links-container">
-                    <ul id="auth-links" class="nav-links">
-                    </ul>
+                    <ul id="auth-links" class="nav-links"></ul>
                 </li>
             </ul>
         </nav>
@@ -93,7 +44,7 @@
                     <input type="text" id="username" name="username" required>
                     <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
                         - 2-20 characters (letters and spaces only)<br>
-                        - e.g. display as "John Lee"
+                        - e.g. "John Lee"
                     </small>
                 </div>
 
@@ -106,7 +57,7 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
                     <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
-                        - 8-15 characters (at least 1 number, 1 uppercase letter, 1 lowercase letter and no spaces allowed)
+                        - 8-15 characters (1 number, 1 uppercase, 1 lowercase, no spaces)
                     </small>
                 </div>
 
@@ -117,38 +68,29 @@
 
                 <div class="form-group">
                     <label>Security Questions (For password recovery)</label>
-                    <div class="info-box" style="background-color: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
-                        <p><strong>Important:</strong> These answers will be used to verify your identity if you forget your password. Please remember your answers.</p>
+                    <div class="info-box" style="background-color: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 10px; text-align: left; font-size: 0.9rem;">
+                        <p><strong>Important:</strong> These answers will be used to verify your identity if you forget your password.</p>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="security-answer-1">What is your favourite colour?</label>
-                    <input type="text" id="security-answer-1" name="securityAnswer1" required>
-                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
-                        Example: Blue
-                    </small>
+                    <input type="text" id="security-answer-1" name="securityAnswer1" placeholder="e.g. Blue" required>
                 </div>
 
                 <div class="form-group">
                     <label for="security-answer-2">What is your best friend's nickname?</label>
-                    <input type="text" id="security-answer-2" name="securityAnswer2" required>
-                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
-                        Example: Max
-                    </small>
+                    <input type="text" id="security-answer-2" name="securityAnswer2" placeholder="e.g. Max" required>
                 </div>
 
                 <div class="form-group">
                     <label for="security-answer-3">What city were you born in?</label>
-                    <input type="text" id="security-answer-3" name="securityAnswer3" required>
-                    <small style="color: #666; font-size: 0.8em; display: block; margin-top: 5px;">
-                        Example: Kuala Lumpur
-                    </small>
+                    <input type="text" id="security-answer-3" name="securityAnswer3" placeholder="e.g. Kuala Lumpur" required>
                 </div>
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="agree-terms" name="agree-terms" required>
-                    <label for="agree-terms">I agree to the <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">User Agreement, Terms of Service</a>, and <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.</label>
+                    <label for="agree-terms">I agree to the <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">User Agreement</a> and <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.</label>
                 </div>
 
                 <button type="submit" class="button primary full-width large-button">Register</button>
@@ -164,8 +106,8 @@
         <div class="footer-links container">
             <p>&copy; 2025 Handy Craft. All rights reserved.</p>
             <div class="policy-buttons">
-                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
-                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
+                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary small">Privacy Policy</a>
+                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary small">Terms of Service</a>
             </div>
         </div>
     </footer>

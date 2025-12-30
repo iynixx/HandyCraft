@@ -60,6 +60,29 @@
             document.getElementById(tabName).style.display = "block";
             element.classList.add("active");
         }
+
+        // Policy Modal Logic (Matched to Index)
+        function showPolicyModal(file, title) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.innerText = title;
+            modal.style.display = "block";
+
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    modalContent.innerHTML = data;
+                })
+                .catch(err => {
+                    modalContent.innerHTML = "Error loading policy.";
+                });
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').style.display = "none";
+        }
     </script>
 </head>
 <body class="about-page-body">
@@ -80,13 +103,25 @@
             <li class="search-container">
                 <form id="search-form" class="search-form">
                     <input type="text" id="search-input" placeholder="Search products..." required>
-                    <button type="submit" class="search-button">Search</button>
+                    <button type="submit" class="search-button" style="display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
                 </form>
             </li>
 
-            <li><a href="#" onclick="viewCart(); return false;">View Cart</a></li>
+            <li>
+                <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                    <span role="img" aria-label="shopping cart"></span> View Cart
+                </a>
+            </li>
+
             <li id="auth-links-container" class="auth-links-container">
-                <ul id="auth-links" class="nav-links"></ul>
+                <div class="auth-separator">
+                    <ul id="auth-links" class="nav-links">
+                    </ul>
+                </div>
             </li>
         </ul>
     </nav>
@@ -94,6 +129,7 @@
 
 <main class="container page-content about-page">
     <h1>About Handy Craft</h1>
+    <span class="page-subtitle">Sustainable Slow Craft • Malaysian Heritage • Conscious Living</span>
 
     <div class="tab-buttons">
         <button class="tab-button" onclick="openTab('our-story', this)">Our Story</button>
@@ -117,7 +153,7 @@
 
         <div class="content-box section-box" id="mission-box">
             <h2>Mission</h2>
-            <p>Our mission is to empower local Malaysian artisans by providing a professional platform that celebrates their unique craftsmanship. We strive to educate consumers on the value of "slow craft," offering high-quality, ethically-made alternatives that challenge the environmental impact of industrial mass production. Every product we host is a pledge to support a maker's livelihood and keep traditional hand-weaving arts alive for future generations.</p>
+            <p>Our mission is to empower local Malaysian artisans by providing a professional platform that celebrates their unique craftsmanship. We are committed to supporting **United Nations SDG 8 (Decent Work and Economic Growth)**, striving to provide sustainable livelihoods while educating consumers on the value of "slow craft." We offer high-quality, ethically-made alternatives that challenge the environmental impact of industrial mass production, keeping traditional arts alive for future generations.</p>
         </div>
 
         <div class="content-box section-box" id="vision-box">
@@ -130,7 +166,7 @@
             <ul class="values-list">
                 <li><strong>Uncompromising Quality:</strong> We don't just sell goods; we curate art. Every item undergoes a rigorous inspection to ensure superior durability and craftsmanship.</li>
                 <li><strong>Radical Sustainability:</strong> We prioritize an "Earth-First" approach, favoring natural fibers and zero-waste production methods to minimize our carbon footprint.</li>
-                <li><strong>Artisan Empowerment:</strong> We believe in fair wages and creative dignity, prioritizing partnerships with rural makers and stay-at-home parents to provide sustainable income.</li>
+                <li><strong>Artisan Empowerment (SDG 8):</strong> We believe in fair wages and creative dignity. By aligning with **SDG 8**, we prioritize partnerships with rural makers and stay-at-home parents to provide sustainable income and foster inclusive economic growth.</li>
             </ul>
         </div>
     </div>
@@ -209,11 +245,23 @@
     <div class="footer-links container">
         <p>&copy; 2025 Handy Craft. All rights reserved.</p>
         <div class="policy-buttons">
-            <a href="#" class="button secondary policy-button">Privacy Policy</a>
-            <a href="#" class="button secondary policy-button">Terms of Service</a>
+            <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+            <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
         </div>
     </div>
 </footer>
+
+<div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
