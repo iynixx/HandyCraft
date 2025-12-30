@@ -21,7 +21,6 @@
     </script>
 
     <script>
-        // --- Search and Cart scripts ---
         document.addEventListener('DOMContentLoaded', () => {
             const searchForm = document.getElementById('search-form');
             if (searchForm) {
@@ -36,7 +35,6 @@
         });
 
         function viewCart() {
-            console.log("View Cart function triggered.");
             window.location.href = "products.html";
         }
 
@@ -96,16 +94,15 @@
                             </svg>
                         </button>
                     </form>
-                </li> <li>
-                <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
-                    <span role="img" aria-label="shopping cart"></span> View Cart
-                </a>
-            </li>
-
+                </li>
+                <li>
+                    <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                        View Cart
+                    </a>
+                </li>
                 <li id="auth-links-container" class="auth-links-container">
                     <div class="auth-separator">
-                        <ul id="auth-links" class="nav-links">
-                        </ul>
+                        <ul id="auth-links" class="nav-links"></ul>
                     </div>
                 </li>
             </ul>
@@ -117,9 +114,6 @@
             <h1>Welcome to Handy Craft!</h1>
             <p>Your local source for the finest, pastel-coloured crochet and handmade goods.</p>
             <a href="products.html" class="button primary large-button">Shop Our Collections</a>
-        </section>
-
-        <section class="featured-products container">
         </section>
     </main>
 

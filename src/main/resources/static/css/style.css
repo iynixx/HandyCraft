@@ -66,12 +66,12 @@ main.container, .hero-main {
     background-attachment: fixed;
 }
 
-/* --- UPDATED: CENTERED HERO (NO BOX, SLIDE-IN) --- */
+/* --- UPDATED: CENTERED HERO --- */
 .hero-main {
     padding: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center;      /* Keeps vertical centering */
+    justify-content: center;   /* Moves content from left to horizontal center */
     min-height: calc(100vh - 80px);
 }
 
@@ -80,8 +80,8 @@ main.container, .hero-main {
     background-color: transparent !important;
     box-shadow: none !important;
     max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
+    margin: 0 auto;            /* Ensures the box itself is centered */
+    text-align: center;        /* Centers the text inside the box */
     animation: heroSlideUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
