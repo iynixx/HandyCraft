@@ -1,7 +1,9 @@
 package com.handycraft.models;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Order {
     private String orderId;
@@ -13,6 +15,16 @@ public class Order {
     private double totalAmount;
     private String orderDate;
     private String status; // e.g., "Pending", "Shipped", "Completed"
+
+    // Extracts all products IDs from the order items
+    public List<String> getPurchaseProductIds() {
+        if(this.items == null || this.items.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.items.stream()
+                .map(item->String.valueOf(item.get("id")))
+                .collect(Collectors.toList());
+    }
 
     // Getters and Setters
     public String getOrderId() { return orderId; }

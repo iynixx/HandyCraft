@@ -26,6 +26,7 @@ public class AdminHandler implements HttpHandler {
     private final UserService userService = UserService.getInstance();
     private final ProductService productService = new ProductService();
     private final ActivityLogService activityLogService = new ActivityLogService();
+    private final FeedbackService feedbackService = new FeedbackService();
     private final Gson gson = new Gson();
 
     private boolean checkAdminAccess(HttpExchange exchange) {
@@ -79,6 +80,10 @@ public class AdminHandler implements HttpHandler {
             }
             else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/feedback")) {
                 handleGetAllFeedback(exchange);
+            }
+            else if (method.equalsIgnoreCase("DELETE") && path.startsWith(ADMIN_BASE + "/feedback/")) {
+                String feedbackId = path.substring((ADMIN_BASE + "/feedback/").length());
+                handleDeleteFeedback(exchange, feedbackId);
             }
             else if (method.equalsIgnoreCase("GET") && path.equals(ADMIN_BASE + "/orders")) {
                 handleGetOrders(exchange);
@@ -287,6 +292,19 @@ public class AdminHandler implements HttpHandler {
             }
             boolean success = userService.updateUserRole(userId, newRole);
             ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");
+        }
+    }
+
+    private void handleDeleteFeedback(HttpExchange exchange, String feedbackId) throws IOException {
+        try {
+            boolean success = feedbackService.deleteFeedback(feedbackId);
+            if (success) {
+                ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Feedback deleted successfully\"}", "application/json");
+            } else {
+                ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Feedback not found\"}", "application/json");
+            }
+        } catch (Exception e) {
+            ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error deleting feedback\"}", "application/json");
         }
     }
 }

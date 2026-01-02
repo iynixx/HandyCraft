@@ -1,3 +1,74 @@
 [
-
+  {
+    "id": "af848b7c-35b4-4995-bb86-a0141c3c6055",
+    "productId": "1",
+    "username": "Rita",
+    "userEmail": "rita4@gmail.com",
+    "rating": 5,
+    "comment": "Good quality"
+  },
+  {
+    "id": "f9b6e475-9416-423e-ab9e-1188ee0812ce",
+    "productId": "6",
+    "username": "Eva",
+    "userEmail": "eva6@gmail.com",
+    "rating": 4,
+    "comment": "It is a bit small for me but overall is good."
+  },
+  {
+    "id": "81a25ca7-6f3a-4a01-a975-c94f1c3a11b4",
+    "productId": "23",
+    "username": "Bob",
+    "userEmail": "bob2@gmail.com",
+    "rating": 4,
+    "comment": "Nice look and useful"
+  },
+  {
+    "id": "d041c160-2581-44ea-a1e4-756763137939",
+    "productId": "6",
+    "username": "Bob",
+    "userEmail": "bob2@gmail.com",
+    "rating": 5,
+    "comment": "Nice handcraft"
+  },
+  {
+    "id": "27120775-4e27-44bd-99ee-711fc6ea1e83",
+    "productId": "23",
+    "username": "Rita",
+    "userEmail": "rita4@gmail.com",
+    "rating": 3,
+    "comment": "quality still ok"
+  },
+  {
+    "id": "a11efdd8-a142-4bcc-a075-9fc05cba291f",
+    "productId": "73",
+    "username": "Lucky Tan",
+    "userEmail": "luckytan8@gmail.com",
+    "rating": 5,
+    "comment": "Cuteeee my friend really like it"
+  },
+  {
+    "id": "d23660c1-6f27-4927-a7eb-983249c33658",
+    "productId": "66",
+    "username": "Lucky Tan",
+    "userEmail": "luckytan8@gmail.com",
+    "rating": 2,
+    "comment": "Not exactly same as picture"
+  },
+  {
+    "id": "78ebea22-12fa-487a-b1f5-3103b417d380",
+    "productId": "57",
+    "username": "Lucky Tan",
+    "userEmail": "luckytan8@gmail.com",
+    "rating": 4,
+    "comment": "Nice"
+  },
+  {
+    "id": "2405afb5-7bb9-4a8f-b868-ff66ae50ebf5",
+    "productId": "34",
+    "username": "Peggy Teo",
+    "userEmail": "peggyteo10@gmail.com",
+    "rating": 5,
+    "comment": "Excellent handcraft and good gift for friends"
+  }
 ]

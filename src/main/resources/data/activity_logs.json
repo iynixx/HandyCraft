@@ -130,5 +130,17 @@
     "action": "Updated Order Status",
     "details": "Changed order ORD-1766933590423 to Completed",
     "timestamp": "2025-12-29 21:58:42"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Feedback",
+    "details": "Removed feedback ID: c324a8dd-498f-4483-8224-073d0ac1af37",
+    "timestamp": "2026-01-02 11:57:35"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Feedback",
+    "details": "Removed feedback ID: d1a93420-4b46-4ec1-860b-2c388e082348",
+    "timestamp": "2026-01-02 11:58:13"
   }
 ]

@@ -11,9 +11,36 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchProductDetails(productId);
         loadFeedback(productId);
         updateAverageDisplay(productId);
+        checkReviewEligibility(productId);
     } else {
         const container = document.getElementById('product-detail-container');
         if (container) container.innerHTML = "<p>Product not found.</p>";
+    }
+
+    async function checkReviewEligibility(productId) {
+        const userEmail = localStorage.getItem('userEmail');
+        const formContainer = document.querySelector('.feedback-form-container');
+
+        if (!userEmail) {
+            if (formContainer) formContainer.style.display = 'none';
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:8000/api/orders?userId=${encodeURIComponent(userEmail)}`);
+            const orders = await res.json();
+
+            const hasBought = orders.some(o =>
+                o.status === 'Completed' &&
+                o.items.some(item => String(item.id) === String(productId))
+            );
+
+            if (!hasBought && formContainer) {
+                formContainer.innerHTML = "<p style='color: #888; background: #eee; padding: 10px; border-radius: 8px;'>Only customers who have purchased and received this item can leave a review.</p>";
+            }
+        } catch (e) {
+            console.error("Eligibility check failed", e);
+        }
     }
 });
 
@@ -209,6 +236,7 @@ if (fbForm) {
         const feedbackData = {
             productId: productId,
             username: localStorage.getItem('username'),
+            userEmail: localStorage.getItem('userEmail'),
             rating: parseInt(document.getElementById('fb-rating').value),
             comment: document.getElementById('fb-comment').value
         };

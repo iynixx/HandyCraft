@@ -9,7 +9,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class FeedbackService {
     private static final String FILE_PATH = "src/main/resources/data/feedback.json";
-    private final Gson gson = new Gson();
+    private final Gson gson = new com.google.gson.GsonBuilder()
+            .setPrettyPrinting()
+            .create();
     private final ReentrantLock lock = new ReentrantLock();
 
     public void addFeedback(Feedback fb) throws IOException {
