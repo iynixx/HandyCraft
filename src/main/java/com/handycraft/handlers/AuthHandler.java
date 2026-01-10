@@ -7,7 +7,6 @@ import com.handycraft.models.LoginRequest;
 import com.handycraft.models.RegisterRequest;
 import com.handycraft.models.User;
 import com.handycraft.services.UserService;
-import com.handycraft.utils.HashUtil;
 import com.handycraft.utils.ResponseUtil;
 
 
@@ -158,13 +157,6 @@ public class AuthHandler implements HttpHandler {
                 securityAnswer3 == null || securityAnswer3.isEmpty()) {
             ResponseUtil.sendResponse(exchange, 400,
                     "{\"message\": \"All security questions must be answered.\"}", "application/json");
-            return;
-        }
-
-        // === 6. CHECK IF EMAIL EXISTS ===
-        if (userService.findUserByEmail(email) != null) {
-            ResponseUtil.sendResponse(exchange, 409,
-                    "{\"message\": \"Email already registered.\"}", "application/json");
             return;
         }
 
