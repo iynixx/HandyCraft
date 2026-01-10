@@ -186,7 +186,7 @@ function addToCart(productId, productName, productPrice, variant = "Default", qu
 
     const currentInCart = existingItem ? existingItem.quantity : 0;
     if (currentInCart + quantity > stock) {
-        alert(`⚠️ You already have ${currentInCart} in your cart. Total cannot exceed the available stock (${stock}).`);
+        alert(`You already have ${currentInCart} in your cart. Total cannot exceed the available stock (${stock}).`);
         return;
     }
 
@@ -230,7 +230,7 @@ window.handleMainAddToCart = function(id, name, price) {
     const stockAvailable = product.inventory[variant] || 0;
 
     if (requestedQty > stockAvailable) {
-        alert(`⚠️ Only ${stockAvailable} units available for this selection.`);
+        alert(`Only ${stockAvailable} units available for this selection.`);
         qtyInput.value = stockAvailable;
         return;
     }

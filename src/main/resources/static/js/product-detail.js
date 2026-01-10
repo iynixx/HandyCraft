@@ -152,7 +152,7 @@ function renderProductDetail(product) {
         const stockAvailable = (typeof rawStock === 'number') ? rawStock : (rawStock?.quantity || parseInt(rawStock) || 0);
 
         if (requestedQty > stockAvailable) {
-            alert(`⚠️ Only ${stockAvailable} units available for this variation. Please adjust your quantity.`);
+            alert(`Only ${stockAvailable} units available for this variation. Please adjust your quantity.`);
             document.getElementById('qty-value').textContent = stockAvailable;
             return;
         }
@@ -168,7 +168,7 @@ function addToCart(productId, productName, productPrice, variant = "Default", qu
 
     const currentInCart = existingItem ? existingItem.quantity : 0;
     if (currentInCart + quantity > stock) {
-        alert(`⚠️ You already have ${currentInCart} in your cart. Adding ${quantity} more would exceed total stock (${stock}).`);
+        alert(`You already have ${currentInCart} in your cart. Adding ${quantity} more would exceed total stock (${stock}).`);
         return;
     }
 

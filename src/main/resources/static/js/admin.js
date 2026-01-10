@@ -958,7 +958,7 @@ async function renderSalesReport() {
                 <tbody>
                     ${soldOrders.map(o => `
                         <tr>
-                            <td style="color: #666;">${o.orderDate}</td>
+                            <td style="color: #666;">${formatAdminDate(o.orderDate)}</td>
                             <td style="font-family: monospace; font-weight: bold;">${o.orderId}</td>
                             <td style="font-weight: 600; color: #131313;">${o.customerName}</td>
                             <td style="font-weight: 800;">RM ${o.totalAmount.toFixed(2)}</td>

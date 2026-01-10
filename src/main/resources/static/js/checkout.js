@@ -52,7 +52,7 @@ function renderOrderSummary() {
             <span style="background: #FFF0F0; color: #D67D8C; font-size: 0.8rem; 
                          padding: 2px 8px; border-radius: 4px; border: 1px solid #FFCCCC; 
                          margin-top: 5px; display: inline-block; font-weight: bold;">
-                ⚠️ Only ${stockLeft} left!
+                Only ${stockLeft} left!
             </span>`;
         }
 
@@ -116,7 +116,7 @@ async function handlePlaceOrder() {
             localStorage.removeItem(CART_STORAGE_KEY);
             window.location.href = "order-success.html";
         } else {
-            alert("⚠️ Order Error: " + result.message);
+            alert("Order Error: " + result.message);
         }
     } catch (error) {
         console.error("Fetch Error:", error);
@@ -138,7 +138,7 @@ window.changeQuantity = function(index, delta) {
         const maxAvailable = item.remainingStock || 0;
 
         if (delta > 0 && item.quantity + delta > maxAvailable) {
-            alert(`⚠️ Sorry, you've reached the limit! Only ${maxAvailable} units are available for this item.`);
+            alert(`Sorry, you've reached the limit! Only ${maxAvailable} units are available for this item.`);
             return; // Exit without changing quantity
         }
         item.quantity += delta;

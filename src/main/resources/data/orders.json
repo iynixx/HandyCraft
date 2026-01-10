@@ -202,5 +202,45 @@
     "totalAmount": 51.0,
     "orderDate": "Sun Dec 28 22:57:20 GMT+08:00 2025",
     "status": "Completed"
+  },
+  {
+    "orderId": "ORD-1768024081019",
+    "userId": "akmal12@gmail.com",
+    "customerName": "Akmal",
+    "address": "211, Jalan RosMerah 2/1, Taman Jaya, 81100, Johor Bahru, Johor.",
+    "phone": "0181333829",
+    "items": [
+      {
+        "id": "33",
+        "name": "Pencil Cases",
+        "price": 20.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 7.0
+      }
+    ],
+    "totalAmount": 20.0,
+    "orderDate": "Sat Jan 10 13:48:01 GMT+08:00 2026",
+    "status": "Pending"
+  },
+  {
+    "orderId": "ORD-1768025621285",
+    "userId": "jolin16@gmail.com",
+    "customerName": "Jolin",
+    "address": "10, Jalan Petaling Utama 11, Petaling Utama, Batu 7, 46000, Petaling Jaya.",
+    "phone": "0172193910",
+    "items": [
+      {
+        "id": "73",
+        "name": "Taco \u0026 French Fries Keychain",
+        "price": 18.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 8.0
+      }
+    ],
+    "totalAmount": 18.0,
+    "orderDate": "Sat Jan 10 14:13:41 GMT+08:00 2026",
+    "status": "Pending"
   }
 ]
