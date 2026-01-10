@@ -14,7 +14,7 @@ public class CartHandler implements HttpHandler {
 
     private final Gson gson = new Gson();
 
-    // Data model for an item in the cart (matches client-side structure)
+    // Data model for an item in the cart
     static class CartItem {
         String userEmail;
         String id;
@@ -27,7 +27,6 @@ public class CartHandler implements HttpHandler {
     static class CartRequest {
         List<CartItem> items;
         double total;
-        // Optionally, add user details here
     }
 
     @Override
@@ -35,22 +34,21 @@ public class CartHandler implements HttpHandler {
         if ("POST".equals(exchange.getRequestMethod())) {
             handlePost(exchange);
         } else {
-            // Handle other methods (e.g., OPTIONS) or return 405
             sendResponse(exchange, 405, "Method Not Allowed");
         }
     }
 
     private void handlePost(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)) {
-            // 1. Read and parse the JSON cart data from the request body
+            // Read and parse the JSON cart data from the request body
             CartRequest cartRequest = gson.fromJson(isr, CartRequest.class);
 
-            // 2. Simple server-side validation/processing (e.g., calculate total again)
+            // Simple server-side validation/processing
             double calculatedTotal = cartRequest.items.stream()
                     .mapToDouble(item -> item.price * item.quantity)
                     .sum();
 
-            // 3. Logic for saving the order to orders.json would go here...
+            // Logic for saving the order to orders.json
             String response = "Order processed successfully! Total: RM " + String.format("%.2f", calculatedTotal);
             sendResponse(exchange, 200, response);
 

@@ -19,18 +19,14 @@ public class FeedbackService {
         try {
             List<Feedback> all = getAllFeedback();
             all.add(fb);
-            /*try (FileWriter writer = new FileWriter(FILE_PATH)) {
-                gson.toJson(all, writer);
-            }*/
             saveAllFeedback(all);
         } finally { lock.unlock(); }
     }
-    // --- NEW: Delete Logic ---
+    // Delete Logic
     public boolean deleteFeedback(String id) {
         lock.lock();
         try {
             List<Feedback> all = getAllFeedback();
-            // Ensure your Feedback model has a getId() method
             boolean removed = all.removeIf(fb -> fb.getId().equals(id));
 
             if (removed) {
@@ -46,7 +42,7 @@ public class FeedbackService {
         }
     }
 
-    // --- NEW: Helper to Save JSON ---
+    // Save JSON
     private void saveAllFeedback(List<Feedback> list) throws IOException {
         try (FileWriter writer = new FileWriter(FILE_PATH)) {
             gson.toJson(list, writer);
@@ -62,7 +58,7 @@ public class FeedbackService {
     }
 
     public List<Feedback> getAllFeedback() {
-        lock.lock(); // Use the lock for safety
+        lock.lock();
         try {
             File file = new File(FILE_PATH);
             if (!file.exists() || file.length() == 0) {
@@ -76,7 +72,7 @@ public class FeedbackService {
                 return new ArrayList<>();
             }
         } finally {
-            lock.unlock(); // Always unlock
+            lock.unlock();
         }
     }
 

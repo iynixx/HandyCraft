@@ -3,7 +3,7 @@ package com.handycraft.models;
 public class RegisterRequest {
     private String username;
     private String email;
-    private String password; // The field name GSON expects
+    private String password;
 
     private String securityAnswer1;
     private String securityAnswer2;

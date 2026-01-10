@@ -59,7 +59,8 @@
                 </div>
                 <div class="stat-card">
                     <h3>Registered Users</h3>
-                    <p id="stat-users">0</p> </div>
+                    <p id="stat-users">0</p>
+                </div>
             </div>
         </section>
 
@@ -92,66 +93,10 @@
                 <p class="section-subtitle">Manage and track all customer orders</p>
             </div>
 
-            <!-- Order Statistics -->
             <div id="order-stats"></div>
 
-            <!-- Order List -->
             <div id="order-list-admin"></div>
         </section>
-
-        <!-- ORDER DETAIL MODAL (add this before closing </body> tag) -->
-        <div id="order-modal" class="modal">
-            <div class="modal-content order-modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h2 id="order-modal-id">ORD-2025-001</h2>
-                        <p style="color: #666; margin-top: 4px;">Order Details</p>
-                    </div>
-                    <button class="close-btn" onclick="closeOrderModal()">×</button>
-                </div>
-
-                <div class="modal-body">
-                    <!-- Customer Information -->
-                    <div class="order-section">
-                        <h3>Customer Information</h3>
-                        <div class="order-info-grid">
-                            <div class="info-row">
-                                <span class="info-label">Name:</span>
-                                <span class="info-value" id="order-modal-customer"></span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Phone:</span>
-                                <span class="info-value" id="order-modal-phone"></span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Date:</span>
-                                <span class="info-value" id="order-modal-date"></span>
-                            </div>
-                            <div class="info-row full-width">
-                                <span class="info-label">Address:</span>
-                                <span class="info-value" id="order-modal-address"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Order Items -->
-                    <div class="order-section">
-                        <h3>Order Items</h3>
-                        <div id="order-modal-items"></div>
-                        <div class="order-total">
-                            <span>Total Amount:</span>
-                            <span id="order-modal-total" style="font-size: 1.5rem; font-weight: bold;">RM 0.00</span>
-                        </div>
-                    </div>
-
-                    <!-- Status Update -->
-                    <div class="order-section">
-                        <h3>Update Status</h3>
-                        <div id="order-status-buttons" class="status-buttons"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <section id="sales-reports" class="dashboard-section">
             <h2 class="section-title">Sales Reports</h2>
@@ -171,9 +116,60 @@
                 <p>Loading feedback...</p>
             </div>
         </section>
+
         <section id="activity-log" class="dashboard-section">
         </section>
     </main>
+</div>
+
+<div id="order-modal" class="modal">
+    <div class="modal-content order-modal-content">
+        <div class="modal-header">
+            <div>
+                <h2 id="order-modal-id">ORD-2025-001</h2>
+                <p style="color: #666; margin-top: 4px;">Order Details</p>
+            </div>
+            <button class="close-btn" onclick="closeOrderModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="order-section">
+                <h3>Customer Information</h3>
+                <div class="order-info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value" id="order-modal-customer"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value" id="order-modal-phone"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Date:</span>
+                        <span class="info-value" id="order-modal-date"></span>
+                    </div>
+                    <div class="info-row full-width">
+                        <span class="info-label">Address:</span>
+                        <span class="info-value" id="order-modal-address"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h3>Order Items</h3>
+                <div id="order-modal-items"></div>
+                <div class="order-total">
+                    <span>Total Amount:</span>
+                    <span id="order-modal-total" style="font-size: 1.5rem; font-weight: bold;">RM 0.00</span>
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h3>Update Status</h3>
+                <div id="order-status-buttons" class="status-buttons"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="product-modal" class="modal">

@@ -1,7 +1,6 @@
 package com.handycraft.handlers;
 
 import com.google.gson.Gson;
-//import com.handycraft.models.Feedback;
 import com.handycraft.services.FeedbackService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -12,7 +11,6 @@ import com.handycraft.models.Product;
 import com.handycraft.models.User;
 import com.handycraft.models.Order;
 import com.handycraft.services.ActivityLogService;
-//import com.handycraft.models.ActivityLog;
 import com.handycraft.services.OrderService;
 
 import java.io.IOException;
@@ -112,7 +110,7 @@ public class AdminHandler implements HttpHandler {
             else if (method.equalsIgnoreCase("PUT") && path.equals(ADMIN_BASE + "/orders/status")) {
                 handleUpdateOrderStatus(exchange);
             }
-            // Inside AdminHandler.java handle() method
+
             else if (method.equalsIgnoreCase("DELETE") && path.equals(ADMIN_BASE + "/logs")) {
                 handleClearLogs(exchange);
             }
@@ -120,7 +118,6 @@ public class AdminHandler implements HttpHandler {
                 ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Not Found\"}", "application/json");
             }
         } catch (Exception e) {
-            //e.printStackTrace();
             System.err.println("Error: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Internal Error\"}", "application/json");
         }
@@ -128,7 +125,6 @@ public class AdminHandler implements HttpHandler {
 
     private void handleSaveProduct(HttpExchange exchange, String productId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            //Map<String, Object> data = gson.fromJson(isr, Map.class);
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, Object>>(){}.getType();
             Map<String, Object> data = gson.fromJson(isr, type);
             if (data == null) throw new Exception("Empty request body");
@@ -142,7 +138,6 @@ public class AdminHandler implements HttpHandler {
             product.setCategory((String) data.get("Category"));
             product.setDescription((String) data.get("Description"));
 
-            // FIX: Using setImageUrl to match your Product.java model
             if (data.containsKey("File Name")) {
                 product.setImageUrl((String) data.get("File Name"));
             }
@@ -152,8 +147,6 @@ public class AdminHandler implements HttpHandler {
             }
 
             if (data.containsKey("Inventory")) {
-                //product.setInventory((Map<String, Integer>) data.get("Inventory"));
-                @SuppressWarnings("unchecked")
                 Map<String, Integer> inventory = (Map<String, Integer>) data.get("Inventory");
                 product.setInventory(inventory);
             }
@@ -165,7 +158,6 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, success ? 200 : 400,
                     "{\"message\": \"" + (success ? "Success" : "Failed to save") + "\"}", "application/json");
         } catch (Exception e) {
-            //e.printStackTrace();
             System.err.println("Error: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error processing data\"}", "application/json");
         }
@@ -173,7 +165,6 @@ public class AdminHandler implements HttpHandler {
     private final OrderService orderService = new OrderService();
     private void handleGetOrders(HttpExchange exchange) throws IOException {
         List<Order> orders = orderService.getAllOrders();
-        // This uses your existing ResponseUtil to send the JSON back to the browser
         ResponseUtil.sendResponse(exchange, 200, gson.toJson(orders), "application/json");
     }
     private void handleSaveLog(HttpExchange exchange) throws IOException {
@@ -217,12 +208,11 @@ public class AdminHandler implements HttpHandler {
     private void handleGetStats(HttpExchange exchange) throws IOException {
         Map<String, Integer> stats = new HashMap<>();
 
-        // Fetch real data from your services
         List<Order> allOrders = orderService.getAllOrders();
         List<User> allUsers = userService.getAllUsers();
         int totalProducts = productService.loadAllProducts().size();
 
-        // 2. Calculate counts for every possible status
+        // Calculate counts for every possible status
         int pending = 0;
         int processing = 0;
         int shipped = 0;
@@ -236,7 +226,7 @@ public class AdminHandler implements HttpHandler {
             else if ("Completed".equalsIgnoreCase(status)) completed++;
         }
 
-        // 3. Populate the response map
+        // Populate the response map
         stats.put("totalProducts", totalProducts);
         stats.put("registeredUsers", allUsers.size());
         stats.put("totalOrders", allOrders.size());
@@ -266,7 +256,6 @@ public class AdminHandler implements HttpHandler {
     }
     private void handleClearLogs(HttpExchange exchange) throws IOException {
         try {
-            // This is the call that makes the "unused" warning disappear
             activityLogService.clearAllLogs();
             ResponseUtil.sendResponse(exchange, 200, "{\"message\": \"Logs cleared successfully\"}", "application/json");
         } catch (Exception e) {
@@ -276,19 +265,15 @@ public class AdminHandler implements HttpHandler {
 
     private void handleUpdateUserRole(HttpExchange exchange, String userId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            //Map<String, String> body = gson.fromJson(isr, Map.class);
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
             Map<String, String> body = gson.fromJson(isr, type);
             String newRole = body.get("role");
-            //find the user being targeted for a role change
             User targetUser = userService.findUserById(userId);
-            //check if the target user is David Lee
             if (targetUser != null && "David Lee".equals(targetUser.getUsername())) {
-                // Block the update and send 403 Forbidden
                 ResponseUtil.sendResponse(exchange, 403,
                         "{\"message\": \"Access Denied: The Super Admin role cannot be modified.\"}",
                         "application/json");
-                return; // Stop execution here
+                return;
             }
             boolean success = userService.updateUserRole(userId, newRole);
             ResponseUtil.sendResponse(exchange, success ? 200 : 404, "{}", "application/json");

@@ -24,7 +24,6 @@ public class Product {
     @SerializedName("File Name")
     private String imageUrl;
 
-    // Defined as a Map<String, Integer> for variants (e.g., {"S": 10, "M": 5})
     @SerializedName("Inventory")
     private Map<String, Integer> inventory;
 
@@ -41,7 +40,6 @@ public class Product {
     }
 
     // --- Getters and Setters ---
-
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -60,28 +58,19 @@ public class Product {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    // Map getter/setter remains the same
     public Map<String, Integer> getInventory() { return inventory; }
     public void setInventory(Map<String, Integer> inventory) { this.inventory = inventory; }
 
-    // --- UTILITY METHOD FOR EASY STOCK CHECK ---
-
-    /**
-     * Calculates and returns the total stock count across all variants (sizes/colors)
-     * listed in the Inventory map. This replaces the problematic `getInventory() == 0` check.
-     */
     public int getTotalInventoryCount() {
         if (this.inventory == null || this.inventory.isEmpty()) {
             return 0;
         }
 
-        // Sum up the values (stock counts) in the map
+        // Sum up the stock counts in the map
         return this.inventory.values().stream()
                 .mapToInt(Integer::intValue)
                 .sum();
     }
-
-    // --- Utility Methods (For better debugging) ---
 
     @Override
     public String toString() {

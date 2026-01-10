@@ -90,7 +90,11 @@
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="agree-terms" name="agree-terms" required>
-                    <label for="agree-terms">I agree to the <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">User Agreement</a> and <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.</label>
+                    <label for="agree-terms">I agree to the
+                        <a href="#" onclick="showPolicyModal('useragreement.html', 'User Agreement'); return false;">User Agreement</a>,
+                        <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;">Terms of Service</a>, and
+                        <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;">Privacy Policy</a>.
+                    </label>
                 </div>
 
                 <button type="submit" class="button primary full-width large-button">Register</button>
@@ -105,10 +109,6 @@
     <footer class="main-footer">
         <div class="footer-links container">
             <p>&copy; 2025 Handy Craft. All rights reserved.</p>
-            <div class="policy-buttons">
-                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary small">Privacy Policy</a>
-                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary small">Terms of Service</a>
-            </div>
         </div>
     </footer>
 </div>

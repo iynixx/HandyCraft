@@ -215,21 +215,15 @@ public class UserService {
                 .orElse(null);
     }
 
-    /**
-     * Updates the role of a user and persists the change to users.json.
-     * Used by AdminHandler's handleUpdateUserRole.
-     */
     public boolean updateUserRole(String userId, String newRole) {
         boolean success = false;
 
-        // Synchronization is necessary as we are modifying the shared list
+        // Synchronization
         synchronized (this.users) {
             for (int i = 0; i < this.users.size(); i++) {
                 User user = this.users.get(i);
                 if (user.getUserId().equals(userId)) {
-                    // Update the role
                     user.setRole(newRole);
-                    // Update the object in the list
                     this.users.set(i, user);
                     success = true;
                     break;
@@ -237,7 +231,6 @@ public class UserService {
             }
 
             if (success) {
-                // Only save the file if a modification occurred
                 saveUsers();
             }
         }

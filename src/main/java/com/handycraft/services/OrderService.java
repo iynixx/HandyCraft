@@ -15,7 +15,7 @@ public class OrderService {
     private final List<Order> orders;
     private final ReentrantLock fileLock = new ReentrantLock();
 
-    // Step A: Add ProductService dependency so we can update stock
+    // Add ProductService dependency so we can update stock
     private final ProductService productService = new ProductService();
 
     public OrderService() {
@@ -37,12 +37,12 @@ public class OrderService {
     public void saveOrder(Order newOrder) throws IOException {
         fileLock.lock();
         try {
-            // --- 1. VALIDATION LOOP ---
+            // Validation loo[
             if (newOrder.getItems() != null) {
                 for (Map<String, Object> item : newOrder.getItems()) {
                     String productId = String.valueOf(item.get("id"));
 
-                    // Get the variant from the item map (sent from frontend)
+                    // Get the variant from the item map
                     String variant = (String) item.getOrDefault("variant", "Default");
 
                     Object qtyObj = item.get("quantity");
@@ -55,7 +55,7 @@ public class OrderService {
                 }
             }
 
-            // --- 2. REDUCTION LOOP ---
+            // Reduction loop
             if (newOrder.getItems() != null) {
                 for (Map<String, Object> item : newOrder.getItems()) {
                     String productId = String.valueOf(item.get("id"));
@@ -67,7 +67,7 @@ public class OrderService {
                 }
             }
 
-            // --- 3. SAVE ORDER ---
+            // Save order
             newOrder.setOrderId("ORD-" + System.currentTimeMillis());
             newOrder.setOrderDate(new java.util.Date().toString());
             newOrder.setStatus("Pending");
@@ -97,7 +97,6 @@ public class OrderService {
         }
     }
 
-    // Helper method to handle the file writing
     private void saveOrdersToFile() throws IOException {
         try (FileWriter writer = new FileWriter(ORDER_DATA_FILE)) {
             gson.toJson(this.orders, writer);

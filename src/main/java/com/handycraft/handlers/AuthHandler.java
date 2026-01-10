@@ -168,7 +168,7 @@ public class AuthHandler implements HttpHandler {
             return;
         }
 
-        // === ALL VALIDATION PASSED ===
+        // All validation passes
         User newUser = userService.registerUser(formattedUsername, email, password,securityAnswer1,securityAnswer2,securityAnswer3);
 
         if (newUser != null) {
@@ -179,12 +179,10 @@ public class AuthHandler implements HttpHandler {
         }
     }
 
-    // --- Login Logic (UPDATED to include ROLE) ---
-    // handlers/AuthHandler.java - LOGIN METHOD
+    // Login
     private void handleLogin(HttpExchange exchange) throws IOException {
         LoginRequest credentials = readRequestBody(exchange, LoginRequest.class);
 
-        // Use the NEW authenticateUser method
         User storedUser = userService.authenticateUser(
                 credentials.getEmail(),
                 credentials.getPassword()
@@ -210,7 +208,6 @@ public class AuthHandler implements HttpHandler {
         ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
     }
 
-    // --- Helper to read and deserialize JSON from the request body ---
     private <T> T readRequestBody(HttpExchange exchange, Class<T> classOfT) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(isr)) {

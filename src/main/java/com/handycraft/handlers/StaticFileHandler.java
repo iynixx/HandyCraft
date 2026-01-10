@@ -23,7 +23,7 @@ public class StaticFileHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         File file;
 
-        // 1. Determine the requested file path
+        // Determine the requested file path
         if (path.equals("/")) {
             // If the request is for the root context ("/"), serve index.html
             file = new File(rootDirectory, "index.html");
@@ -32,20 +32,17 @@ public class StaticFileHandler implements HttpHandler {
             file = new File(rootDirectory, path);
         }
 
-        // 2. Security Check (Basic): Prevent accessing files outside the static root
-        // Though the constructor file path should prevent this, it's good practice.
+        // Security Check
         Path resolvedPath = file.toPath().normalize();
         if (!resolvedPath.startsWith(new File(rootDirectory).toPath().normalize())) {
             ResponseUtil.sendResponse(exchange, 403, "Forbidden", "text/plain");
             return;
         }
 
-        // 3. Serve the file if it exists
+        // Serve the file if it exists
         if (file.exists() && !file.isDirectory()) {
-            // Determine content type (MIME type)
             String mimeType = Files.probeContentType(file.toPath());
             if (mimeType == null) {
-                // Default to HTML or plain text if type can't be guessed (e.g., custom file types)
                 mimeType = "text/plain";
             }
 
@@ -64,7 +61,6 @@ public class StaticFileHandler implements HttpHandler {
                 }
             }
         } else {
-            // File not found (404)
             ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"404 Not Found\"}", "application/json");
         }
     }

@@ -4,65 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details - Handy Craft</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/products.css">
+
+    <script defer src="js/auth.js"></script>
+    <script defer src="js/products.js"></script>
+    <script defer src="js/product-detail.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Retrieve product ID from URL and fetch details
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            // Only call fetch if the function exists in your js/products.js
+            if (productId && typeof fetchProductDetails === 'function') {
+                fetchProductDetails(productId);
+            } else if (!productId) {
+                document.getElementById('product-detail-container').innerHTML = '<p>Product not found.</p>';
+            }
+
+            // Search Function Listener
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query && query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
+                    }
+                });
+            }
+        });
+
+        // Modal Logic for Footer
+        function showPolicyModal(file, title) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.innerText = title;
+            modal.classList.add('active');
+
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    modalContent.innerHTML = data;
+                })
+                .catch(err => {
+                    modalContent.innerHTML = "Error loading policy.";
+                });
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
 </head>
 <body>
 
-<header class="main-header">
-    <nav class="container">
-        <a href="index.html" class="logo-link-with-text">
-            <img src="images/logo.png" alt="Handy Craft Logo" height="40">
-            <span class="site-title">Handy Craft</span>
-        </a>
-        <ul class="nav-links">
-            <li>
-                <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
-                    <span role="img" aria-label="shopping cart"></span> View Cart
+<div class="page-wrapper">
+
+    <header class="main-header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link-with-text">
+                    <img src="images/logo.png" alt="Handy Craft Logo">
+                    <span class="site-title">Handy Craft</span>
                 </a>
-            </li>
-        </ul>
-    </nav>
-</header>
+            </div>
+            <ul class="nav-links">
+                <li><a href="products.html" class="active">Products</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
 
-<main class="container product-detail-main">
-    <div id="back-button-container"></div>
-    <div id="product-detail-container" class="product-detail-layout">
-        <p>Loading product details...</p>
-    </div>
-    <section class="container feedback-section" style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; margin-bottom: 80px;">
-        <h3>Customer Reviews</h3>
-        <div id="reviews-list">
-            <p>No reviews yet.</p>
+                <li class="search-container">
+                    <form id="search-form" class="search-form">
+                        <input type="text" id="search-input" placeholder="Search products..." required>
+                        <button type="submit" class="search-button"
+                                style="display: flex; align-items: center; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </li>
+
+                <li>
+                    <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                        <span role="img" aria-label="shopping cart"></span> View Cart
+                    </a>
+                </li>
+
+                <li id="auth-links-container" class="auth-links-container">
+                    <div class="auth-separator">
+                        <ul id="auth-links" class="nav-links">
+                            <li><a href="signin.html">Sign In</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container product-detail-main">
+        <div id="back-button-container">
+            <button onclick="history.back()" class="back-btn">← Back to Products</button>
         </div>
 
-        <div class="feedback-form-container" style="background: #fff; padding: 20px; border-radius: 12px; margin-top: 30px;">
-            <h4>Leave a Review</h4>
-            <form id="feedback-form">
-                <div class="form-group">
-                    <label>Rating:</label>
-                    <select id="fb-rating" style="width: 100%; padding: 10px; border-radius: 8px;">
-                        <option value="5">5/5 - Excellent</option>
-                        <option value="4">4/5 - Good</option>
-                        <option value="3">3/5 - Average</option>
-                        <option value="2">2/5 - Poor</option>
-                        <option value="1">1/5 - Very Poor</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Comment:</label>
-                    <textarea id="fb-comment" rows="4" style="width: 100%; padding: 10px; border-radius: 8px;" required></textarea>
-                </div>
-                <button type="submit" class="button primary">Submit Review</button>
-            </form>
+        <div id="product-detail-container" class="product-detail-layout">
+            <p>Loading product details...</p>
         </div>
-    </section>
-</main>
 
-<footer class="main-footer">
-    <div class="container footer-links">
-        <p>&copy; 2024 Handy Craft. All rights reserved.</p>
+        <section class="container feedback-section" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #eee; margin-bottom: 80px;">
+            <h3 style="margin-bottom: 20px; font-weight: 700; color: #333;">Customer Reviews</h3>
+
+            <div id="reviews-list">
+                <p style="color: #666;">No reviews yet.</p>
+            </div>
+
+            <div class="feedback-form-container" style="background: #fff; padding: 30px; border-radius: 16px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <h4 style="margin-bottom: 15px; color: #D67D8C;">Leave a Review</h4>
+                <form id="feedback-form">
+                    <div class="form-group">
+                        <label style="font-weight: 600; margin-bottom: 8px; display: block;">Rating:</label>
+                        <select id="fb-rating" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e0e0e0; background: #fff;">
+                            <option value="5">5/5 - Excellent</option>
+                            <option value="4">4/5 - Good</option>
+                            <option value="3">3/5 - Average</option>
+                            <option value="2">2/5 - Poor</option>
+                            <option value="1">1/5 - Very Poor</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label style="font-weight: 600; margin-bottom: 8px; display: block;">Comment:</label>
+                        <textarea id="fb-comment" rows="4" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e0e0e0;" required></textarea>
+                    </div>
+                    <button type="submit" class="button primary" style="margin-top: 20px;">Submit Review</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-links container">
+            <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+            <div class="policy-buttons">
+                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+</div> <div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
     </div>
-</footer>
+</div>
 
-<script src="js/auth.js"></script><script src="js/products.js"></script> <script src="js/product-detail.js"></script> </body>
+</body>
 </html>

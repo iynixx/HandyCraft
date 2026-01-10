@@ -27,10 +27,9 @@ public class HashUtil {
     private static String hashWithSalt(String input, String salt) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt.getBytes()); // Combine salt with input
+            md.update(salt.getBytes());
             md.update(input.getBytes());
             byte[] bytes = md.digest();
-            // Convert to hex string
             StringBuilder sb = new StringBuilder();
             for (byte b : bytes) {
                 sb.append(String.format("%02x", b));

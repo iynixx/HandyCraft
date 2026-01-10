@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProductHandler implements HttpHandler {
-
-    // Service dependency is now available
     private final ProductService productService = new ProductService();
     private final Gson gson = new Gson();
 
@@ -21,7 +19,7 @@ public class ProductHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
 
-        // 1. Handle CORS preflight
+        // Handle CORS preflight
         if (method.equalsIgnoreCase("OPTIONS")) {
             exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET");
@@ -33,14 +31,12 @@ public class ProductHandler implements HttpHandler {
         // Ensure all responses include the CORS header
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
 
-        // 2. Handle GET /api/products request
+        // Handle GET /api/products request
         if (method.equalsIgnoreCase("GET") && path.equals("/api/products")) {
 
             try {
                 List<Product> products = productService.loadAllProducts();
 
-                // If loading fails in the service, 'products' is an empty list,
-                // which Gson converts to an empty JSON array: [] (safe for frontend)
                 String jsonResponse = gson.toJson(products);
 
                 ResponseUtil.sendResponse(exchange, 200, jsonResponse, "application/json");
@@ -53,7 +49,7 @@ public class ProductHandler implements HttpHandler {
             }
 
         } else {
-            // Handle requests for specific IDs (future enhancement) or wrong methods
+            // Handle requests for specific IDs or wrong methods
             ResponseUtil.sendResponse(exchange, 404, "{\"message\": \"Endpoint Not Found\"}", "application/json");
         }
     }

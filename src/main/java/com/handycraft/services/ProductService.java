@@ -18,13 +18,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Handles the business logic for products, implementing persistent CRUD operations
- * by writing to a file path.
- */
 public class ProductService {
 
-    // IMPORTANT: Path changed to be writable on the file system
     private static final String PRODUCT_DATA_FILE = "src/main/resources/data/products.json";
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -32,11 +27,8 @@ public class ProductService {
     private final ReentrantLock fileLock = new ReentrantLock();
 
     public ProductService() {
-        // Load data on service initialization
         this.products = loadProductsFromFile();
     }
-
-    // --- Private File I/O Methods (Writable) ---
 
     private List<Product> loadProductsFromFile() {
         File dataFile = new File(PRODUCT_DATA_FILE);
@@ -72,36 +64,23 @@ public class ProductService {
         }
     }
 
-    // --- Public Read Method ---
-
     public List<Product> loadAllProducts() {
-        // Return a read-only copy of the internal list
         return Collections.unmodifiableList(this.products);
     }
 
-    // ====================================================================
-    // --- ADMIN-REQUIRED CRUD METHODS ---
-    // ====================================================================
-
-    /**
-     * Adds a new product and persists the change. (CREATE)
-     */
     public Product addProduct(Product newProduct) throws IOException {
         fileLock.lock();
         try {
-            // Generate a proper unique ID
             String newId = UUID.randomUUID().toString();
             newProduct.setId(newId);
 
-            // Set default fields
             if (newProduct.getCategory() == null || newProduct.getCategory().isBlank()) {
                 newProduct.setCategory("Uncategorized");
             }
 
-            // FIX: If inventory map is missing or empty, initialize it with a default variant
             if (newProduct.getInventory() == null || newProduct.getInventory().isEmpty()) {
                 Map<String, Integer> defaultInventory = new HashMap<>();
-                defaultInventory.put("Default", 10); // Start with 10 units of a default variant
+                defaultInventory.put("Default", 10);
                 newProduct.setInventory(defaultInventory);
             }
 
@@ -114,9 +93,6 @@ public class ProductService {
         }
     }
 
-    /**
-     * Updates an existing product and persists the change. (UPDATE)
-     */
     public boolean updateProduct(Product updatedProduct) throws IOException {
         fileLock.lock();
         boolean found = false;
@@ -138,14 +114,10 @@ public class ProductService {
         }
     }
 
-    /**
-     * Deletes a product by ID and persists the change. (DELETE)
-     */
     public boolean deleteProduct(String productId) throws IOException {
         fileLock.lock();
         boolean removed = false;
         try {
-            // The removeIf method is clean and efficient
             removed = this.products.removeIf(p -> p.getId().equals(productId));
 
             if (removed) {
@@ -157,9 +129,6 @@ public class ProductService {
         }
     }
 
-    /**
-     * Reduces the inventory for a specific product variant.
-     */
     public void reduceStock(String productId, String variant, int quantity) throws IOException {
         fileLock.lock();
         try {
@@ -168,7 +137,6 @@ public class ProductService {
                 if (p.getId().equals(productId)) {
                     Map<String, Integer> inventory = p.getInventory();
 
-                    // Dynamically update the specific variant key
                     if (inventory != null && inventory.containsKey(variant)) {
                         int currentStock = inventory.get(variant);
                         inventory.put(variant, Math.max(0, currentStock - quantity));
@@ -179,21 +147,17 @@ public class ProductService {
             }
 
             if (stockUpdated) {
-                saveProductsToFile(); // Persist changes to products.json
+                saveProductsToFile();
             }
         } finally {
             fileLock.unlock();
         }
     }
 
-    /**
-     * Checks if a specific variant of a product has enough stock.
-     */
     public boolean isStockAvailable(String productId, String variant, int requestedQuantity) {
         for (Product p : this.products) {
             if (p.getId().equals(productId)) {
                 Map<String, Integer> inventory = p.getInventory();
-                // Instead of hardcoding "Default", we use the variant passed from the frontend
                 if (inventory != null && inventory.containsKey(variant)) {
                     return inventory.get(variant) >= requestedQuantity;
                 }

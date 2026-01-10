@@ -17,7 +17,7 @@ public class OrderHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
 
-        // 1. Handle CORS (Keep this exactly as it was)
+        // Handle CORS
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         if (method.equalsIgnoreCase("OPTIONS")) {
             exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -26,13 +26,13 @@ public class OrderHandler implements HttpHandler {
             return;
         }
 
-        // 2. Target 1: Receive POST request from Checkout page
+        // Receive POST request from Checkout page
         if (method.equalsIgnoreCase("POST")) {
             try {
                 // Read the incoming order JSON
                 Order newOrder = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Order.class);
 
-                // Call the service (this now includes stock validation and reduction)
+                // Call the service
                 orderService.saveOrder(newOrder);
 
                 // If successful, send 201 Created
@@ -67,7 +67,7 @@ public class OrderHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, 200, ordersJson, "application/json");
         }
 
-        // 3. Keep this 'else' to handle wrong HTTP methods (like GET or DELETE)
+        // Handle wrong HTTP methods
         else {
             ResponseUtil.sendResponse(exchange, 405, "{\"message\": \"Method Not Allowed\"}", "application/json");
         }

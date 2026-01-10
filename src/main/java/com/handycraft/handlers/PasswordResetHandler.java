@@ -5,12 +5,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.handycraft.services.UserService;
 import com.handycraft.utils.ResponseUtil;
-//import com.handycraft.utils.HashUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-//import java.util.HashMap;
 
 public class PasswordResetHandler implements HttpHandler {
     private final Gson gson = new Gson();
@@ -46,7 +44,6 @@ public class PasswordResetHandler implements HttpHandler {
                     break;
             }
         } catch (Exception e) {
-            //e.printStackTrace();
             System.err.println("Critical Error in PasswordResetHandler: " + e.getMessage());
             ResponseUtil.sendResponse(exchange, 500,
                     "{\"message\": \"Internal Server Error\"}", "application/json");
@@ -55,7 +52,6 @@ public class PasswordResetHandler implements HttpHandler {
 
     private void handleGetQuestions(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            //Map<String, String> request = gson.fromJson(isr, Map.class);
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
             Map<String, String> request = gson.fromJson(isr, type);
             String email = request.get("email");
@@ -96,7 +92,6 @@ public class PasswordResetHandler implements HttpHandler {
 
     private void handleResetPassword(HttpExchange exchange) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
-            //Map<String, String> request = gson.fromJson(isr, Map.class);
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>(){}.getType();
             Map<String, String> request = gson.fromJson(isr, type);
 
@@ -122,35 +117,35 @@ public class PasswordResetHandler implements HttpHandler {
                 return;
             }
 
-            // 1. Length Validation (8-15)
+            // Length Validation (8-15)
             if (newPassword.length() < 8 || newPassword.length() > 15) {
                 ResponseUtil.sendResponse(exchange, 400,
                         "{\"message\": \"Password must be 8-15 characters.\"}", "application/json");
                 return;
             }
 
-            // 2. Number Validation
+            // Number Validation
             if (!newPassword.matches(".*\\d.*")) {
                 ResponseUtil.sendResponse(exchange, 400,
                         "{\"message\": \"Password must contain at least 1 number.\"}", "application/json");
                 return;
             }
 
-            // 3. Uppercase Validation
+            // Uppercase Validation
             if (!newPassword.matches(".*[A-Z].*")) {
                 ResponseUtil.sendResponse(exchange, 400,
                         "{\"message\": \"Password must contain at least 1 uppercase letter.\"}", "application/json");
                 return;
             }
 
-            // 4. Lowercase Validation
+            // Lowercase Validation
             if (!newPassword.matches(".*[a-z].*")) {
                 ResponseUtil.sendResponse(exchange, 400,
                         "{\"message\": \"Password must contain at least 1 lowercase letter.\"}", "application/json");
                 return;
             }
 
-            // 5. No Spaces Validation
+            // No Spaces Validation
             if (newPassword.contains(" ")) {
                 ResponseUtil.sendResponse(exchange, 400,
                         "{\"message\": \"Password cannot contain spaces.\"}", "application/json");

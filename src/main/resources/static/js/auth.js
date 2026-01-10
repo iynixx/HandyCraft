@@ -1,11 +1,8 @@
-// Base URL for all APIs (Root endpoint)
 const API_ROOT_URL = 'http://localhost:8000/api';
-// Auth specific endpoint
 const API_AUTH_URL = `${API_ROOT_URL}/auth`;
 const CART_STORAGE_KEY = 'handyCraftCart';
 const AUTH_LINKS_CONTAINER_ID = 'auth-links-container';
 
-// Helper Function to Save User Session Data
 function saveSession(data) {
     localStorage.setItem('userLoggedIn', 'true');
     localStorage.setItem('userId', data.userId);
@@ -14,7 +11,6 @@ function saveSession(data) {
     localStorage.setItem('userRole', data.role);
 }
 
-// Helper Function for Redirection based on Role
 function redirectToDashboard(role) {
     if (role === 'admin') {
         window.location.href = 'admin.html#dashboard';
@@ -23,11 +19,17 @@ function redirectToDashboard(role) {
     }
 }
 
-// --- HEADER UI UPDATE LOGIC ---
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
 
-/**
- * Updates the header navigation based on login status.
- */
+    if (!isLoggedIn) {
+        alert("You must be signed in to access your cart or add items. Please sign in first.");
+        window.location.href = 'signin.html';
+        return true;
+    }
+    return false;
+}
+
 function updateAuthHeader() {
     const container = document.getElementById('auth-links-container');
     const loggedIn = localStorage.getItem('userLoggedIn') === 'true';
@@ -49,7 +51,6 @@ function updateAuthHeader() {
     let htmlContent = '';
 
     if (loggedIn && username) {
-        // FIX: Updated image source to "images/profile.png" to match your file system
         if (isProfilePage) {
             htmlContent = `
                 <li><a href="index.html" class="nav-link-text">Back to Home</a></li>
@@ -91,9 +92,6 @@ function updateAuthHeader() {
     }
 }
 
-// --- CORE AUTHENTICATION LOGIC ---
-
-// Sign Up Logic
 function handleSignUp(event) {
     event.preventDefault();
 
@@ -202,7 +200,6 @@ function handleSignUp(event) {
         });
 }
 
-// Sign In Logic
 function handleSignIn(event) {
     event.preventDefault();
 
@@ -238,7 +235,6 @@ function handleSignIn(event) {
         });
 }
 
-// Log Out Logic
 function handleLogout() {
     localStorage.clear();
     localStorage.removeItem(CART_STORAGE_KEY);
@@ -246,7 +242,6 @@ function handleLogout() {
     window.location.href = 'index.html';
 }
 
-// --- POLICY MODAL LOGIC ---
 async function showPolicyModal(url, title) {
     const modal = document.getElementById('policyModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -290,6 +285,7 @@ function closePolicyModal() {
 window.showPolicyModal = showPolicyModal;
 window.closePolicyModal = closePolicyModal;
 window.handleLogout = handleLogout;
+window.checkLoginStatus = checkLoginStatus;
 
 document.addEventListener('DOMContentLoaded', () => {
     const signUpForm = document.getElementById('signup-form');

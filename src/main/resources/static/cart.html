@@ -2,53 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Shopping Cart - Handy Craft</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .cart-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .cart-table th { border-bottom: 2px solid #D67D8C; padding: 15px; text-align: left; color: #555; }
-        .cart-table td { padding: 20px 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
-        .cart-item-info { display: flex; flex-direction: column; gap: 5px; }
-        .cart-summary-box { background: #f9f9f9; padding: 25px; border-radius: 15px; margin-top: 30px; text-align: right; }
-        .qty-btn { width: 32px; height: 32px; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 4px; font-weight: bold; }
-        .qty-btn:hover { background: #f0f0f0; }
-    </style>
+    <link rel="stylesheet" href="css/cart.css">
+
+    <script src="js/auth.js"></script>
+    <script defer src="js/cart-page.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Search function listener
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const query = document.getElementById('search-input').value;
+                    if (query && query.trim()) {
+                        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
+                    }
+                });
+            }
+        });
+
+        // Modal Logic
+        function showPolicyModal(file, title) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.innerText = title;
+            modal.classList.add('active');
+
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    modalContent.innerHTML = data;
+                })
+                .catch(err => {
+                    modalContent.innerHTML = "Error loading policy.";
+                });
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
 </head>
 <body>
-<header id="main-header"></header>
 
-<main class="container">
-    <h1 class="page-title" style="margin-top: 40px; color: #333;">Shopping Cart</h1>
+<div class="page-wrapper">
 
-    <div id="cart-content">
-        <table class="cart-table">
-            <thead>
-            <tr>
-                <th style="width: 40%;">Product</th>
-                <th style="width: 15%;">Unit Price</th>
-                <th style="width: 20%;">Quantity</th>
-                <th style="width: 15%;">Total Price</th>
-                <th style="width: 10%;">Actions</th>
-            </tr>
-            </thead>
-            <tbody id="cart-items-body">
-            </tbody>
-        </table>
+    <header class="main-header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link-with-text">
+                    <img src="images/logo.png" alt="Handy Craft Logo">
+                    <span class="site-title">Handy Craft</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="products.html">Products</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
 
-        <div class="cart-summary-box">
-            <h3 style="margin-bottom: 20px;">Subtotal: <span id="cart-subtotal" style="color: #D67D8C; font-size: 1.5rem;">RM 0.00</span></h3>
-            <div style="display: flex; justify-content: flex-end; gap: 15px;">
-                <button onclick="window.location.href='products.html'" class="button secondary" style="background: #fff; color: #555; border: 1px solid #ccc;">Continue Shopping</button>
+                <li class="search-container">
+                    <form id="search-form" class="search-form">
+                        <input type="text" id="search-input" placeholder="Search products..." required>
+                        <button type="submit" class="search-button"
+                                style="display: flex; align-items: center; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </li>
 
-                <button onclick="clearCart()" class="button secondary" style="background: #fff; color: #D67D8C; border: 1px solid #D67D8C;">Clear Cart</button>
+                <li>
+                    <a href="cart.html" class="active" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                        <span role="img" aria-label="shopping cart"></span> View Cart
+                    </a>
+                </li>
 
-                <button onclick="window.location.href='checkout.html'" class="button primary">Proceed to Checkout</button>
+                <li id="auth-links-container" class="auth-links-container">
+                    <div class="auth-separator">
+                        <ul id="auth-links" class="nav-links">
+                            <li><a href="signin.html">Sign In</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 class="page-title">Shopping Cart</h1>
+
+        <div id="cart-content">
+            <table class="cart-table">
+                <thead>
+                <tr>
+                    <th style="width: 40%;">Product</th>
+                    <th style="width: 15%;">Unit Price</th>
+                    <th style="width: 20%;">Quantity</th>
+                    <th style="width: 15%;">Total Price</th>
+                    <th style="width: 10%;">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="cart-items-body">
+                </tbody>
+            </table>
+
+            <div class="cart-summary-box">
+                <h3 style="margin-bottom: 20px;">Subtotal: <span id="cart-subtotal">RM 0.00</span></h3>
+                <div class="cart-actions">
+                    <button onclick="window.location.href='products.html'" class="button secondary">Continue Shopping</button>
+                    <button onclick="clearCart()" class="button clear-cart">Clear Cart</button>
+                    <button onclick="window.location.href='checkout.html'" class="button primary">Proceed to Checkout</button>
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<script src="js/auth.js"></script>
-<script src="js/cart-page.js"></script>
+    <footer class="main-footer">
+        <div class="footer-links container">
+            <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+            <div class="policy-buttons">
+                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+</div> <div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -1,38 +1,22 @@
-/* --- ADMIN THEME VARIABLES --- */
 :root {
-    --color-admin-bg: #FDF9F9;
     --color-admin-card: #FDF2F4;
-    --color-white: #FFFFFF;
-    --color-primary: #FFC0CB; /* Handy Craft Pink */
-    --color-primary-dark: #D67D8C; /* Rose Gold / Deep Pink */
-    --color-text: #333333;
-    --color-border: #E0E0E0;
-    --color-danger: #D67D8C; /* Rose Gold shade for danger/delete */
+    --color-primary-dark: #D67D8C;
+    --color-danger: #D67D8C;
     --color-success: #28a745;
-    --color-footer-pink: #E7DADA; /* Greyish Pink */
+    --color-footer-pink: #E7DADA;
     --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* --- RESET & BASE --- */
+html {
+    background-color: var(--color-background) !important;
+}
+
 .admin-page {
-    background-color: var(--color-admin-bg);
+    background-color: var(--color-background) !important;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     color: var(--color-text);
-}
-
-/* --- BUTTON STYLES --- */
-.button {
-    display: inline-block;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9em;
-    text-decoration: none;
-    text-align: center;
+    min-height: 100vh;
 }
 
 .button.primary {
@@ -57,7 +41,7 @@
     color: white;
 }
 
-.button.small {
+button.small {
     padding: 6px 16px;
     font-size: 0.85em;
 }
@@ -71,7 +55,6 @@
     background-color: #b56573;
 }
 
-/* --- HEADER & NAVIGATION --- */
 .admin-header {
     background-color: var(--color-white);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -96,7 +79,7 @@
     gap: 15px;
 }
 
-.site-title {
+.header-left .site-title {
     font-weight: 800;
     font-size: 1.8rem;
     color: #333;
@@ -139,7 +122,6 @@
     color: #ff4d4d;
 }
 
-/* --- LAYOUT --- */
 .admin-layout {
     display: flex;
     gap: 25px;
@@ -155,6 +137,8 @@
     border-radius: 15px;
     box-shadow: var(--shadow-sm);
     height: fit-content;
+    position: sticky;
+    top: 20px;
 }
 
 .sidebar-title {
@@ -204,16 +188,15 @@
 .dashboard-section.active {
     display: block;
 }
-/* Update your dashboard container */
+
 #dashboard .stat-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    max-width: 1000px; /* Prevents the cards from stretching too wide */
-    margin: 0 auto;    /* Centers the cards if the screen is very wide */
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-/* --- DASHBOARD OVERVIEW CARDS --- */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -223,7 +206,7 @@
 
 .stat-card {
     background: var(--color-admin-card);
-    min-height: 160px; /* Ensures cards don't look flat if numbers are small */
+    min-height: 160px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -253,7 +236,6 @@
     color: var(--color-text);
 }
 
-/* --- SECTION HEADER --- */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -268,7 +250,6 @@
     color: var(--color-text);
 }
 
-/* --- DATA TABLES & SEARCH --- */
 .table-controls {
     display: flex;
     align-items: center;
@@ -303,6 +284,8 @@
 .admin-data-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95em;
 }
 
 .admin-data-table th {
@@ -327,7 +310,6 @@
     font-weight: 900;
 }
 
-/* --- ACTION BUTTONS & LABELS --- */
 .action-btn {
     padding: 7px 18px;
     border-radius: 20px;
@@ -369,7 +351,6 @@
     border: 1px solid #F3E5AB;
 }
 
-/* --- MODAL --- */
 .modal {
     display: none;
     position: fixed;
@@ -464,8 +445,8 @@
 }
 
 #feedback .table-controls {
-    margin-top: 25px;    /* Adds extra space above the search bar */
-    margin-bottom: 20px; /* Space between search bar and the table */
+    margin-top: 25px;
+    margin-bottom: 20px;
 }
 
 #feedback-id-user-search {
@@ -484,51 +465,35 @@
     border-color: #D67D8C;
     box-shadow: 0 0 5px rgba(214, 125, 140, 0.2);
 }
+
 #feedback-list-admin table th,
 #feedback-list-admin table td {
-    text-align: center;      /* Centers text horizontally */
-    vertical-align: middle;  /* Centers text vertically */
-    padding: 18px 10px;      /* Adds breathing room to rows */
+    text-align: center;
+    vertical-align: middle;
+    padding: 18px 10px;
 }
 
-/* Balanced Feedback Table Columns */
-#feedback-list-admin th:nth-child(1) { width: 15%; } /* ID */
-#feedback-list-admin th:nth-child(2) { width: 25%; } /* User */
-#feedback-list-admin th:nth-child(3) { width: 15%; } /* Rating */
-#feedback-list-admin th:nth-child(4) { width: 35%; } /* Comment */
+#feedback-list-admin th:nth-child(1) { width: 15%; }
+#feedback-list-admin th:nth-child(2) { width: 25%; }
+#feedback-list-admin th:nth-child(3) { width: 15%; }
+#feedback-list-admin th:nth-child(4) { width: 35%; }
 
 #feedback-list-admin th:last-child,
 #feedback-list-admin td:last-child {
-    padding-right: 30px; /* Internal spacing for the last column */
-    text-align: right;   /* Often looks better aligned right when near an edge */
+    padding-right: 30px;
+    text-align: right;
 }
 
 #feedback-list-admin td {
-    padding: 18px 10px; /* Adds vertical space to rows */
+    padding: 18px 10px;
     vertical-align: middle;
 }
 
-/* Order Stats Grid */
 .order-stats-grid {
     display: grid;
-    /* Changed to 5 columns for a perfect fit */
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
-}
-
-.stat-card {
-    background-color: var(--color-admin-card);
-    border-radius: 12px;
-    padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e5e7eb;
-    transition: transform 0.2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .stat-card.pending {
@@ -570,7 +535,6 @@
     font-weight: bold;
 }
 
-/* Status Badges */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -582,38 +546,18 @@
     border: 1px solid;
 }
 
-.status-badge.pending {
-    background: #fef3c7;
-    color: #92400e;
-    border-color: #fbbf24;
-}
+.status-badge.pending { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
+.status-badge.processing { background: #dbeafe; color: #1e40af; border-color: #3b82f6; }
+.status-badge.shipped { background: #e9d5ff; color: #6b21a8; border-color: #a855f7; }
+.status-badge.completed { background: #d1fae5; color: #065f46; border-color: #10b981; }
 
-.status-badge.processing {
-    background: #dbeafe;
-    color: #1e40af;
-    border-color: #3b82f6;
-}
-
-.status-badge.shipped {
-    background: #e9d5ff;
-    color: #6b21a8;
-    border-color: #a855f7;
-}
-
-.status-badge.completed {
-    background: #d1fae5;
-    color: #065f46;
-    border-color: #10b981;
-}
-
-/* Order Modal */
 .order-modal-content {
     max-width: 700px;
     max-height: 90vh;
     overflow-y: auto;
 }
 
-.modal-header {
+.order-modal-content .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -621,13 +565,13 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.modal-header h2 {
+.order-modal-content .modal-header h2 {
     font-size: 1.5rem;
     margin: 0;
     color: #1f2937;
 }
 
-.close-btn {
+.order-modal-content .close-btn {
     background: none;
     border: none;
     font-size: 2rem;
@@ -644,12 +588,12 @@
     transition: all 0.2s;
 }
 
-.close-btn:hover {
+.order-modal-content .close-btn:hover {
     background: #f3f4f6;
-    color: #1f2937;
+    color: #111827;
 }
 
-.modal-body {
+.order-modal-content .modal-body {
     padding: 1.5rem;
 }
 
@@ -678,7 +622,7 @@
 }
 
 .info-row.full-width {
-    grid-column: 1 / -1;
+    grid-column: 1/-1;
     flex-direction: column;
     gap: 0.5rem;
 }
@@ -690,7 +634,7 @@
 
 .info-value {
     font-weight: 600;
-    color: #1f2937;
+    color: #111827;
     text-align: right;
 }
 
@@ -698,7 +642,6 @@
     text-align: left;
 }
 
-/* Order Items */
 .order-item {
     background: #f9fafb;
     border-radius: 8px;
@@ -711,12 +654,11 @@
 
 .order-item-name {
     font-weight: 600;
-    color: #1f2937;
+    color: #111827;
     margin-bottom: 0.25rem;
 }
 
-.order-item-variant,
-.order-item-quantity {
+.order-item-variant, .order-item-quantity {
     font-size: 0.85rem;
     color: #6b7280;
 }
@@ -735,7 +677,6 @@
     font-weight: 600;
 }
 
-/* Status Buttons */
 .status-buttons {
     display: flex;
     gap: 0.5rem;
@@ -764,7 +705,6 @@
     border-color: #D67D8C;
 }
 
-/* Table Controls */
 .table-controls {
     display: flex;
     gap: 1rem;
@@ -785,7 +725,6 @@
 }
 
 .table-controls select {
-    /* Match the height of the search bar */
     padding: 10px 20px;
     border-radius: 30px;
     border: 1px solid #d1d5db;
@@ -798,8 +737,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 10000; /* Ensure it stays above other modals */
+    background: rgba(0,0,0,0.6);
+    z-index: 10000;
 }
 
 #order-count-display {
@@ -808,59 +747,41 @@
     margin-left: auto;
 }
 
-/* Target only the Customer section to increase vertical gap */
-#customers-section .section-header {
-    margin-bottom: 20px; /* Adjust this number to get the exact gap you want */
-}
-#customers .table-controls {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-#customer-search {
-    max-width: 400px;
-    width: 100%
-}
-/* Target the Customer Management table specifically */
-#customer-list-admin .admin-data-table th,
-#customer-list-admin .admin-data-table td {
-    text-align: center;      /* Centers all text and buttons */
+#customers-section .section-header { margin-bottom: 20px; }
+#customers .table-controls { margin-top: 10px; margin-bottom: 10px; }
+#customer-search { max-width: 400px; width: 100%; }
+
+#customer-list-admin admin-data-table th,
+#customer-list-admin admin-data-table td {
+    text-align: center;
     vertical-align: middle;
     padding: 15px 10px;
 }
 
-/* Increase the width of the first column for full User IDs */
-#customer-list-admin .admin-data-table th:nth-child(1),
-#customer-list-admin .admin-data-table td:nth-child(1) {
-    width: 280px;            /* Increased width to fit full UUIDs */
-    font-family: monospace;  /* Keeps IDs tidy */
+#customer-list-admin admin-data-table th:nth-child(1),
+#customer-list-admin admin-data-table td:nth-child(1) {
+    font-family: monospace;
     color: #888;
+    width: 280px;
 }
 
-/* Reduce gap specifically for Feedback Management */
-#feedback .section-header {
-    margin-bottom: 35px;
-}
+#feedback .section-header { margin-bottom: 35px; }
+#feedback .table-controls { margin-top: 10px; margin-bottom: 3px; }
 
-#feedback .table-controls {
-    margin-top: 10px;
-    margin-bottom: 3px;
-}
-
-/* Styling to match Order Management */
 .report-card {
-    background: #FFF5F6; /* Light pink background */
+    background: #FFF5F6;
     padding: 25px;
     border-radius: 12px;
     border: 1px solid #FADADD;
     text-align: center;
-    transition: all 0.3s ease; /* Smooth transition effect */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .report-card:hover {
-    transform: translateY(-5px); /* Lift up on hover */
-    box-shadow: 0 8px 15px rgba(214, 125, 140, 0.2); /* Pink glow shadow */
-    border-color: #D67D8C; /* Darker pink border */
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(214, 125, 140, 0.2);
+    border-color: #D67D8C;
 }
 
 .report-label {
@@ -878,14 +799,12 @@
     color: #333;
 }
 
-/* New class for centered tables */
 .centered-table th,
 .centered-table td {
     text-align: center !important;
     vertical-align: middle;
 }
 
-/* Ensure the RM values and Order counts are also centered */
 .centered-table td {
     padding: 15px;
 }
@@ -898,84 +817,44 @@
     font-weight: 600;
 }
 
-.action-success {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #10b981;
-}
-
-.action-danger {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #ef4444;
-}
-
-.action-warning {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fbbf24;
-}
-
-.action-info {
-    background: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #3b82f6;
-}
+.action-success { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+.action-danger { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+.action-warning { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+.action-info { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
 
 #activity-log-table th,
-#activity-log-table td {
-    text-align: center;
-}
+#activity-log-table td { text-align: center; }
 
-/* fix the time column in table*/
 #activity-log-table th:first-child,
-#activity-log-table td:first-child {
-    width: 180px;
-}
+#activity-log-table td:first-child { width: 180px; }
 
-/* Admin name*/
 #activity-log-table th:nth-child(2),
-#activity-log-table td:nth-child(2) {
-    width: 150px;
-}
+#activity-log-table td:nth-child(2) { width: 150px; }
 
-/* column action */
 #activity-log-table th:nth-child(3),
-#activity-log-table td:nth-child(3) {
-    width: 200px;
-}
+#activity-log-table td:nth-child(3) { width: 200px; }
 
-/* Details*/
 #activity-log-table th:nth-child(4),
-#activity-log-table td:nth-child(4) {
-    width: auto;
-}
+#activity-log-table td:nth-child(4) { width: auto; }
 
 #activity-log-table tbody tr:hover {
     background-color: #f9fafb;
     transition: background-color 0.2s;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
-    .order-stats-grid {
-        /* On tablets, show 3 on top, 2 on bottom */
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .order-stats-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
-    .order-stats-grid {
-        /* On mobile, show 2 per row */
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .order-stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* --- FOOTER --- */
 .admin-footer {
-    background-color: var(--color-footer-pink);
-    color: #7A6B6B;
+    background-color: #333333;
+    color: #E7DADA;
     text-align: center;
-    padding: 30px 0;
+    padding: 20px 0;
     margin-top: 60px;
+    width: 100%;
 }

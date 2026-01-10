@@ -1,49 +1,41 @@
-/* --- Categories Page Wrapper --- */
 .categories-page {
     padding-bottom: 80px;
     background-color: var(--color-background);
 }
 
-/* --- Hero Section --- */
 .category-hero {
     background: linear-gradient(to bottom, #fdf5f6, var(--color-background));
     padding: 80px 0 100px 0;
-    text-align: left; /* Aligned to match your product page preference */
+    text-align: left;
     border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
-/* --- UPDATED: Category Title with Gradient --- */
 .category-hero h1 {
     font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
     font-size: 3rem;
     font-weight: 800;
     margin-bottom: 15px;
     letter-spacing: -0.04em;
-
-    /* Matching Gradient Style */
     background: linear-gradient(135deg, #333333 30%, #D67D8C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    display: inline-block; /* Required for the text-fill-color gradient to clip correctly */
+    display: inline-block;
 }
 
 .category-hero p {
     font-size: 1.2rem;
     color: #666;
     max-width: 600px;
-    /* Removed margin: 0 auto to keep it left-aligned with the title */
     margin: 0;
 }
 
-/* --- Grid Layout --- */
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
-    margin-top: -40px; /* Modern overlap effect */
+    margin-top: -40px;
 }
 
-/* --- Category Card (Text-Only Style) --- */
 .cat-card {
     background: var(--color-white);
     border-radius: 20px;
@@ -60,7 +52,6 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-/* Card Information */
 .cat-info {
     padding: 40px 30px;
     text-align: center;
@@ -85,7 +76,6 @@
     margin-bottom: 25px;
 }
 
-/* --- Button Styling Match --- */
 .cat-info .button.primary {
     display: inline-block;
     padding: 12px 28px;
@@ -93,7 +83,6 @@
     text-decoration: none;
     font-weight: 700;
     font-size: 0.9rem;
-    /* Using your established gradient for buttons */
     background: linear-gradient(135deg, #D67D8C 0%, #FFB6C1 100%);
     color: white;
     box-shadow: 0 4px 15px rgba(214, 125, 140, 0.3);
@@ -107,7 +96,6 @@
     box-shadow: 0 8px 20px rgba(214, 125, 140, 0.4);
 }
 
-/* All Products Card Special Design */
 .all-products-card {
     background: linear-gradient(135deg, #fff 0%, #fff0f3 100%);
     border: 2px dashed var(--color-primary);
@@ -117,9 +105,8 @@
     color: #D67D8C !important;
 }
 
-/* Responsive Tweak */
 @media (max-width: 768px) {
-    .category-hero { text-align: center; } /* Optional: keep centered on mobile for better UX */
+    .category-hero { text-align: center; }
     .category-hero h1 { font-size: 2.2rem; }
     .categories-grid { gap: 20px; margin-top: 20px; padding: 0 15px; }
 }

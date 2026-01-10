@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 
 public class Order {
     private String orderId;
-    private String userId; // To link to the logged-in user
+    private String userId;
     private String customerName;
     private String address;
     private String phone;
-    private List<Map<String, Object>> items; // List of cart items
+    private List<Map<String, Object>> items;
     private double totalAmount;
     private String orderDate;
-    private String status; // e.g., "Pending", "Shipped", "Completed"
+    private String status;
 
     // Extracts all products IDs from the order items
     public List<String> getPurchaseProductIds() {

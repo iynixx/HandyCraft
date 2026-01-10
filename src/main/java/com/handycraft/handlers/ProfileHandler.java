@@ -16,7 +16,7 @@ public class ProfileHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
 
-        // 1. CORS Headers
+        // CORS Headers
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         if (method.equalsIgnoreCase("OPTIONS")) {
             exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -25,7 +25,7 @@ public class ProfileHandler implements HttpHandler {
             return;
         }
 
-        // 2. Only allow GET requests
+        // Only allow GET requests
         if (method.equalsIgnoreCase("GET")) {
             String userId = exchange.getRequestHeaders().getFirst("X-User-ID");
             User user = userService.findUserById(userId);

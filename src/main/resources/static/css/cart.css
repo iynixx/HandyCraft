@@ -1,0 +1,258 @@
+.page-title {
+    margin-top: 50px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    margin-bottom: 40px;
+    text-align: center;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background: linear-gradient(135deg, #333333 30%, #D67D8C 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -0.02em;
+    text-transform: capitalize;
+}
+
+#cart-content {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+    margin-bottom: 80px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 30px;
+}
+
+.cart-table th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    padding: 18px 24px;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.cart-table th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.cart-table th:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.cart-table td {
+    padding: 24px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f1f1;
+    color: #333;
+    font-size: 1rem;
+}
+
+.cart-table tbody tr:hover td {
+    background-color: #fafafa;
+}
+
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cart-item-title {
+    font-weight: 700;
+    color: #222;
+    font-size: 1.05rem;
+}
+
+.cart-item-variant {
+    font-size: 0.85em;
+    color: #888;
+}
+
+.qty-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e2e2e2;
+    background: #fff;
+    border-radius: 50%;
+    font-weight: 600;
+    color: #555;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 6px;
+}
+
+.qty-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: #fff0f3;
+    transform: translateY(-2px);
+}
+
+.remove-btn {
+    font-size: 0.85rem;
+    color: #999;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 5px 10px;
+}
+
+.remove-btn:hover {
+    color: #dc3545;
+    text-decoration: underline;
+}
+
+.cart-summary-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 30px;
+    padding-top: 30px;
+}
+
+.cart-summary-box h3 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 25px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#cart-subtotal {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.03em;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.cart-actions .button {
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.cart-actions .button.secondary {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+    box-shadow: none;
+}
+
+.cart-actions .button.secondary:hover {
+    border-color: #333;
+    color: #333;
+    transform: translateY(-2px);
+}
+
+.cart-actions .button.clear-cart {
+    background: transparent;
+    color: #e74c3c;
+    border: 1px solid #fadbd8;
+}
+
+.cart-actions .button.clear-cart:hover {
+    background: #fdedec;
+    border-color: #e74c3c;
+    transform: translateY(-2px);
+}
+
+.cart-actions .button.primary {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(214, 125, 140, 0.4);
+}
+
+.cart-actions .button.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(214, 125, 140, 0.6);
+}
+
+@media (max-width: 768px) {
+    #cart-content {
+        padding: 20px;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .cart-table thead {
+        display: none;
+    }
+
+    .cart-table tr {
+        display: block;
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .cart-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        text-align: right;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .cart-table td:last-child {
+        border-bottom: none;
+    }
+
+    .cart-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #999;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        text-align: left;
+    }
+
+    .cart-actions {
+        flex-direction: column-reverse;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .cart-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+}

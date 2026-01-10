@@ -9,7 +9,6 @@ import com.handycraft.handlers.AdminHandler;
 import com.handycraft.handlers.FeedbackHandler;
 import com.handycraft.handlers.ProfileHandler;
 import com.handycraft.handlers.OrderHandler;
-// import com.handycraft.utils.HashUtil; // <-- REMOVED: No longer needed here
 import com.handycraft.handlers.PasswordResetHandler;
 
 import java.net.InetSocketAddress;
@@ -24,10 +23,10 @@ public class Main {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
-            // 1. Static File Handler: Handles all frontend assets (HTML, CSS, JS, Images)
+            // Static File Handler
             server.createContext("/", new StaticFileHandler(STATIC_ROOT));
 
-            // 2. API Handlers: For business logic
+            //  API Handlers
             server.createContext("/api/auth", new AuthHandler());
             server.createContext("/api/products", new ProductHandler());
             server.createContext("/api/checkout", new CartHandler());
@@ -35,7 +34,7 @@ public class Main {
             server.createContext("/api/feedback", new FeedbackHandler());
             server.createContext("/api/profile", new ProfileHandler());
 
-            // 3. Password Reset Handler
+            // Password Reset Handler
             server.createContext("/api/password-reset", new PasswordResetHandler());
 
             server.createContext("/api/orders", new OrderHandler());
@@ -49,7 +48,6 @@ public class Main {
 
         } catch (Exception e) {
             System.err.println("FATAL ERROR: Could not start the HTTP Server.");
-            //e.printStackTrace();
             System.err.println("Error: " + e.getMessage());
         }
     }

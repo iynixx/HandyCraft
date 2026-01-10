@@ -57,7 +57,7 @@ public class FeedbackHandler implements HttpHandler {
                 return;
             }
 
-            // 1. Verify against orders.json using the hidden email field
+            // Verify against orders.json using the hidden email field
             List<Order> userOrders = orderService.getOrdersByUserId(fb.getUserEmail());
 
             boolean hasPurchased = userOrders.stream()

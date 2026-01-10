@@ -29,7 +29,6 @@
                 });
             }
 
-            // Default Tab Activation (Starts on Our Story)
             const defaultTab = document.querySelector('.tab-buttons .tab-button');
             if (defaultTab) {
                 defaultTab.click();
@@ -61,14 +60,14 @@
             element.classList.add("active");
         }
 
-        // Policy Modal Logic (Matched to Index)
+        // Modal Logic
         function showPolicyModal(file, title) {
             const modal = document.getElementById('policyModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
 
             modalTitle.innerText = title;
-            modal.style.display = "block";
+            modal.classList.add('active');
 
             fetch(file)
                 .then(response => response.text())
@@ -81,7 +80,14 @@
         }
 
         function closePolicyModal() {
-            document.getElementById('policyModal').style.display = "none";
+            document.getElementById('policyModal').classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
         }
     </script>
 </head>
@@ -98,7 +104,7 @@
         <ul class="nav-links">
             <li><a href="products.html">Products</a></li>
             <li><a href="categories.html">Categories</a></li>
-            <li class="active"><a href="aboutus.html">About Us</a></li>
+            <li><a href="aboutus.html" class="active">About Us</a></li>
 
             <li class="search-container">
                 <form id="search-form" class="search-form">
