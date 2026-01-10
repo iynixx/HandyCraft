@@ -1,3 +1,4 @@
+/*global theme*/
 :root {
     --color-admin-card: #FDF2F4;
     --color-primary-dark: #D67D8C;
@@ -10,21 +11,21 @@
 html {
     background-color: var(--color-background) !important;
 }
-
+/*main layout setup*/
 .admin-page {
-    background-color: var(--color-background) !important;
+    background-color: var(--color-background) !important;   /*prevent overwriting background*/
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     color: var(--color-text);
     min-height: 100vh;
 }
-
+/*buttons to stand out more with shadow effect*/
 .button.primary {
     background-color: var(--color-primary);
     color: white;
     box-shadow: 0 4px 10px rgba(255, 192, 203, 0.4);
 }
-
+/*hover effect*/
 .button.primary:hover {
     background-color: var(--color-primary-dark);
     transform: translateY(-1px);
@@ -40,7 +41,7 @@ html {
     background-color: var(--color-primary);
     color: white;
 }
-
+/*smaller button for table action such as delete or edit*/
 button.small {
     padding: 6px 16px;
     font-size: 0.85em;
@@ -54,7 +55,7 @@ button.small {
 .button.danger:hover {
     background-color: #b56573;
 }
-
+/*top header section*/
 .admin-header {
     background-color: var(--color-white);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -92,7 +93,7 @@ button.small {
     letter-spacing: 2px;
     font-weight: 700;
     text-transform: uppercase;
-    border-left: 2px solid #EEE;
+    border-left: 2px solid #EEE;    /*divider between title and label*/
     padding-left: 15px;
 }
 
@@ -121,15 +122,15 @@ button.small {
 .logout-btn:hover {
     color: #ff4d4d;
 }
-
+/*admin dashboard layout*/
 .admin-layout {
-    display: flex;
+    display: flex;  /*sidebar on left, content right*/
     gap: 25px;
     width: 90%;
     max-width: 1400px;
     margin: 30px auto;
 }
-
+/*for easier navigation*/
 .sidebar {
     flex: 0 0 260px;
     background: var(--color-white);
@@ -137,7 +138,7 @@ button.small {
     border-radius: 15px;
     box-shadow: var(--shadow-sm);
     height: fit-content;
-    position: sticky;
+    position: sticky;   /*sidebar will follows while scrolling*/
     top: 20px;
 }
 
@@ -175,7 +176,7 @@ button.small {
     flex: 1;
     background: transparent;
 }
-
+/*content*/
 .dashboard-section {
     display: none;
     background: var(--color-white);
@@ -280,7 +281,7 @@ button.small {
     color: #888;
     font-size: 0.85rem;
 }
-
+/*data tables*/
 .admin-data-table {
     width: 100%;
     border-collapse: collapse;
@@ -350,9 +351,8 @@ button.small {
     display: inline-block;
     border: 1px solid #F3E5AB;
 }
-
+/*modal boxes*/
 .modal {
-    /*display: none;*/
     position: fixed;
     z-index: 2000;
     left: 0;
@@ -360,16 +360,13 @@ button.small {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px); /*blur effect to keep focus on modal*/
     visibility: hidden;
     opacity:0;
     transition: visibility 0s, opacity 0.3s ease;
-    /*align-items: center;
-    justify-content: center;*/
 }
 
 .modal.active {
-    /*display: flex !important;*/
     visibility: visible;
     opacity: 1;
 }
@@ -381,26 +378,21 @@ button.small {
     max-width: 500px;
     max-height: 87vh;
     box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-    /*position: relative;*/
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /*centers the modal*/
     overflow: hidden;
     animation: modalSlide 0.3s ease-out;
 }
-
-/*@keyframes modalSlide {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}*/
+/*simple animation when modal appears*/
 @keyframes modalSlide {
     from {
-        transform: translate(-50%, -40%);
+        top: 40%;
         opacity: 0;
     }
     to {
-        transform: translate(-50%, -50%);
+        top: 50%;
         opacity: 1;
     }
 }
@@ -509,7 +501,7 @@ button.small {
     padding: 18px 10px;
     vertical-align: middle;
 }
-
+/*order style*/
 .order-stats-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -636,11 +628,6 @@ button.small {
     gap: 0.75rem;
 }
 
-/*.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}*/
 .info-row {
     display: flex;
     flex-direction: column;
@@ -759,13 +746,6 @@ button.small {
     outline: none;
 }
 
-/*#session-modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.6);
-    z-index: 10000;
-}*/
 #session-modal.active {
     visibility: visible;
     opacity: 1;
@@ -847,7 +827,7 @@ button.small {
 .centered-table td {
     padding: 15px;
 }
-
+/*activity log*/
 .action-badge {
     display: inline-block;
     padding: 4px 12px;

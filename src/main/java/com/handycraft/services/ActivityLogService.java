@@ -23,12 +23,13 @@ public class ActivityLogService {
     private final ReentrantLock lock = new ReentrantLock();
 
     public ActivityLogService() {
+        //load existing logs
         this.logs = loadLogsFromFile();
     }
 
     private List<ActivityLog> loadLogsFromFile() {
         File file = new File(LOG_FILE_PATH);
-
+        //return empty list if file doesn't exist
         if (!file.exists() || file.length() == 0) {
             return new ArrayList<>();
         }
@@ -36,7 +37,10 @@ public class ActivityLogService {
         try (FileReader reader = new FileReader(file)) {
             Type logListType = new TypeToken<ArrayList<ActivityLog>>() {}.getType();
             List<ActivityLog> loadedLogs = gson.fromJson(reader, logListType);
-            return loadedLogs != null ? loadedLogs : new ArrayList<>();
+            if (loadedLogs == null) {
+                return new ArrayList<>();
+            }
+            return loadedLogs;
         } catch (IOException e) {
             System.err.println("Error reading activity log file: " + e.getMessage());
             return new ArrayList<>();
@@ -61,32 +65,17 @@ public class ActivityLogService {
         }
     }
 
-    public void addLog(ActivityLog log) {
-        lock.lock();
-        try {
+    public synchronized void addLog(ActivityLog log) {
             this.logs.add(log);
             saveLogsToFile();
-        } finally {
-            lock.unlock();
-        }
     }
 
-    public List<ActivityLog> getAllLogs() {
-        lock.lock();
-        try {
+    public synchronized List<ActivityLog> getAllLogs() {
             return new ArrayList<>(this.logs);
-        } finally {
-            lock.unlock();
-        }
     }
 
-    public void clearAllLogs() {
-        lock.lock();
-        try {
+    public synchronized void clearAllLogs() {
             this.logs.clear();
             saveLogsToFile();
-        } finally {
-            lock.unlock();
-        }
     }
 }

@@ -1,8 +1,8 @@
-// --- Configuration ---
+//Configuration
 const API_BASE_URL = 'http://localhost:8000/api';
 const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
 
-// --- Global State ---
+//arrays to store data
 let adminProductsCache = [];
 let adminUsersCache = [];
 let adminOrdersCache = [];
@@ -11,10 +11,12 @@ let activityLogs = [];
 let logoutTimer;
 let warningTimer;
 let countdownInterval;
-const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
-const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
 
-// --- 0. SECURITY & UI HELPERS ---
+//session timeout
+const SESSION_TIMEOUT = 10 * 60 * 1000; //10 Minutes
+const WARNING_TIME = 10 * 1000;         //10 Seconds warning
+
+//SECURITY & UI HELPERS
 function getAuthHeaders(contentType = 'application/json') {
     const userId = localStorage.getItem('userId');
     const headers = { 'X-User-ID': userId };
@@ -48,16 +50,14 @@ async function logActivity(action, details) {
     const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     const log = {
         id: Date.now(),
-        //username: localStorage.getItem('username') || 'Unknown Admin',
         username: username,
         action: action,
         details: details,
         timestamp: timestamp
-        //timestamp: new Date().toISOString().replace('T', ' ').split('.')[0]
     };
     try{
         const headers = checkAdminAccessAndGetHeaders();
-        // Send to Java backend instead of localStorage
+        //send to Java backend instead of localStorage
         const response= await fetch(`${API_ADMIN_BASE_URL}/logs`, {
             method: 'POST',
             headers: headers,
@@ -77,9 +77,9 @@ function resetSessionTimer() {
     const modal = document.getElementById('session-modal');
     if (modal) modal.classList.remove('active');
 
-    // Set timer for the 10-second warning
+    //Set timer for the 10-second warning
     warningTimer = setTimeout(showSessionWarning, SESSION_TIMEOUT - WARNING_TIME);
-    // Set timer for the actual logout
+    //Set timer for the actual logout
     logoutTimer = setTimeout(() => window.handleLogout(), SESSION_TIMEOUT);
 }
 
@@ -104,7 +104,7 @@ function extendSession() {
     console.log("Session extended by admin.");
 }
 
-// Initialize session tracking on page load and user activity
+//Initialize session tracking on page load and user activity
 document.addEventListener('DOMContentLoaded', () => {
     resetSessionTimer();
 });
@@ -119,17 +119,17 @@ async function renderActivityLog() {
         if (!response.ok) {
             console.error("Failed to fetch logs from server.");
             container.innerHTML = `<p style="color:red;">Error: Backend returned ${response.status}</p>`;
-            return; // This exits the function gracefully
+            return;
         }
 
-        // This updates the global activityLogs variable with data from Java
+        //Updates the global activityLogs variable with data from Java
         activityLogs = await response.json();
     } catch (e) {
         console.error("Activity Log Error:", e);
         container.innerHTML = `<p style="color:red; text-align:center; padding:20px;">
             Error: Could not load activity logs from the backend. 
             Please check if your Java server is running.</p>`;
-        return; // Stop rendering if the fetch fails
+        return; //Stop rendering if the fetch fails
     }
     container.innerHTML = `
         <div class="section-header">
@@ -190,10 +190,7 @@ async function renderActivityLog() {
 }
 function getTodayLogsCount() {
     const now = new Date();
-    // Create a local YYYY-MM-DD string that matches your log format
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-
-    // This will now correctly match "2025-12-29" in your logs
     return activityLogs.filter(log => log.timestamp.startsWith(today)).length;
 }
 function getUniqueAdminCount() {
@@ -237,7 +234,7 @@ async function clearActivityLogs() {
 
         if (response.ok) {
             alert('All activity logs have been cleared.');
-            await renderActivityLog(); // Re-fetch the empty list from Java
+            await renderActivityLog(); //Re-fetch the empty list from Java
         } else {
             alert('Server failed to clear logs.');
         }
@@ -259,29 +256,29 @@ function exportLogsToCSV() {
     a.click();
 }
 
-// --- 1. DASHBOARD OVERVIEW ---
+//DASHBOARD OVERVIEW
 async function fetchDashboardStats() {
     try {
         const headers = checkAdminAccessAndGetHeaders();
         const response = await fetch(`${API_ADMIN_BASE_URL}/stats`, { headers });
         const stats = await response.json();
 
-        // FALLBACK: Since stats API might return 0, we manually fetch lists for accuracy
+        //Manually fetch lists for accuracy
         let productCount = stats.totalProducts || 0;
 
-        // Fetch users specifically to get the real count (e.g., your 11 users)
+        //fetch users specifically for the real count
         const userRes = await fetch(`${API_ADMIN_BASE_URL}/users`, { headers });
         const users = await userRes.json();
         const userCount = users.length;
 
-        // If products are also 0 in stats, check the products endpoint
+        //Check the products endpoint if products are 0 in stats
         if (productCount === 0) {
             const prodRes = await fetch(`${API_ADMIN_BASE_URL}/products`, { headers });
             const prods = await prodRes.json();
             productCount = prods.length;
         }
 
-        // Update UI
+        //Update UI
         if (document.getElementById('stat-products')) {
             document.getElementById('stat-products').textContent = productCount;
         }
@@ -296,7 +293,7 @@ async function fetchDashboardStats() {
     }
 }
 
-// --- 2. CUSTOMER MANAGEMENT ---
+//CUSTOMER MANAGEMENT
 async function listCustomersForAdmin() {
     const container = document.getElementById('customer-list-admin');
     if (!container) return;
@@ -329,19 +326,19 @@ function renderCustomerTable(users) {
         <tbody>`;
 
     users.forEach(user => {
-        // Track ID across different possible property names (_id is common in JSON databases)
+        //Track ID across different possible names
         const userId = user.id || user._id || user.userId || 'N/A';
 
-        // "Self" Detection: Compare ID or Username (David Lee)
+        //Compare ID or Username with David Lee
         const isSelf = (userId !== 'N/A' && String(userId) === String(currentAdminId)) ||
             (user.username === currentAdminUsername);
-        // NEW: Define the Super Admin (David)
+        //Define the Super Admin (David)
         const isDavid = (user.username === 'David Lee');
         const displayId = userId;
 
         let actionButton;
         if (isDavid) {
-            // David is always the Super Admin and cannot be demoted by anyone
+            //David is always the Super Admin and cannot be demoted by anyone
             actionButton = `<span class="self-label" style="background: #D67D8C; color: white; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.8rem;">SUPER ADMIN</span>`;
         }
         else if (isSelf) {
@@ -404,7 +401,7 @@ async function handleUpdateUserRole(userId, newRole) {
     }
 }
 
-// --- 3. PRODUCT MANAGEMENT ---
+//PRODUCT MANAGEMENT
 async function listProductsForAdmin() {
     try {
         const headers = checkAdminAccessAndGetHeaders();
@@ -465,7 +462,7 @@ function renderProductTable(products) {
     container.innerHTML = html + `</tbody></table>`;
 }
 
-// --- 4. FEEDBACK MANAGEMENT ---
+//FEEDBACK MANAGEMENT
 async function listFeedbackForAdmin() {
     const container = document.getElementById('feedback-list-admin');
     if (!container) return;
@@ -480,7 +477,6 @@ async function listFeedbackForAdmin() {
         }
 
         let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th><th>DATE</th><th style="text-align: center;">ACTIONS</th></tr></thead><tbody>`;
-        //add these width styles to your <th> tags in listFeedbackForAdmin
         feedbacks.forEach(fb => {
             let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
             //ensure have a valid ID for deletion
@@ -510,7 +506,6 @@ function filterFeedbackByIdOrUser() {
     const rows = document.querySelectorAll('#feedback-list-admin tbody tr');
 
     rows.forEach(row => {
-        // Cell 0 is PRODUCT ID, Cell 1 is USER (based on your listFeedbackForAdmin html string)
         const productId = row.cells[0].innerText.toLowerCase();
         const username = row.cells[1].innerText.toLowerCase();
 
@@ -533,7 +528,7 @@ async function handleDeleteFeedback(feedbackId) {
             //record activity
             await logActivity('Deleted Feedback', `Removed feedback ID: ${feedbackId}`);
             alert("Comment removed successfully.");
-            await listFeedbackForAdmin(); // Refresh the table
+            await listFeedbackForAdmin(); //Refresh the table
         } else {
             alert("Failed to delete feedback. It may have already been removed.");
         }
@@ -547,11 +542,11 @@ async function listOrdersForAdmin() {
     const container = document.getElementById('order-list-admin');
     if (!container) return;
     try {
-        // Point to the Java API instead of '/order.json'
+        //Point to the Java API
         const headers = checkAdminAccessAndGetHeaders();
         const response = await fetch(`${API_ADMIN_BASE_URL}/orders`, { headers });
 
-        if (!response.ok) //throw new Error("Server error");
+        if (!response.ok)
         {
             console.error("Server returned an error status:", response.status);
             container.innerHTML = `<p style="color:red;">Failed to load orders from Java Server.</p>`;
@@ -564,7 +559,6 @@ async function listOrdersForAdmin() {
         renderOrderTable(orders);
     } catch (e) {
         console.error("Error loading orders:", e);
-        // This is the message you see in your screenshot
         container.innerHTML = `<p style="color:red;">Failed to load orders from Java Server.</p>`;
     }
 }
@@ -718,7 +712,7 @@ function showOrderModal(orderId) {
     document.getElementById('order-modal-address').textContent = order.address;
     document.getElementById('order-modal-date').textContent = order.orderDate;
 
-    // Render items
+    //render items
     let itemsHtml = '';
     order.items.forEach(item => {
         itemsHtml += `
@@ -738,7 +732,7 @@ function showOrderModal(orderId) {
     document.getElementById('order-modal-items').innerHTML = itemsHtml;
     document.getElementById('order-modal-total').textContent = `RM ${order.totalAmount.toFixed(2)}`;
 
-    // Status buttons
+    //status buttons
     document.getElementById('order-status-buttons').innerHTML = `
         <button class="status-btn ${order.status === 'Pending' ? 'active' : ''}" 
                 onclick="updateOrderStatus('${orderId}', 'Pending')">Pending</button>
@@ -755,28 +749,26 @@ function showOrderModal(orderId) {
 
 async function updateOrderStatus(orderId, newStatus) {
     try {
-        // 1. Get headers (Ensures Content-Type is application/json)
+        //Get headers
         const headers = checkAdminAccessAndGetHeaders('application/json');
         const buttons = document.querySelectorAll('.status-btn');
         buttons.forEach(btn => btn.disabled = true);
-        // 2. Send the PUT request to the Java backend
+        //Send the PUT request to the Java backend
         const response = await fetch(`${API_ADMIN_BASE_URL}/orders/status`, {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({
-                orderId: orderId, // This must match body.get("orderId") in Java
-                status: newStatus  // This must match body.get("status") in Java
+                orderId: orderId, //must match body.get("orderId") in Java
+                status: newStatus  //must match body.get("status") in Java
             })
         });
 
         if (response.ok) {
-            // Immediate Feedback
-            //console.log(`Success: Order ${orderId} is now ${newStatus}`);
             await logActivity('Updated Order Status', `Changed order ${orderId} to ${newStatus}`);
-            // Refresh the background table
+            //refresh the background table
             await listOrdersForAdmin();
 
-            // Close modal and notify user
+            //close modal and notify user
             closeOrderModal();
             alert(`Order status updated to ${newStatus}`);
         } else {
@@ -787,7 +779,7 @@ async function updateOrderStatus(orderId, newStatus) {
         console.error("Update error:", e);
         alert("Network error. Please check if your Java server is running.");
     } finally {
-        // Re-enable buttons
+        //re-enable buttons
         const buttons = document.querySelectorAll('.status-btn');
         buttons.forEach(btn => btn.disabled = false);
     }
@@ -816,21 +808,20 @@ async function renderSalesReport() {
     const container = document.getElementById('sales-reports');
     if (!container) return;
 
-    // 1. Critical Fix: Ensure orders are loaded with await
     if (adminOrdersCache.length === 0) {
         await listOrdersForAdmin();
     }
 
-    // 2. Filter for "Sold" (Shipped + Completed) and specifically "Completed" for the list
+    //Filter for Sold (Shipped + Completed) and specifically Completed for the list
     const soldOrders = adminOrdersCache.filter(o =>
         o.status === 'Shipped' || o.status === 'Completed'
     );
 
-    // 3. Calculate Summary Metrics using the new soldOrders
+    //calculate Summary Metrics using the new soldOrders
     const totalRevenue = soldOrders.reduce((sum, o) => sum + o.totalAmount, 0);
     const totalOrders = soldOrders.length;
 
-    // 4. Calculate Top Selling Products
+    //calculate Top Selling Products
     const productStats = {};
     soldOrders.forEach(order => {
         order.items.forEach(item => {
@@ -847,7 +838,7 @@ async function renderSalesReport() {
         .sort((a, b) => b.revenue - a.revenue)
         .slice(0, 5);
 
-    // 5. Build the UI
+    //build the UI
     container.innerHTML = `
         <div class="section-header">
             <h2>Sales Report</h2>
@@ -929,14 +920,14 @@ async function renderSalesReport() {
 
         <div id="sales-detail-table" style="margin-top: 30px;"></div>
     `;
-    // 6. Initialize the chart with soldOrders (to track units sold)
+    //initialize the chart with soldOrders to track units sold
     changePeriod();
 }
 //daily
 function groupByDay(orders) {
     const grouped = {};
     orders.forEach(order => {
-        const date = order.orderDate.split(' ')[0]; // "2025-12-20"
+        const date = order.orderDate.split(' ')[0];
         if (!grouped[date]) {
             grouped[date] = { orders: 0, revenue: 0, products: {} };
         }
@@ -1064,9 +1055,9 @@ function updateSalesChart(salesData) {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'bottom', // CHANGE: Moves legend below the graph
+                    position: 'bottom',
                     labels: {
-                        padding: 20, // Adds space between the chart and the legend
+                        padding: 20, //adds space between the chart and the legend
                         boxWidth: 40,
                         usePointStyle: false
                     }
@@ -1145,7 +1136,7 @@ function updateSalesTable(salesData, title) {
     `;
 }
 
-// Function to export only the successful sales data
+//export only the successful sales data
 function exportSalesReportToCSV() {
     const soldOrders = adminOrdersCache.filter(o =>
         o.status === 'Shipped' || o.status === 'Completed'
@@ -1166,7 +1157,7 @@ function exportSalesReportToCSV() {
     a.click();
 }
 
-// --- 5. MODAL & HELPER LOGIC ---
+//MODAL & HELPER LOGIC
 async function showProductModal(productId = null) {
     const modal = document.getElementById('product-modal');
     const form = document.getElementById('product-form');
@@ -1279,7 +1270,7 @@ async function deleteProduct(id) {
     } catch (e) { alert('Delete failed'); }
 }
 
-// --- 6. NAVIGATION LOGIC ---
+//NAVIGATION
 async function showSection(targetId) {
     const sections = document.querySelectorAll('.dashboard-section');
     const navLinks = document.querySelectorAll('.admin-nav a');
@@ -1299,7 +1290,7 @@ async function showSection(targetId) {
     else if (targetId === 'activity-log') await renderActivityLog();
 }
 
-// --- INITIALIZATION ---
+//INITIALIZATION
 window.listCustomersForAdmin = listCustomersForAdmin;
 window.listProductsForAdmin = listProductsForAdmin;
 window.listFeedbackForAdmin = listFeedbackForAdmin;

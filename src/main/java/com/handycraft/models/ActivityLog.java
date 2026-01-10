@@ -6,7 +6,7 @@ public class ActivityLog {
     private String details;
     private String timestamp;
 
-    // Standard getters and setters
+    //Standard getters and setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getAction() { return action; }

@@ -122,7 +122,7 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Internal Error\"}", "application/json");
         }
     }
-
+    //updating a product
     private void handleSaveProduct(HttpExchange exchange, String productId) throws IOException {
         try (InputStreamReader isr = new InputStreamReader(exchange.getRequestBody())) {
             java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, Object>>(){}.getType();
