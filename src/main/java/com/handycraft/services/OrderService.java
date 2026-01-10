@@ -37,7 +37,7 @@ public class OrderService {
     public void saveOrder(Order newOrder) throws IOException {
         fileLock.lock();
         try {
-            // Validation loo[
+            // Validation loop
             if (newOrder.getItems() != null) {
                 for (Map<String, Object> item : newOrder.getItems()) {
                     String productId = String.valueOf(item.get("id"));

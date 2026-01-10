@@ -13,7 +13,7 @@ function renderOrderSummary() {
     const container = document.getElementById('checkout-summary');
     let subtotal = 0;
 
-    // --- NEW: AUTO-CORRECT QUANTITIES ON LOAD ---
+    // Auto-correct quantities on load
     let cartNeedsUpdate = false;
     cart.forEach(item => {
         if (item.quantity > item.remainingStock) {
@@ -41,12 +41,10 @@ function renderOrderSummary() {
             ? `${item.name} (${item.variant})`
             : item.name;
 
-        // --- NEW: Low Stock Badge Logic ---
-        // 1. Define the stockLeft variable first
+        // Low Stock Badge Logic
         const stockLeft = item.remainingStock || 0;
         let stockBadgeHtml = '';
 
-        // 2. Use stockLeft to check if we should show the warning
         if (stockLeft > 0 && stockLeft <= 2) {
             stockBadgeHtml = `
             <span style="background: #FFF0F0; color: #D67D8C; font-size: 0.8rem; 
@@ -93,7 +91,6 @@ async function handlePlaceOrder() {
     }
 
     const orderData = {
-        // match 'userId' or 'username' from your auth.js logic
         userId: localStorage.getItem('userEmail'),
         customerName: name,
         phone: phone,
@@ -124,7 +121,7 @@ async function handlePlaceOrder() {
     }
 }
 
-// --- Logic to Change Quantity or Delete ---
+// Logic to Change Quantity or Delete
 window.changeQuantity = function(index, delta) {
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
     let item = cart[index];
@@ -134,12 +131,11 @@ window.changeQuantity = function(index, delta) {
             cart.splice(index, 1);
         }
     } else {
-        // --- STRICT LIMIT: Use remainingStock saved in cart ---
         const maxAvailable = item.remainingStock || 0;
 
         if (delta > 0 && item.quantity + delta > maxAvailable) {
             alert(`Sorry, you've reached the limit! Only ${maxAvailable} units are available for this item.`);
-            return; // Exit without changing quantity
+            return;
         }
         item.quantity += delta;
     }

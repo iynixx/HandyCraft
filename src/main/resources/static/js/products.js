@@ -1,15 +1,15 @@
-// --- Configuration ---
+// Configuration
 const API_PRODUCTS_URL = 'http://localhost:8000/api/products';
 
 let allProductsData = [];
 
-// --- Initialization ---
+// Initialization
 document.addEventListener('DOMContentLoaded', () => {
     fetchProducts();
     console.log("Product and Cart logic initialized.");
 });
 
-// --- Authentication and Security ---
+// Authentication and Security
 function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     if (!isLoggedIn) {
@@ -20,7 +20,7 @@ function checkLoginStatus() {
     return false;
 }
 
-// --- API Fetching, Filtering, and Rendering ---
+// API Fetching, Filtering, and Rendering
 function fetchProducts() {
     fetch(API_PRODUCTS_URL)
         .then(response => response.json())
@@ -110,7 +110,7 @@ function renderProducts(products) {
         const formattedPrice = parseFloat(safePrice).toFixed(2);
         const finalImage = product.imageUrl ? `images/products/${product.imageUrl}` : "images/placeholder.jpg";
 
-        // --- 1. Calculate Total Stock Across All Variants ---
+        // Calculate Total Stock Across All Variants
         const inventory = product.inventory || {};
         const variantKeys = Object.keys(inventory);
 
@@ -122,7 +122,7 @@ function renderProducts(products) {
 
         const isSoldOut = totalStock <= 0;
 
-        // --- 2. Build Variant Selector HTML ---
+        // Build Variant Selector HTML
         let variantHtml = '';
         if (!isSoldOut) {
             if (variantKeys.length > 1 || (variantKeys.length === 1 && variantKeys[0] !== 'Default')) {
@@ -136,7 +136,7 @@ function renderProducts(products) {
         const productCard = document.createElement('div');
         productCard.className = `product-card ${isSoldOut ? 'sold-out' : ''}`;
 
-        // --- 3. Build the Card HTML ---
+        // Build the Card HTML
         productCard.innerHTML = `
         <div class="image-container-relative">
             <a href="product-detail.html?id=${product.id}" class="product-link">
@@ -179,7 +179,7 @@ function renderProducts(products) {
     });
 }
 
-// --- Cart Logic ---
+// Cart Logic
 function addToCart(productId, productName, productPrice, variant = "Default", quantity = 1, stock = 99) {
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
     const existingItem = cart.find(item => item.id === productId && item.variant === variant);
