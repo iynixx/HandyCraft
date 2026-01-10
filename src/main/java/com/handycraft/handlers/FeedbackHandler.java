@@ -10,6 +10,8 @@ import com.handycraft.utils.ResponseUtil;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FeedbackHandler implements HttpHandler {
     private final FeedbackService service = new FeedbackService();
@@ -57,7 +59,7 @@ public class FeedbackHandler implements HttpHandler {
                 return;
             }
 
-            // Verify against orders.json using the hidden email field
+            //verify against orders.json using the hidden email field
             List<Order> userOrders = orderService.getOrdersByUserId(fb.getUserEmail());
 
             boolean hasPurchased = userOrders.stream()
@@ -66,6 +68,10 @@ public class FeedbackHandler implements HttpHandler {
 
             if (hasPurchased) {
                 if (fb.getId() == null) fb.setId(UUID.randomUUID().toString());
+                //generate timestamp when feedback is created
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                String timestamp = LocalDateTime.now().format(formatter);
+                fb.setTimestamp(timestamp);
                 service.addFeedback(fb);
                 ResponseUtil.sendResponse(exchange, 201, "{\"status\":\"success\"}", "application/json");
             } else {
@@ -90,6 +96,7 @@ public class FeedbackHandler implements HttpHandler {
             map.put("username", fb.getUsername());
             map.put("rating", fb.getRating());
             map.put("comment", fb.getComment());
+            map.put("timestamp", fb.getTimestamp());
             return map;
         }).collect(Collectors.toList());
 

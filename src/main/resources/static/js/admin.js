@@ -14,20 +14,6 @@ let countdownInterval;
 const SESSION_TIMEOUT = 5 * 60 * 1000; // 30 Minutes
 const WARNING_TIME = 30 * 1000;         // 30 Seconds warning
 
-/**
- * @typedef {Object} Order
- * @property {string} orderId
- * @property {string} orderDate
- * @property {string} customerName
- * @property {number} totalAmount
- * @property {string} status
- */
-/**
- * @typedef {Object} Stats
- * @property {number} totalProducts
- * @property {number} pendingOrders
- */
-
 // --- 0. SECURITY & UI HELPERS ---
 function getAuthHeaders(contentType = 'application/json') {
     const userId = localStorage.getItem('userId');
@@ -72,13 +58,15 @@ async function logActivity(action, details) {
     try{
         const headers = checkAdminAccessAndGetHeaders();
         // Send to Java backend instead of localStorage
-        await fetch(`${API_ADMIN_BASE_URL}/logs`, {
+        const response= await fetch(`${API_ADMIN_BASE_URL}/logs`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(log)
         });
+        return response.ok; //return true if successful
     } catch (e) {
         console.error('Failed to sync log:', e);
+        return false;
     }
 }
 function resetSessionTimer() {
@@ -121,47 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     resetSessionTimer();
 });
 
-/*function logActivity(action, details) {
-    const username = localStorage.getItem('username') || 'Unknown Admin';
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-    const log = {
-        id: Date.now(),
-        username: username,
-        action: action,
-        details: details,
-        timestamp: timestamp
-    };
-    activityLogs.unshift(log);
-    saveLogsToStorage();
-    console.log('Activity logged:', log);
-}*/
-
-/*function saveLogsToStorage() {
-    try {
-        localStorage.setItem('adminActivityLogs', JSON.stringify(activityLogs));
-    } catch (e) {
-        console.error('Failed to save logs:', e);
-    }
-}*/
-/*function loadLogsFromStorage() {
-    try {
-        const saved = localStorage.getItem('adminActivityLogs');
-        if (saved) {
-            activityLogs = JSON.parse(saved);
-        }
-    } catch (e) {
-        console.error('Failed to load logs:', e);
-        activityLogs = [];
-    }
-}*/
 async function renderActivityLog() {
     const container = document.getElementById('activity-log');
     if (!container) return;
@@ -211,7 +158,7 @@ async function renderActivityLog() {
             </div>
             <div style="background: #FFF5F6; padding: 20px; border-radius: 8px; border: 1px solid #FADADD; text-align: center;">
                 <div style="color: #D67D8C; font-size: 0.9rem;">Last Activity</div>
-                <div style="font-size: 1rem; font-weight: bold;">${getLastActivityTime()}</div>
+                <div style="font-size: 0.85rem; font-weight: bold;">${getLastActivityTime()}</div>
             </div>
         </div>
         <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
@@ -255,8 +202,11 @@ function getUniqueAdminCount() {
 }
 function getLastActivityTime() {
     if (activityLogs.length === 0) return 'N/A';
-    const lastLog = activityLogs[0];
-    return lastLog.timestamp.split(' ')[1]; //only show the time
+    const sortedLogs = [...activityLogs].sort((a, b) => {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+    const lastLog = sortedLogs[0];
+    return lastLog.timestamp;
 }
 function getActionClass(action) {
     if (action.includes('Promoted') || action.includes('Added')) return 'action-success';
@@ -434,9 +384,15 @@ async function handleUpdateUserRole(userId, newRole) {
         if (response.ok)
         {
             const action = newRole === 'admin' ? 'Promoted User' : 'Demoted User';
-            await logActivity(action, `Changed ${targetUsername} to ${newRole}`);
+            //wait for the activity to log
+            const logged = await logActivity(action, `Changed ${targetUsername} to ${newRole}`);
             alert("Role updated!");
             await listCustomersForAdmin();
+
+            const activeSection = document.querySelector('.dashboard-section.active');
+            if (activeSection && activeSection.id === 'activity-log') {
+                await renderActivityLog();
+            }
         }else {
             const errorText = await response.text();
             console.error("Server response:", errorText);
@@ -523,17 +479,20 @@ async function listFeedbackForAdmin() {
             titleElement.innerText = `Feedback Management (${feedbacks.length} Reviews)`;
         }
 
-        let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th><th style="text-align: center;">ACTIONS</th></tr></thead><tbody>`;
-        // Add these width styles to your <th> tags in listFeedbackForAdmin
+        let html = `<table class="admin-data-table"><thead><tr><th>PRODUCT ID</th><th>USER</th><th>RATING</th><th>COMMENT</th><th>DATE</th><th style="text-align: center;">ACTIONS</th></tr></thead><tbody>`;
+        //add these width styles to your <th> tags in listFeedbackForAdmin
         feedbacks.forEach(fb => {
             let ratingColor = fb.rating <= 1 ? '#d67d8c' : (fb.rating <= 3 ? '#ffc107' : '#28a745');
             //ensure have a valid ID for deletion
             const feedbackId = fb.id || fb._id;
+            //format timestamp
+            const displayDate = fb.timestamp ? formatAdminDate(fb.timestamp) : 'N/A';
             html += `<tr>
                 <td style="color: #666;">${fb.productId || fb.product_id || 'N/A'}</td>
                 <td style="font-weight: 500;">${fb.username || 'Guest'}</td>
                 <td><span style="background-color: #f0fdf4; color: ${ratingColor}; border: 1px solid ${ratingColor}44; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${fb.rating}/5</span></td>
                 <td style="color: #555;">${fb.comment || fb.message || ''}</td>
+                <td style="color: #888; font-size: 0.85rem;">${displayDate}</td>
                 <td style="text-align: center;">
                     <button class="action-btn demote" onclick="handleDeleteFeedback('${feedbackId}')" 
                     style="background: #D67D8C; color: white; border: none; padding: 6px 12px;">

@@ -7,6 +7,7 @@ public class Feedback {
     private String userEmail;
     private int rating; // This will store the 1-5 value
     private String comment;
+    private String timestamp;
 
     public Feedback() {}
 
@@ -23,4 +24,6 @@ public class Feedback {
     public void setRating(int rating) { this.rating = rating; }
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
+    public String getTimestamp() { return timestamp; }
+    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 }

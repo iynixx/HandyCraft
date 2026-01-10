@@ -5,7 +5,8 @@
     "username": "Rita",
     "userEmail": "rita4@gmail.com",
     "rating": 5,
-    "comment": "Good quality"
+    "comment": "Good quality",
+    "timestamp": "2025-12-09 14:30"
   },
   {
     "id": "f9b6e475-9416-423e-ab9e-1188ee0812ce",
@@ -13,7 +14,8 @@
     "username": "Eva",
     "userEmail": "eva6@gmail.com",
     "rating": 4,
-    "comment": "It is a bit small for me but overall is good."
+    "comment": "It is a bit small for me but overall is good.",
+    "timestamp": "2025-12-30 21:03"
   },
   {
     "id": "81a25ca7-6f3a-4a01-a975-c94f1c3a11b4",
@@ -21,7 +23,8 @@
     "username": "Bob",
     "userEmail": "bob2@gmail.com",
     "rating": 4,
-    "comment": "Nice look and useful"
+    "comment": "Nice look and useful",
+    "timestamp": "2025-12-12 08:27"
   },
   {
     "id": "d041c160-2581-44ea-a1e4-756763137939",
@@ -29,7 +32,8 @@
     "username": "Bob",
     "userEmail": "bob2@gmail.com",
     "rating": 5,
-    "comment": "Nice handcraft"
+    "comment": "Nice handcraft",
+    "timestamp": "2026-01-01 22:00"
   },
   {
     "id": "27120775-4e27-44bd-99ee-711fc6ea1e83",
@@ -37,7 +41,8 @@
     "username": "Rita",
     "userEmail": "rita4@gmail.com",
     "rating": 3,
-    "comment": "quality still ok"
+    "comment": "quality still ok",
+    "timestamp": "2026-01-02 15:22"
   },
   {
     "id": "a11efdd8-a142-4bcc-a075-9fc05cba291f",
@@ -45,7 +50,8 @@
     "username": "Lucky Tan",
     "userEmail": "luckytan8@gmail.com",
     "rating": 5,
-    "comment": "Cuteeee my friend really like it"
+    "comment": "Cuteeee my friend really like it",
+    "timestamp": "2025-12-27 18:37"
   },
   {
     "id": "d23660c1-6f27-4927-a7eb-983249c33658",
@@ -53,7 +59,8 @@
     "username": "Lucky Tan",
     "userEmail": "luckytan8@gmail.com",
     "rating": 2,
-    "comment": "Not exactly same as picture"
+    "comment": "Not exactly same as picture",
+    "timestamp": "2025-12-13 11:30"
   },
   {
     "id": "78ebea22-12fa-487a-b1f5-3103b417d380",
@@ -61,7 +68,8 @@
     "username": "Lucky Tan",
     "userEmail": "luckytan8@gmail.com",
     "rating": 4,
-    "comment": "Nice"
+    "comment": "Nice",
+    "timestamp": "2025-12-14 20:45"
   },
   {
     "id": "2405afb5-7bb9-4a8f-b868-ff66ae50ebf5",
@@ -69,6 +77,7 @@
     "username": "Peggy Teo",
     "userEmail": "peggyteo10@gmail.com",
     "rating": 5,
-    "comment": "Excellent handcraft and good gift for friends"
+    "comment": "Excellent handcraft and good gift for friends",
+    "timestamp": "2025-12-22 21:49"
   }
 ]
