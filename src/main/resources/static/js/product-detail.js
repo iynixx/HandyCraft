@@ -13,18 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (container) container.innerHTML = "<p>Product not found.</p>";
     }
 
-    // Run all initialization together
+    //run all initialization together
     async function initializeProductPage(productId) {
         await fetchProductDetails(productId);
         await updateAverageDisplay(productId);
-        loadFeedback(productId);
-        //updateAverageDisplay(productId);
-        checkReviewEligibility(productId);
+        await loadFeedback(productId);
+        await checkReviewEligibility(productId);
     }
-    /*} else {
-        const container = document.getElementById('product-detail-container');
-        if (container) container.innerHTML = "<p>Product not found.</p>";
-    }*/
 
     async function checkReviewEligibility(productId) {
         const userEmail = localStorage.getItem('userEmail');
@@ -53,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- Authentication and Security ---
+//Authentication and Security
 function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     if (!isLoggedIn) {
@@ -64,7 +59,7 @@ function checkLoginStatus() {
     return false;
 }
 
-// --- Product Data Fetching & Rendering ---
+//Product Data Fetching & Rendering
 async function fetchProductDetails(id) {
     try {
         const res = await fetch('http://localhost:8000/api/products');
@@ -119,7 +114,7 @@ function renderProductDetail(product) {
             ${variantHtml}
             <p class="stock-status">Stock: <span id="stock-display">${initialStock}</span> units</p>
             <p class="average-rating" style="margin-top: 10px; font-weight: bold; color: #D67D8C;">
-                Average Customer Rating: <span id="avg-rating-value">Loading...</span>/5
+                Average Customer Rating: <span id="avg-rating-value">Loading...</span>/5.0
             </p>
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                 <label style="font-weight: 600;">Quantity:</label>
@@ -140,7 +135,7 @@ function renderProductDetail(product) {
     const stockDisplay = document.getElementById('stock-display');
     const addBtn = document.getElementById('detail-add-btn');
 
-    // Live Stock Update when dropdown changes
+    //Live Stock Update when dropdown changes
     if (dropdown && dropdown.tagName === 'SELECT') {
         dropdown.addEventListener('change', (e) => {
             const val = inventoryObj[e.target.value];
@@ -151,7 +146,7 @@ function renderProductDetail(product) {
         });
     }
 
-    // --- STRICT ADD TO CART TRIGGER ---
+    //STRICT ADD TO CART TRIGGER
     addBtn.addEventListener('click', () => {
         if (checkLoginStatus()) return;
 
@@ -170,7 +165,7 @@ function renderProductDetail(product) {
     });
 }
 
-// --- Cart Management ---
+//Cart Management
 function addToCart(productId, productName, productPrice, variant = "Default", quantity = 1, stock = 99) {
     let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
     const existingItem = cart.find(item => item.id === productId && item.variant === variant);
@@ -200,7 +195,7 @@ window.viewCart = function() {
     window.location.href = "cart.html";
 };
 
-// --- Feedback and Rating System ---
+//Feedback and Rating System
 async function updateAverageDisplay(productId) {
     try {
         const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
@@ -259,8 +254,8 @@ if (fbForm) {
         if (response.ok) {
             alert("Thank you for your feedback!");
             fbForm.reset();
-            loadFeedback(productId);
-            updateAverageDisplay(productId);
+            await loadFeedback(productId);
+            await updateAverageDisplay(productId);
         }
     });
 }
