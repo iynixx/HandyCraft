@@ -11,14 +11,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList; //delete
-import java.util.Collections; //delete
-import java.util.List; //delete
-import java.util.UUID; //delete
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock; // Using a lock for thread-safe list modification
-import java.util.Map; //delete
-import java.util.HashMap; //delete
+import java.util.Map;
+import java.util.HashMap;
 
 public class UserService {
     private static final String USER_DATA_FILE = "src/main/resources/data/users.json";
@@ -55,7 +55,6 @@ public class UserService {
             List<User> loadedList = gson.fromJson(reader, listType);
             return loadedList != null ? loadedList : new ArrayList<>();
         } catch (IOException e) {
-            //System.err.println("Error reading user data file: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -72,11 +71,9 @@ public class UserService {
             try (FileWriter writer = new FileWriter(USER_DATA_FILE)) {
                 // Save the current state of the users list
                 gson.toJson(this.users, writer);
-                //System.out.println("DEBUG: Saved " + this.users.size() + " users to file");
             }
         } catch (IOException e) {
             e.printStackTrace();
-            //System.err.println("Error saving user data: " + e.getMessage());
         } finally {
             fileLock.unlock();
         }
@@ -114,7 +111,6 @@ public class UserService {
             this.users.add(newUser);
             saveUsers();
         }
-        //System.out.println("New user registered with hashed security answers");
         return newUser;
     }
 
@@ -175,7 +171,6 @@ public class UserService {
         synchronized (this.users) {
             User user = findUserByEmail(email);
             if (user == null) {
-                //System.err.println("User not found with email: " + email);
                 return false;
             }
             String newSalt = HashUtil.generateSalt();

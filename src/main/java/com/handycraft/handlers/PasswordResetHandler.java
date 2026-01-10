@@ -13,6 +13,7 @@ import java.util.Map;
 public class PasswordResetHandler implements HttpHandler {
     private final Gson gson = new Gson();
     private final UserService userService = UserService.getInstance();
+    private static final String SUPER_ADMIN_EMAIL = "admin1@shop.com";
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -61,9 +62,9 @@ public class PasswordResetHandler implements HttpHandler {
                         "{\"message\": \"Email is required\"}", "application/json");
                 return;
             }
-            // Verify if the email belongs to David Lee
+            // Verify if the email belongs to Super Admin
             com.handycraft.models.User user = userService.findUserByEmail(email);
-            if (user != null && "David Lee".equals(user.getUsername())) {
+            if (user != null && SUPER_ADMIN_EMAIL.equalsIgnoreCase(user.getEmail())) {
                 // Block reset for Super Admin and send 403 Forbidden
                 ResponseUtil.sendResponse(exchange, 403,
                         "{\"message\": \"Access Denied: Super Admin recovery must be handled manually.\"}",
@@ -152,7 +153,7 @@ public class PasswordResetHandler implements HttpHandler {
                 return;
             }
 
-            // Verify answers (EXACT MATCH)
+            // Verify answers (MATCH)
             boolean answersCorrect = userService.verifySecurityAnswers(email, answer1, answer2, answer3);
 
             if (!answersCorrect) {
