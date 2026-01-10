@@ -74,7 +74,7 @@ public class PasswordResetHandler implements HttpHandler {
             // Checks if user exists and has security answers
             if(!userService.hasSecurityAnswers(email)){
                 ResponseUtil.sendResponse(exchange, 404,
-                        "{\"message\": \"User not found or security answers not set up\"}", "application/json");
+                        "{\"message\": \"User not found and security answers not set up\"}", "application/json");
                 return;
             }
 
