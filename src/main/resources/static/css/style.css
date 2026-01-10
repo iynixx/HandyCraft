@@ -74,6 +74,8 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
+    /* Added gap to prevent Logo and Menu from overlapping */
+    gap: 30px;
 }
 
 ul, li, .nav-links, #auth-links {

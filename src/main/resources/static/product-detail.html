@@ -16,11 +16,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Retrieve product ID from URL and fetch details
+            // Retrieve product ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
 
-            // Only call fetch if the function exists in your js/products.js
+            // Fetch details if ID exists
             if (productId && typeof fetchProductDetails === 'function') {
                 fetchProductDetails(productId);
             } else if (!productId) {
@@ -40,7 +40,7 @@
             }
         });
 
-        // Modal Logic for Footer
+        // Modal Logic
         function showPolicyModal(file, title) {
             const modal = document.getElementById('policyModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -119,9 +119,7 @@
     </header>
 
     <main class="container product-detail-main">
-        <div id="back-button-container">
-            <button onclick="history.back()" class="back-btn">← Back to Products</button>
-        </div>
+        <div id="back-button-container"></div>
 
         <div id="product-detail-container" class="product-detail-layout">
             <p>Loading product details...</p>
@@ -167,7 +165,9 @@
         </div>
     </footer>
 
-</div> <div id="policyModal" class="modal">
+</div>
+
+<div id="policyModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2 id="modalTitle"></h2>

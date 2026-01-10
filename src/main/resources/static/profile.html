@@ -2,52 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Handy Craft</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+
+    <script defer src="js/auth.js"></script>
+    <script defer src="js/profile.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update header based on login status
+            if (typeof updateAuthHeader === 'function') {
+                updateAuthHeader();
+            }
+        });
+
+        // Modal Logic for Footer
+        function showPolicyModal(file, title) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalTitle.innerText = title;
+            modal.classList.add('active');
+
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    modalContent.innerHTML = data;
+                })
+                .catch(err => {
+                    modalContent.innerHTML = "Error loading policy.";
+                });
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
 </head>
 <body>
-<header class="main-header">
-    <nav class="container">
-        <div class="logo">
-            <a href="index.html" class="logo-link-with-text">
-                <img src="images/logo.png" alt="Handy Craft Logo">
-                <span class="site-title">Handy Craft</span>
-            </a>
-        </div>
 
-        <div id="auth-links-container" class="auth-links-container">
-            <div class="auth-separator">
-                <ul id="auth-links" class="nav-links">
-                </ul>
+<div class="page-wrapper">
+
+    <header class="main-header">
+        <nav class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link-with-text">
+                    <img src="images/logo.png" alt="Handy Craft Logo">
+                    <span class="site-title">Handy Craft</span>
+                </a>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="products.html">Products</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+
+                <li>
+                    <a href="cart.html" onclick="if(checkLoginStatus()) { event.preventDefault(); return false; }">
+                        <span role="img" aria-label="shopping cart"></span> View Cart
+                    </a>
+                </li>
+
+                <li id="auth-links-container" class="auth-links-container">
+                    <div class="auth-separator">
+                        <ul id="auth-links" class="nav-links">
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container profile-main">
+        <h1 class="profile-title">My Profile</h1>
+
+        <div class="profile-layout">
+            <section class="profile-card">
+                <h2>Account Info</h2>
+
+                <div class="user-info-group">
+                    <span class="user-info-label">Username</span>
+                    <div class="user-info-value" id="prof-username">Loading...</div>
+                </div>
+
+                <div class="user-info-group">
+                    <span class="user-info-label">Email Address</span>
+                    <div class="user-info-value" id="prof-email">Loading...</div>
+                </div>
+
+                <div class="user-info-group">
+                    <span class="user-info-label">Account Status</span>
+                    <div id="prof-role-container">
+                        <span id="prof-role" class="status-badge">Member</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <button onclick="window.handleLogout()" class="button secondary full-width">Log Out</button>
+                </div>
+            </section>
+
+            <section class="profile-card">
+                <h2>Order History</h2>
+                <div id="order-history-list">
+                    <p style="color: #666; font-style: italic;">Fetching your past orders...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-links container">
+            <p>&copy; 2025 Handy Craft. All rights reserved.</p>
+            <div class="policy-buttons">
+                <a href="#" onclick="showPolicyModal('privacy.html', 'Privacy Policy'); return false;" class="button secondary policy-button">Privacy Policy</a>
+                <a href="#" onclick="showPolicyModal('terms.html', 'Terms of Service'); return false;" class="button secondary policy-button">Terms of Service</a>
             </div>
         </div>
-    </nav>
-</header>
+    </footer>
 
-<main class="container" style="padding: 40px 0;">
-    <h1 style="margin-bottom: 30px;">My Profile</h1>
-
-    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start;">
-
-        <section class="content-box">
-            <h2 style="color: #D67D8C;">Account Info</h2>
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-            <p style="margin-bottom: 10px;"><strong>Username:</strong> <br> <span id="prof-username">Loading...</span></p>
-            <p style="margin-bottom: 10px;"><strong>Email:</strong> <br> <span id="prof-email">Loading...</span></p>
-            <p><strong>Status:</strong> <br> <span id="prof-role" style="text-transform: capitalize; color: #666;"></span></p>
-        </section>
-
-        <section class="content-box">
-            <h2 style="color: #D67D8C;">Order History</h2>
-            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-            <div id="order-history-list">
-                <p>Fetching your past orders...</p>
-            </div>
-        </section>
+</div> <div id="policyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <span class="close-button" onclick="closePolicyModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalContent">
+            Loading...
+        </div>
     </div>
-</main>
+</div>
 
-<script src="js/auth.js"></script>
-<script src="js/profile.js"></script>
 </body>
 </html>

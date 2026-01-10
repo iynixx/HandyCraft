@@ -26,7 +26,7 @@ public class Main {
             // Static File Handler
             server.createContext("/", new StaticFileHandler(STATIC_ROOT));
 
-            //  API Handlers
+            // API Handlers
             server.createContext("/api/auth", new AuthHandler());
             server.createContext("/api/products", new ProductHandler());
             server.createContext("/api/checkout", new CartHandler());

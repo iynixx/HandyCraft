@@ -1,0 +1,136 @@
+.profile-main {
+    padding: 40px 0 80px;
+    min-height: 60vh;
+}
+
+.profile-title {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #333333 30%, #D67D8C 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    display: inline-block;
+}
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Content Cards */
+.profile-card {
+    background: var(--color-white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s ease;
+}
+
+.profile-card h2 {
+    color: #D67D8C;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+/* User Info Section */
+.user-info-group {
+    margin-bottom: 20px;
+}
+
+.user-info-label {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.user-info-value {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #f0fdf4;
+    color: #166534;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #dcfce7;
+    text-transform: capitalize;
+}
+
+/* Order History Section */
+#order-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.order-item:hover {
+    background: #fff;
+    border-color: #D67D8C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.order-id {
+    font-weight: 700;
+    color: #333;
+}
+
+.order-date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.order-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #D67D8C;
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+}
