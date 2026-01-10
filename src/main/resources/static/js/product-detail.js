@@ -7,15 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const productId = params.get('id');
 
     if (productId) {
-        // Run all initialization together
-        fetchProductDetails(productId);
-        loadFeedback(productId);
-        updateAverageDisplay(productId);
-        checkReviewEligibility(productId);
+        initializeProductPage(productId);
     } else {
         const container = document.getElementById('product-detail-container');
         if (container) container.innerHTML = "<p>Product not found.</p>";
     }
+
+    // Run all initialization together
+    async function initializeProductPage(productId) {
+        await fetchProductDetails(productId);
+        await updateAverageDisplay(productId);
+        loadFeedback(productId);
+        //updateAverageDisplay(productId);
+        checkReviewEligibility(productId);
+    }
+    /*} else {
+        const container = document.getElementById('product-detail-container');
+        if (container) container.innerHTML = "<p>Product not found.</p>";
+    }*/
 
     async function checkReviewEligibility(productId) {
         const userEmail = localStorage.getItem('userEmail');
