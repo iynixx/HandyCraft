@@ -1,10 +1,4 @@
-/**
- * profile.js
- * Handles user profile data and order history fetching.
- */
-
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- HEADER SYNC ---
     // Calls the shared function from auth.js to render the Profile Icon and Separator
     if (typeof updateAuthHeader === 'function') {
         updateAuthHeader();
@@ -14,19 +8,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const username = localStorage.getItem('username');
     const userEmail = localStorage.getItem('userEmail');
 
-    // Security Redirect: If no email is found, the user isn't logged in
+    // If no email is found, the user isn't logged in
     if (!userEmail) {
         window.location.href = 'signin.html';
         return;
     }
 
-    /**
-     * Original Date Formatter
-     * Converts ISO strings to YYYY-MM-DD HH:mm format
-     */
     function formatProfileDate(dateString) {
         const date = new Date(dateString);
-        if (isNaN(date)) return dateString; // Fallback if date is invalid
+        if (isNaN(date)) return dateString;
 
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -37,9 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
 
-    // --- 1. LOAD PERSONAL INFO ---
+    // load personal info
     try {
-        const res = await fetch('http://localhost:8000/api/profile', {
+        const res = await fetch('/api/profile', {
             headers: { 'X-User-ID': userId }
         });
 
@@ -53,10 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Error loading profile info:", e);
     }
 
-    // --- 2. LOAD ORDER HISTORY ---
+    // load order history
     try {
-        const res = await fetch(
-            `http://localhost:8000/api/orders?userId=${encodeURIComponent(userEmail)}`
+        const res = await fetch(`/api/orders?userId=${encodeURIComponent(userEmail)}`
         );
 
         if (!res.ok) throw new Error("Orders fetch failed");
@@ -64,7 +53,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const myOrders = await res.json();
         const container = document.getElementById('order-history-list');
 
-        // CASE: EMPTY HISTORY
         if (!myOrders || myOrders.length === 0) {
             container.innerHTML = `
             <div style="text-align: center; padding: 20px;">
@@ -80,8 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // CASE: RENDER HISTORY
-        // Maintains original inline styling and "View Items" details logic
         container.innerHTML = myOrders.map(order => `
         <div style="background: #fff; border: 1px solid #eee; border-radius: 10px;
                     padding: 15px; margin-bottom: 15px;

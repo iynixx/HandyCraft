@@ -1,5 +1,5 @@
 //Configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = '/api';
 const API_ADMIN_BASE_URL = `${API_BASE_URL}/admin`;
 
 //arrays to store data

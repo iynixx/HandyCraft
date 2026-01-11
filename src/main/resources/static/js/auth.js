@@ -1,4 +1,4 @@
-const API_ROOT_URL = 'http://localhost:8000/api';
+const API_ROOT_URL = '/api';
 const API_AUTH_URL = `${API_ROOT_URL}/auth`;
 const CART_STORAGE_KEY = 'handyCraftCart';
 const AUTH_LINKS_CONTAINER_ID = 'auth-links-container';

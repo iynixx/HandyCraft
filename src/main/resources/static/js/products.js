@@ -1,6 +1,5 @@
 // Configuration
-const API_PRODUCTS_URL = 'http://localhost:8000/api/products';
-
+const API_PRODUCTS_URL = '/api/products';
 let allProductsData = [];
 
 // Initialization

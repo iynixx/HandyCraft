@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:8000/api/orders?userId=${encodeURIComponent(userEmail)}`);
+            //const res = await fetch(`http://localhost:8000/api/orders?userId=${encodeURIComponent(userEmail)}`);
+            const res = await fetch(`/api/orders?userId=${encodeURIComponent(userEmail)}`);
             const orders = await res.json();
 
             const hasBought = orders.some(o =>
@@ -60,7 +61,8 @@ function checkLoginStatus() {
 // Product Data Fetching & Rendering
 async function fetchProductDetails(id) {
     try {
-        const res = await fetch('http://localhost:8000/api/products');
+        //const res = await fetch('http://localhost:8000/api/products');
+        const res = await fetch('/api/products');
         const products = await res.json();
         const product = products.find(p => p['Product ID'].toString() === id);
 
@@ -196,7 +198,7 @@ window.viewCart = function() {
 // Feedback and Rating System
 async function updateAverageDisplay(productId) {
     try {
-        const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
+        const res = await fetch(`/api/feedback?productId=${productId}`);
         const data = await res.json();
         const avgDisplay = document.getElementById('avg-rating-value');
         if (avgDisplay) avgDisplay.textContent = (data.average || 0).toFixed(1);
@@ -205,7 +207,8 @@ async function updateAverageDisplay(productId) {
 
 async function loadFeedback(productId) {
     try {
-        const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
+        //const res = await fetch(`http://localhost:8000/api/feedback?productId=${productId}`);
+        const res = await fetch(`/api/feedback?productId=${productId}`);
         const data = await res.json();
         const reviews = data.reviews || [];
         const container = document.getElementById('reviews-list');
@@ -246,7 +249,7 @@ if (fbForm) {
             comment: document.getElementById('fb-comment').value
         };
 
-        const response = await fetch('http://localhost:8000/api/feedback', {
+        const response = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(feedbackData)
