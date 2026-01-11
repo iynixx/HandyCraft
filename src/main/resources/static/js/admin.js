@@ -16,7 +16,7 @@ let countdownInterval;
 const SESSION_TIMEOUT = 10 * 60 * 1000; //10 Minutes
 const WARNING_TIME = 10 * 1000;         //10 Seconds warning
 
-//SECURITY & UI HELPERS
+//security and ui helper
 function getAuthHeaders(contentType = 'application/json') {
     const userId = localStorage.getItem('userId');
     const headers = { 'X-User-ID': userId };
@@ -215,7 +215,7 @@ function getActionClass(action) {
 function filterActivityLogs() {
     const searchTerm = document.getElementById('log-search').value.toLowerCase();
     const rows = document.querySelectorAll('#activity-log-table tbody tr');
-
+    //loop through each row and check if it contains the search term
     rows.forEach(row => {
         const text = row.innerText.toLowerCase();
         row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -256,7 +256,7 @@ function exportLogsToCSV() {
     a.click();
 }
 
-//DASHBOARD OVERVIEW
+//Dashboard overview
 async function fetchDashboardStats() {
     try {
         const headers = checkAdminAccessAndGetHeaders();
@@ -293,15 +293,16 @@ async function fetchDashboardStats() {
     }
 }
 
-//CUSTOMER MANAGEMENT
+//customer management
 async function listCustomersForAdmin() {
     const container = document.getElementById('customer-list-admin');
     if (!container) return;
     try {
         const headers = checkAdminAccessAndGetHeaders();
+        //fetch user data from backend
         const response = await fetch(`${API_ADMIN_BASE_URL}/users`, { method: 'GET', headers });
         const users = await response.json();
-        adminUsersCache = users;
+        adminUsersCache = users;    //save to global variable
         renderCustomerTable(users);
     } catch (e) {
         container.innerHTML = `<p style="color:red;">Failed to load customers.</p>`;
@@ -401,7 +402,7 @@ async function handleUpdateUserRole(userId, newRole) {
     }
 }
 
-//PRODUCT MANAGEMENT
+//Product management
 async function listProductsForAdmin() {
     try {
         const headers = checkAdminAccessAndGetHeaders();
@@ -462,7 +463,7 @@ function renderProductTable(products) {
     container.innerHTML = html + `</tbody></table>`;
 }
 
-//FEEDBACK MANAGEMENT
+//Feedback management
 async function listFeedbackForAdmin() {
     const container = document.getElementById('feedback-list-admin');
     if (!container) return;
