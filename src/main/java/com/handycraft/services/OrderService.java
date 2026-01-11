@@ -16,7 +16,7 @@ public class OrderService {
     private final ReentrantLock fileLock = new ReentrantLock();
 
     // Add ProductService dependency so we can update stock
-    private final ProductService productService = new ProductService();
+    private final ProductService productService = ProductService.getInstance();
 
     private static OrderService instance;
 

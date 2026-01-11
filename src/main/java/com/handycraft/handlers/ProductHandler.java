@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProductHandler implements HttpHandler {
-    private final ProductService productService = new ProductService();
+    private final ProductService productService = ProductService.getInstance();
     private final Gson gson = new Gson();
 
     @Override

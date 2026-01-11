@@ -21,12 +21,13 @@ import java.util.Map;
 public class ProductService {
 
     private static final String PRODUCT_DATA_FILE = "src/main/resources/data/products.json";
+    private static ProductService instance;
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private List<Product> products;
     private final ReentrantLock fileLock = new ReentrantLock();
 
-    public ProductService() {
+    private ProductService() {
         this.products = loadProductsFromFile();
     }
 
@@ -68,6 +69,12 @@ public class ProductService {
         return Collections.unmodifiableList(this.products);
     }
 
+    public static synchronized ProductService getInstance() {
+        if (instance == null) {
+            instance = new ProductService();
+        }
+        return instance;
+    }
     public Product addProduct(Product newProduct) throws IOException {
         fileLock.lock();
         try {

@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class AdminHandler implements HttpHandler {
 
     private final UserService userService = UserService.getInstance();
-    private final ProductService productService = new ProductService();
+    private final ProductService productService = ProductService.getInstance();
     private final ActivityLogService activityLogService = new ActivityLogService();
     private final FeedbackService feedbackService = new FeedbackService();
     private final Gson gson = new Gson();
