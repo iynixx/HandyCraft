@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 
 public class FeedbackHandler implements HttpHandler {
     private final FeedbackService service = new FeedbackService();
-    private final OrderService orderService = new OrderService();
+    private final OrderService orderService = OrderService.getInstance();
     private final Gson gson = new Gson();
 
     @Override

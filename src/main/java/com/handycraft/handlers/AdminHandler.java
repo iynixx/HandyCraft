@@ -162,7 +162,7 @@ public class AdminHandler implements HttpHandler {
             ResponseUtil.sendResponse(exchange, 500, "{\"message\": \"Error processing data\"}", "application/json");
         }
     }
-    private final OrderService orderService = new OrderService();
+    private final OrderService orderService = OrderService.getInstance();
     private void handleGetOrders(HttpExchange exchange) throws IOException {
         List<Order> orders = orderService.getAllOrders();
         ResponseUtil.sendResponse(exchange, 200, gson.toJson(orders), "application/json");

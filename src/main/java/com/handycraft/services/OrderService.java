@@ -18,8 +18,17 @@ public class OrderService {
     // Add ProductService dependency so we can update stock
     private final ProductService productService = new ProductService();
 
-    public OrderService() {
+    private static OrderService instance;
+
+    private OrderService() {
         this.orders = loadOrdersFromFile();
+    }
+
+    public static synchronized OrderService getInstance() {
+        if (instance == null) {
+            instance = new OrderService();
+        }
+        return instance;
     }
 
     private List<Order> loadOrdersFromFile() {

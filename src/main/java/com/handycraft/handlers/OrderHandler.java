@@ -8,9 +8,12 @@ import com.handycraft.utils.ResponseUtil;
 import com.handycraft.models.Order;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class OrderHandler implements HttpHandler {
-    private final OrderService orderService = new OrderService();
+    private final OrderService orderService = OrderService.getInstance();
     private final Gson gson = new Gson();
 
     @Override
@@ -31,6 +34,22 @@ public class OrderHandler implements HttpHandler {
             try {
                 // Read the incoming order JSON
                 Order newOrder = gson.fromJson(new InputStreamReader(exchange.getRequestBody()), Order.class);
+
+                // === 1. SET DEFAULT STATUS ===
+                if (newOrder.getStatus() == null || newOrder.getStatus().isEmpty()) {
+                    newOrder.setStatus("Pending");
+                }
+
+                // === 2. SET ORDER ID ===
+                if (newOrder.getOrderId() == null || newOrder.getOrderId().isEmpty()) {
+                    newOrder.setOrderId("ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                }
+
+                // === 3. SET ORDER DATE (Required for Sales Report) ===
+                if (newOrder.getOrderDate() == null || newOrder.getOrderDate().isEmpty()) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    newOrder.setOrderDate(sdf.format(new Date()));
+                }
 
                 // Call the service
                 orderService.saveOrder(newOrder);
