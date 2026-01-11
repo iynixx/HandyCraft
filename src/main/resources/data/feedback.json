@@ -1,14 +1,5 @@
 [
   {
-    "id": "af848b7c-35b4-4995-bb86-a0141c3c6055",
-    "productId": "1",
-    "username": "Rita",
-    "userEmail": "rita4@gmail.com",
-    "rating": 5,
-    "comment": "Good quality",
-    "timestamp": "2025-12-09 14:30"
-  },
-  {
     "id": "f9b6e475-9416-423e-ab9e-1188ee0812ce",
     "productId": "6",
     "username": "Eva",
@@ -79,5 +70,14 @@
     "rating": 5,
     "comment": "Excellent handcraft and good gift for friends",
     "timestamp": "2025-12-22 21:49"
+  },
+  {
+    "id": "00b062b0-b919-4fb4-ad4e-78ca4d56f363",
+    "productId": "1",
+    "username": "Rita",
+    "userEmail": "rita4@gmail.com",
+    "rating": 5,
+    "comment": "Good quality",
+    "timestamp": "2026-01-11 11:12"
   }
 ]

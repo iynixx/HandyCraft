@@ -70,5 +70,17 @@
     "action": "Demoted User",
     "details": "Changed Rita to customer",
     "timestamp": "2026-01-11 02:09:24"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Feedback",
+    "details": "Removed feedback ID: d041c160-2581-44ea-a1e4-756763137939",
+    "timestamp": "2026-01-11 11:06:51"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Feedback",
+    "details": "Removed feedback ID: af848b7c-35b4-4995-bb86-a0141c3c6055",
+    "timestamp": "2026-01-11 11:10:53"
   }
 ]

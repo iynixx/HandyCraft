@@ -220,9 +220,12 @@ async function loadFeedback(productId) {
 
         container.innerHTML = reviews.map(r => `
             <div style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                <strong>${r.username}</strong> 
-                <span style="color: #D67D8C; font-weight: bold;">(${r.rating}/5)</span>
-                <p style="margin-top: 5px;">${r.comment}</p>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+                    <strong>${r.username}</strong>
+                    <span style="font-size: 0.85rem; color: #888;">${r.timestamp}</span>
+                </div>
+                <span style="color: #D67D8C; font-weight: bold;">Rating: ${r.rating}/5</span>
+                <p style="margin-top: 8px; color: #444; line-height: 1.4;">${r.comment}</p>
             </div>`).join('');
     } catch (err) { console.error("Error loading feedback:", err); }
 }
