@@ -71,8 +71,18 @@ public class ProductService {
     public Product addProduct(Product newProduct) throws IOException {
         fileLock.lock();
         try {
-            String newId = UUID.randomUUID().toString();
-            newProduct.setId(newId);
+            int nextId = products.stream()
+                    .mapToInt(p -> {
+                        try {
+                            return Integer.parseInt(p.getId());
+                        } catch (NumberFormatException e) {
+                            return 0;
+                        }
+                    })
+                    .max()
+                    .orElse(0) + 1;
+
+            newProduct.setId(String.valueOf(nextId));
 
             if (newProduct.getCategory() == null || newProduct.getCategory().isBlank()) {
                 newProduct.setCategory("Uncategorized");

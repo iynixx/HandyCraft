@@ -82,5 +82,95 @@
     "action": "Deleted Feedback",
     "details": "Removed feedback ID: af848b7c-35b4-4995-bb86-a0141c3c6055",
     "timestamp": "2026-01-11 11:10:53"
+  },
+  {
+    "username": "Bob",
+    "action": "Added Product",
+    "details": "Added Product: Flower",
+    "timestamp": "2026-01-11 13:02:24"
+  },
+  {
+    "username": "Bob",
+    "action": "Deleted Product",
+    "details": "Removed product: Flower",
+    "timestamp": "2026-01-11 13:12:04"
+  },
+  {
+    "username": "David Lee",
+    "action": "Added Product",
+    "details": "Added Product: Daisy",
+    "timestamp": "2026-01-11 14:09:13"
+  },
+  {
+    "username": "David Lee",
+    "action": "Modified Product",
+    "details": "Modified Product: Daisy",
+    "timestamp": "2026-01-11 14:21:43"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 14:32:00"
+  },
+  {
+    "username": "David Lee",
+    "action": "Added Product",
+    "details": "Added Product: Daisy",
+    "timestamp": "2026-01-11 14:32:25"
+  },
+  {
+    "username": "David Lee",
+    "action": "Modified Product",
+    "details": "Modified Product: Daisy",
+    "timestamp": "2026-01-11 14:48:15"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 15:15:06"
+  },
+  {
+    "username": "David Lee",
+    "action": "Added Product",
+    "details": "Added Product: Daisy",
+    "timestamp": "2026-01-11 15:15:28"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 15:37:55"
+  },
+  {
+    "username": "David Lee",
+    "action": "Modified Product",
+    "details": "Modified Product: Sunflower Cherry",
+    "timestamp": "2026-01-11 15:50:03"
+  },
+  {
+    "username": "David Lee",
+    "action": "Modified Product",
+    "details": "Modified Product: Sunflower Cherry",
+    "timestamp": "2026-01-11 15:52:35"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 17:46:34"
+  },
+  {
+    "username": "David Lee",
+    "action": "Demoted User",
+    "details": "Changed Ali to customer",
+    "timestamp": "2026-01-11 18:00:25"
+  },
+  {
+    "username": "David Lee",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 18:02:43"
   }
 ]

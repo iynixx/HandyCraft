@@ -852,5 +852,16 @@
     "Inventory": {
       "Default": 7
     }
+  },
+  {
+    "Product ID": "74",
+    "Category": "Crochet Decoration",
+    "Product Name": "Daisy",
+    "Price (RM)": 10.0,
+    "Description": "",
+    "File Name": "placeholder.jpg",
+    "Inventory": {
+      "Default": 3.0
+    }
   }
 ]

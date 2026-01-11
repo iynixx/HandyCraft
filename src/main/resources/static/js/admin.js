@@ -1162,59 +1162,89 @@ function exportSalesReportToCSV() {
 async function showProductModal(productId = null) {
     const modal = document.getElementById('product-modal');
     const form = document.getElementById('product-form');
+
     if(!modal || !form) return;
     form.reset();
-    document.getElementById('image-preview').innerHTML = '';
     if (productId) {
+
         document.getElementById('product-modal-title').textContent = 'Edit Product';
         document.getElementById('product-id-hidden').value = productId;
+
         const p = adminProductsCache.find(item => String(item['Product ID'] || item.id) === String(productId));
+
         if (p) {
+
             form.elements['product-name'].value = p['Product Name'] || p.name || '';
             form.elements['product-category'].value = p.Category || p.category || '';
             form.elements['product-price'].value = p['Price (RM)'] || p.price || '';
             form.elements['product-description'].value = p.Description || p.description || '';
             form.elements['product-inventory'].value = p.Inventory ? (typeof p.Inventory === 'object' ? Object.values(p.Inventory)[0] : p.Inventory) : 0;
-            const fileName = p['File Name'] || p.imageUrl || 'placeholder.jpg';
-            document.getElementById('product-image-hidden').value = fileName;
-            document.getElementById('image-preview').innerHTML = `<img src="http://localhost:8000/images/products/${fileName}" alt="${p['Product Name'] || p.name || 'Product Image'}" style="max-width: 100px; border-radius: 8px;">`;
+
         }
+
     } else {
+
         document.getElementById('product-modal-title').textContent = 'Add New Product';
         document.getElementById('product-id-hidden').value = '';
-        document.getElementById('product-image-hidden').value = 'placeholder.jpg';
+
     }
+
     modal.classList.add('active');
+
 }
 
 async function handleProductSubmit(event) {
     event.preventDefault();
     const productId = document.getElementById('product-id-hidden').value;
-    const productName = document.getElementById('product-name').value.trim();
+
+    // Find the existing product in your cache to get its current image name
+    let currentImage = "placeholder.jpg"; // Default fallback
+    if (productId) {
+        const existingProduct = adminProductsCache.find(p => String(p['Product ID'] || p.id) === String(productId));
+        if (existingProduct) {
+            // Get the image name currently stored for this product
+            currentImage = existingProduct['File Name'] || existingProduct.imageUrl || "placeholder.jpg";
+        }
+    }
+
     const newData = {
+        "id": productId,
         "Product Name": document.getElementById('product-name').value.trim(),
         "Category": document.getElementById('product-category').value.trim(),
         "Price (RM)": parseFloat(document.getElementById('product-price').value),
         "Description": document.getElementById('product-description').value.trim(),
-        "File Name": document.getElementById('product-image-hidden').value,
+        "File Name": currentImage, // Keep the existing image
         "Inventory": { "Default": parseInt(document.getElementById('product-inventory').value) || 0 }
     };
+
     try {
+
         const method = productId ? 'PUT' : 'POST';
-        const response = await fetch(productId ? `${API_ADMIN_BASE_URL}/products/${productId}` : `${API_ADMIN_BASE_URL}/products`, {
-            method,
+        const url = productId ? `${API_ADMIN_BASE_URL}/products/${productId}` : `${API_ADMIN_BASE_URL}/products`;
+        const response = await fetch(url, {
+
+            method: method,
             headers: checkAdminAccessAndGetHeaders('application/json'),
             body: JSON.stringify(newData)
+
         });
-        if (response.ok)
-        {
-            const action = productId ? 'Modified Product' : 'Added Product';
-            await logActivity(action, `${action}: ${productName}`);
+
+        if (response.ok) {
+
             alert("Success!");
+
             closeProductModal();
+
             await listProductsForAdmin();
+        } else {
+            alert("Save failed on server.");
         }
-    } catch (e) { alert("Save failed."); }
+
+    } catch (e) {
+        alert("Error: Server not responding.");
+
+    }
+
 }
 
 function filterCustomers() {
