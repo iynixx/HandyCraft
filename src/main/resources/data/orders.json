@@ -24,7 +24,7 @@
       }
     ],
     "totalAmount": 70.0,
-    "orderDate": "2025-12-28 22:36",
+    "orderDate": "Sun Dec 28 22:36:54 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -44,7 +44,7 @@
       }
     ],
     "totalAmount": 40.0,
-    "orderDate": "2025-12-28 22:40",
+    "orderDate": "Sun Dec 28 22:40:09 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -64,7 +64,7 @@
       }
     ],
     "totalAmount": 40.0,
-    "orderDate": "2025-12-28 22:41",
+    "orderDate": "Sun Dec 28 22:41:58 GMT+08:00 2025",
     "status": "Shipped"
   },
   {
@@ -84,7 +84,7 @@
       }
     ],
     "totalAmount": 25.0,
-    "orderDate": "2025-12-28 22:45",
+    "orderDate": "Sun Dec 28 22:45:48 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -104,7 +104,7 @@
       }
     ],
     "totalAmount": 28.0,
-    "orderDate": "2025-12-28 22:48",
+    "orderDate": "Sun Dec 28 22:48:09 GMT+08:00 2025",
     "status": "Processing"
   },
   {
@@ -124,7 +124,7 @@
       }
     ],
     "totalAmount": 25.0,
-    "orderDate": "2025-12-28 22:36",
+    "orderDate": "Sun Dec 28 22:50:53 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -144,7 +144,7 @@
       }
     ],
     "totalAmount": 18.0,
-    "orderDate": "2025-12-28 22:51",
+    "orderDate": "Sun Dec 28 22:51:53 GMT+08:00 2025",
     "status": "Pending"
   },
   {
@@ -164,7 +164,7 @@
       }
     ],
     "totalAmount": 30.0,
-    "orderDate": "2025-12-28 22:53",
+    "orderDate": "Sun Dec 28 22:53:10 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -200,7 +200,7 @@
       }
     ],
     "totalAmount": 51.0,
-    "orderDate": "2025-12-28 22:57",
+    "orderDate": "Sun Dec 28 22:57:20 GMT+08:00 2025",
     "status": "Completed"
   },
   {
@@ -220,7 +220,7 @@
       }
     ],
     "totalAmount": 20.0,
-    "orderDate": "2026-01-10 13:48",
+    "orderDate": "Sat Jan 10 13:48:01 GMT+08:00 2026",
     "status": "Pending"
   },
   {
@@ -240,7 +240,7 @@
       }
     ],
     "totalAmount": 18.0,
-    "orderDate": "2026-01-10 14:13",
+    "orderDate": "Sat Jan 10 14:13:41 GMT+08:00 2026",
     "status": "Pending"
   },
   {

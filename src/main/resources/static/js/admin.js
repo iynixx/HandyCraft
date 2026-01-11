@@ -710,7 +710,7 @@ function showOrderModal(orderId) {
     document.getElementById('order-modal-customer').textContent = order.customerName;
     document.getElementById('order-modal-phone').textContent = order.phone;
     document.getElementById('order-modal-address').textContent = order.address;
-    document.getElementById('order-modal-date').textContent = order.orderDate;
+    document.getElementById('order-modal-date').textContent = formatAdminDate(order.orderDate);
 
     //render items
     let itemsHtml = '';
