@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Handy Craft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
 </head>
-<body>
+<body class="checkout-page">
+
 <header class="main-header">
     <nav class="container">
         <a href="index.html" class="logo-link-with-text">
@@ -17,39 +21,66 @@
 </header>
 
 <main class="container">
-    <h1 style="margin: 20px 0;">Checkout</h1>
+    <h1 class="page-title">Secure Checkout</h1>
 
-    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 300px;">
-            <h3>Shipping Details</h3>
+    <div class="checkout-container">
+        <div class="checkout-section">
+            <h3 class="section-title">Shipping Information</h3>
             <form id="checkout-form">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Full Name</label>
-                    <input type="text" id="cust-name" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                <div class="form-group">
+                    <label for="cust-name">Full Name</label>
+                    <input type="text" id="cust-name" class="form-control" placeholder="Enter your full name" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Phone Number</label>
-                    <input type="text" id="cust-phone" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                <div class="form-group">
+                    <label for="cust-phone">Phone Number</label>
+                    <input type="tel" id="cust-phone" class="form-control" placeholder="e.g. 012-3456789" required>
                 </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Shipping Address</label>
-                    <textarea id="cust-address" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; height: 100px;"></textarea>
+                <div class="form-group">
+                    <label for="cust-address">Shipping Address</label>
+                    <textarea id="cust-address" class="form-control" placeholder="Enter your full delivery address..." required></textarea>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label style="font-size: 1.1rem; margin-bottom: 15px; display: block;">Payment Method</label>
+                    <div class="payment-methods-grid">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="cod" checked>
+                            <div class="payment-box">
+                                <span class="radio-circle"></span>
+                                Cash on Delivery (COD)
+                            </div>
+                        </label>
+
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="online">
+                            <div class="payment-box">
+                                <span class="radio-circle"></span>
+                                Online Banking / Card
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </form>
         </div>
 
-        <div style="flex: 1; min-width: 300px; background: #f9f9f9; padding: 20px; border-radius: 15px;">
-            <h3>Order Summary</h3>
-            <div id="checkout-summary" style="margin-bottom: 20px;">
+        <div class="summary-section">
+            <h3 class="section-title">Order Summary</h3>
+
+            <div id="checkout-summary">
             </div>
-            <hr style="margin: 20px 0;">
-            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
-                <span>Total Amount:</span>
+
+            <div class="total-row">
+                <span>Total Amount</span>
                 <span id="checkout-total">RM 0.00</span>
             </div>
-            <button id="place-order-btn" class="button primary" style="width: 100%; margin-top: 20px; padding: 15px; border-radius: 50px;">
-                Place Order (RM 0.00)
+
+            <button id="place-order-btn" class="checkout-btn">
+                Confirm Order
             </button>
+
+            <p class="secure-notice">
+                <i class="fas fa-lock"></i> Secure Encrypted Checkout
+            </p>
         </div>
     </div>
 </main>

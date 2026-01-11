@@ -95,7 +95,7 @@
     "Description": "Adorable Sanrio-inspired Pochacco pouch with a drawstring closure, spacious enough for daily essentials.",
     "File Name": "pochacco.jpg",
     "Inventory": {
-      "Default": 4
+      "Default": 3
     }
   },
   {
@@ -861,7 +861,7 @@
     "Description": "",
     "File Name": "placeholder.jpg",
     "Inventory": {
-      "Default": 3.0
+      "Default": 3
     }
   }
 ]
