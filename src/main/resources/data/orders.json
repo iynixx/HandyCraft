@@ -242,5 +242,25 @@
     "totalAmount": 18.0,
     "orderDate": "2026-01-10 14:13",
     "status": "Pending"
+  },
+  {
+    "orderId": "ORD-1768098144477",
+    "userId": "rita4@gmail.com",
+    "customerName": "Rita",
+    "address": "20, Taman Bendahara, Pengkalan Chepa, 16100, Kota Bharu, Kelantan.",
+    "phone": "0192881912",
+    "items": [
+      {
+        "id": "20",
+        "name": "Penguin",
+        "price": 18.0,
+        "quantity": 1.0,
+        "variant": "Default",
+        "remainingStock": 7.0
+      }
+    ],
+    "totalAmount": 18.0,
+    "orderDate": "Sun Jan 11 10:22:24 GMT+08:00 2026",
+    "status": "Pending"
   }
 ]
