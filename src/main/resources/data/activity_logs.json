@@ -172,5 +172,35 @@
     "action": "Deleted Product",
     "details": "Removed product: Daisy",
     "timestamp": "2026-01-11 18:02:43"
+  },
+  {
+    "username": "David Lee",
+    "action": "Updated Order Status",
+    "details": "Changed order ORD-1768138461178 to Processing",
+    "timestamp": "2026-01-11 21:36:09"
+  },
+  {
+    "username": "David Lee",
+    "action": "Updated Order Status",
+    "details": "Changed order ORD-1768138461178 to Completed",
+    "timestamp": "2026-01-11 21:37:10"
+  },
+  {
+    "username": "David Lee",
+    "action": "Promoted User",
+    "details": "Changed Xinyi to admin",
+    "timestamp": "2026-01-11 21:38:41"
+  },
+  {
+    "username": "Xinyi",
+    "action": "Deleted Product",
+    "details": "Removed product: Daisy",
+    "timestamp": "2026-01-11 21:44:34"
+  },
+  {
+    "username": "David Lee",
+    "action": "Demoted User",
+    "details": "Changed Xinyi to customer",
+    "timestamp": "2026-01-11 21:45:13"
   }
 ]

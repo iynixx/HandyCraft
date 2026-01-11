@@ -40,7 +40,7 @@
     "Description": "An adorable Totoro-inspired crochet dust ball, combining cuteness with practical dusting.",
     "File Name": "totoro_dusty_ball.jpg",
     "Inventory": {
-      "Default": 2
+      "Default": 1
     }
   },
   {
@@ -851,17 +851,6 @@
     "File Name": "taco_french_fries.jpg",
     "Inventory": {
       "Default": 7
-    }
-  },
-  {
-    "Product ID": "74",
-    "Category": "Crochet Decoration",
-    "Product Name": "Daisy",
-    "Price (RM)": 10.0,
-    "Description": "",
-    "File Name": "placeholder.jpg",
-    "Inventory": {
-      "Default": 3
     }
   }
 ]
